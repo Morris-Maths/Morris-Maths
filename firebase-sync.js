@@ -127,12 +127,15 @@ var FirebaseSync = {
             .collection("students")
             .doc(FirebaseSync.studentId);
 
+        var currentUser = FirebaseSync.auth.currentUser;
+
         docRef.set({
             profile: {
                 name: config.studentName || "Unknown",
                 classCode: CLASS_CODE || "",
                 lastActive: firebase.firestore.FieldValue.serverTimestamp(),
-                appVersion: APP_VERSION
+                appVersion: APP_VERSION,
+                authUid: currentUser ? currentUser.uid : null
             }
         }, { merge: true }).catch(function(err) {
             console.warn("FirebaseSync: Failed to sync profile:", err.message);
@@ -179,7 +182,6 @@ var FirebaseSync = {
     /**
      * Pull all student data from Firestore and merge into IndexedDB.
      * Cloud data wins on conflicts (newer timestamp).
-     * On a fresh device (no local config), pulls everything so progress survives device changes.
      * @private
      */
     _pullFromCloud: function() {
@@ -191,10 +193,8 @@ var FirebaseSync = {
             .collection("students")
             .doc(FirebaseSync.studentId);
 
-        console.log("FirebaseSync: Pulling data from cloud...");
-
-        // Pull mastery data (always, with timestamp merge)
-        var masteryPull = studentRef.collection("mastery").get().then(function(snapshot) {
+        // Pull mastery data
+        return studentRef.collection("mastery").get().then(function(snapshot) {
             var promises = [];
             snapshot.forEach(function(doc) {
                 var cloudRecord = doc.data();
@@ -220,142 +220,12 @@ var FirebaseSync = {
             });
 
             if (promises.length > 0) {
-                console.log("FirebaseSync: Merging " + promises.length +
+                console.log("FirebaseSync: Merged " + promises.length +
                     " mastery records from cloud");
             }
             return Promise.all(promises);
         }).catch(function(err) {
-            console.warn("FirebaseSync: Mastery pull failed:", err.message);
+            console.warn("FirebaseSync: Pull failed:", err.message);
         });
-
-        // Pull question history (cloud wins if newer lastAttemptDate)
-        var historyPull = studentRef.collection("questionHistory").get().then(function(snapshot) {
-            var promises = [];
-            snapshot.forEach(function(doc) {
-                var cloudRecord = doc.data();
-                // Restore dots in filename (we replaced them for Firestore doc IDs)
-                cloudRecord.filename = cloudRecord.filename || doc.id.replace(/_/g, ".");
-
-                promises.push(
-                    DB.get(STORE_HISTORY, cloudRecord.filename).then(function(localRecord) {
-                        if (!localRecord) {
-                            return DB.put(STORE_HISTORY, cloudRecord);
-                        }
-                        var cloudTime = cloudRecord.lastAttemptDate ?
-                            new Date(cloudRecord.lastAttemptDate).getTime() : 0;
-                        var localTime = localRecord.lastAttemptDate ?
-                            new Date(localRecord.lastAttemptDate).getTime() : 0;
-                        if (cloudTime > localTime) {
-                            return DB.put(STORE_HISTORY, cloudRecord);
-                        }
-                        return Promise.resolve();
-                    })
-                );
-            });
-
-            if (promises.length > 0) {
-                console.log("FirebaseSync: Merging " + promises.length +
-                    " question history records from cloud");
-            }
-            return Promise.all(promises);
-        }).catch(function(err) {
-            console.warn("FirebaseSync: History pull failed:", err.message);
-        });
-
-        // Pull confidence watch data (cloud wins if newer)
-        var confidencePull = studentRef.collection("confidence").get().then(function(snapshot) {
-            var promises = [];
-            snapshot.forEach(function(doc) {
-                var cloudRecord = doc.data();
-                cloudRecord.problemType = doc.id;
-
-                promises.push(
-                    DB.get(STORE_CONFIDENCE, doc.id).then(function(localRecord) {
-                        if (!localRecord) {
-                            return DB.put(STORE_CONFIDENCE, cloudRecord);
-                        }
-                        // Cloud wins if it has more confident-correct entries
-                        if ((cloudRecord.confidentCorrectCount || 0) >
-                            (localRecord.confidentCorrectCount || 0)) {
-                            return DB.put(STORE_CONFIDENCE, cloudRecord);
-                        }
-                        return Promise.resolve();
-                    })
-                );
-            });
-
-            if (promises.length > 0) {
-                console.log("FirebaseSync: Merging " + promises.length +
-                    " confidence records from cloud");
-            }
-            return Promise.all(promises);
-        }).catch(function(err) {
-            console.warn("FirebaseSync: Confidence pull failed:", err.message);
-        });
-
-        // Pull sessions (only if no local sessions -- avoids duplicates on same device)
-        var sessionsPull = DB.count(STORE_SESSIONS).then(function(localCount) {
-            if (localCount > 0) {
-                console.log("FirebaseSync: Local sessions exist, skipping session pull");
-                return Promise.resolve();
-            }
-
-            return studentRef.collection("sessions")
-                .orderBy("syncedAt", "desc")
-                .limit(200)
-                .get().then(function(snapshot) {
-                    var promises = [];
-                    snapshot.forEach(function(doc) {
-                        var cloudSession = doc.data();
-                        // Remove Firestore-specific fields
-                        delete cloudSession.syncedAt;
-                        promises.push(DB.put(STORE_SESSIONS, cloudSession));
-                    });
-
-                    if (promises.length > 0) {
-                        console.log("FirebaseSync: Restored " + promises.length +
-                            " sessions from cloud");
-                    }
-                    return Promise.all(promises);
-                });
-        }).catch(function(err) {
-            console.warn("FirebaseSync: Sessions pull failed:", err.message);
-        });
-
-        // Pull config/profile (only if no local config -- new device scenario)
-        var configPull = DB.get(STORE_CONFIG, "main").then(function(localConfig) {
-            if (localConfig) {
-                return Promise.resolve(); // Already have config, don't overwrite
-            }
-
-            return studentRef.get().then(function(doc) {
-                if (!doc.exists || !doc.data().profile) return;
-                var profile = doc.data().profile;
-                // Create a minimal config from the cloud profile
-                var config = {
-                    id: "main",
-                    studentName: profile.name || "Student",
-                    startedDate: new Date().toISOString().split("T")[0],
-                    appVersion: APP_VERSION,
-                    theme: "light",
-                    showTimerSuggestions: true,
-                    showExaminerComments: true,
-                    showDifficultyBadges: true,
-                    aheadOfScheduleEnabled: false,
-                    sessionGoal: 10,
-                    updatesImported: [],
-                    restoredFromCloud: true
-                };
-                console.log("FirebaseSync: Restoring config from cloud for " + config.studentName);
-                return DB.put(STORE_CONFIG, config);
-            });
-        }).catch(function(err) {
-            console.warn("FirebaseSync: Config pull failed:", err.message);
-        });
-
-        return Promise.all([masteryPull, historyPull, confidencePull, sessionsPull, configPull])
-            .then(function() {
-                console.log("FirebaseSync: Cloud pull complete");
-            });
     }
 };

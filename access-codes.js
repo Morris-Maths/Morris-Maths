@@ -19,7 +19,6 @@ var AccessControl = {
     TOKEN_KEY: "wace_device_token",
     CODE_KEY: "wace_access_code",
     NAME_KEY: "wace_student_name",
-    COURSE_KEY: "wace_course_name",
     TIMEOUT_MS: 4000,         // How long to wait for Firebase before falling back
     firebaseAvailable: false, // Set to true once Firebase responds successfully
     IDB_NAME: "wace_credentials",
@@ -164,7 +163,7 @@ var AccessControl = {
      * @private
      */
     _restoreFromIDB: function() {
-        var keys = [AccessControl.TOKEN_KEY, AccessControl.CODE_KEY, AccessControl.NAME_KEY, AccessControl.COURSE_KEY];
+        var keys = [AccessControl.TOKEN_KEY, AccessControl.CODE_KEY, AccessControl.NAME_KEY];
         var anyRestored = false;
 
         return keys.reduce(function(chain, key) {
@@ -341,8 +340,7 @@ var AccessControl = {
 
         if (!screen || !input || !btn) {
             console.warn("AccessControl: Code screen elements not found, skipping");
-            var fallbackCourse = AccessControl.getCourseName();
-            loadCourseScripts(fallbackCourse).then(function() { initApp(); });
+            initApp(); // Fallback -- proceed without access control
             return;
         }
 
@@ -372,8 +370,11 @@ var AccessControl = {
             var teacherPw = (typeof TEACHER_DASHBOARD_PASSWORD !== "undefined")
                 ? TEACHER_DASHBOARD_PASSWORD.toUpperCase() : null;
             if (teacherPw && code === teacherPw) {
-                // Show course picker for teacher
-                AccessControl._showTeacherCoursePicker(screen);
+                screen.style.display = "none";
+                // Set teacher mode flag for this session
+                sessionStorage.setItem("wace_teacher_mode", "true");
+                // Load the normal student app (teacher toolbar injected in initApp)
+                initApp();
                 return;
             }
             // -----------------------------------------------------------------
@@ -396,17 +397,11 @@ var AccessControl = {
                     return;
                 }
 
-                // Save the course from Firebase (or fallback to stored/default)
-                var courseName = result.courseName ||
-                    localStorage.getItem(AccessControl.COURSE_KEY) ||
-                    DEFAULT_COURSE;
-                AccessControl._saveCredential(AccessControl.COURSE_KEY, courseName);
-
                 if (result.alreadyMine) {
                     // Re-use existing claim
                     AccessControl._saveCredential(AccessControl.CODE_KEY, code);
                     screen.style.display = "none";
-                    loadCourseScripts(courseName).then(function() { initApp(); });
+                    initApp();
                     return;
                 }
 
@@ -422,7 +417,7 @@ var AccessControl = {
                 }
 
                 screen.style.display = "none";
-                loadCourseScripts(courseName).then(function() { initApp(); });
+                initApp();
             });
         });
 
@@ -442,16 +437,15 @@ var AccessControl = {
                     return { valid: false, reason: "That code is not valid. Check with your teacher." };
                 }
                 var data = doc.data();
-                var courseName = data.courseName || DEFAULT_COURSE;
                 if (data.claimed) {
                     // Check if it is ours
                     var existingToken = localStorage.getItem(AccessControl.TOKEN_KEY);
                     if (data.deviceToken && data.deviceToken === existingToken) {
-                        return { valid: true, alreadyMine: true, courseName: courseName };
+                        return { valid: true, alreadyMine: true };
                     }
                     return { valid: false, reason: "That code has already been used by another student." };
                 }
-                return { valid: true, alreadyMine: false, courseName: courseName };
+                return { valid: true, alreadyMine: false };
             })
             .catch(function(err) {
                 // Network error (blocked, offline, etc.) -- trust local credentials
@@ -487,12 +481,14 @@ var AccessControl = {
     claimCode: function(code, studentName) {
         var db = firebase.firestore();
         var token = localStorage.getItem(AccessControl.TOKEN_KEY);
+        var currentUser = firebase.auth().currentUser;
 
         return db.collection("accessCodes").doc(code.toUpperCase()).update({
             claimed: true,
             deviceToken: token,
             studentName: studentName,
-            claimedAt: firebase.firestore.FieldValue.serverTimestamp()
+            claimedAt: firebase.firestore.FieldValue.serverTimestamp(),
+            authUid: currentUser ? currentUser.uid : null
         }).then(function() {
             localStorage.removeItem("wace_pending_claim");
             console.log("AccessControl: Code " + code + " claimed by " + studentName);
@@ -515,70 +511,6 @@ var AccessControl = {
             console.log("AccessControl: Retrying pending claim for " + code);
             AccessControl.claimCode(code, name);
         }
-    },
-
-    /**
-     * Show a course picker for teacher mode.
-     * Teacher selects which course to review, then proceeds.
-     * @private
-     */
-    _showTeacherCoursePicker: function(screen) {
-        var courses = (typeof AVAILABLE_COURSES !== "undefined") ? AVAILABLE_COURSES : [];
-        if (courses.length === 0) {
-            // No courses configured -- fall through with default
-            sessionStorage.setItem("wace_teacher_mode", "true");
-            var defCourse = (typeof DEFAULT_COURSE !== "undefined") ? DEFAULT_COURSE : "";
-            sessionStorage.setItem("wace_teacher_course", defCourse);
-            screen.style.display = "none";
-            loadCourseScripts(defCourse).then(function() { initApp(); });
-            return;
-        }
-
-        // Build inline course picker UI inside the access code screen
-        var container = screen.querySelector(".welcome-form");
-        if (!container) {
-            // Fallback: just use first course
-            sessionStorage.setItem("wace_teacher_mode", "true");
-            sessionStorage.setItem("wace_teacher_course", courses[0]);
-            screen.style.display = "none";
-            loadCourseScripts(courses[0]).then(function() { initApp(); });
-            return;
-        }
-
-        container.innerHTML =
-            '<label for="teacher-course-select">Select Course to Review</label>' +
-            '<select id="teacher-course-select" style="width:100%;padding:10px 12px;' +
-            'border:1px solid #ddd;border-radius:8px;font-size:0.95rem;margin-bottom:1rem;">' +
-            courses.map(function(c) {
-                return '<option value="' + c + '">' + c + '</option>';
-            }).join("") +
-            '</select>' +
-            '<button id="teacher-course-btn" class="btn btn-primary btn-large">' +
-            'Open Teacher Mode</button>';
-
-        var selectEl = document.getElementById("teacher-course-select");
-        var goBtn = document.getElementById("teacher-course-btn");
-
-        goBtn.addEventListener("click", function() {
-            var chosen = selectEl.value;
-            sessionStorage.setItem("wace_teacher_mode", "true");
-            sessionStorage.setItem("wace_teacher_course", chosen);
-            screen.style.display = "none";
-            loadCourseScripts(chosen).then(function() { initApp(); });
-        });
-    },
-
-    /**
-     * Get the active course name for the current session.
-     * Teacher mode uses sessionStorage; students use persistent storage.
-     */
-    getCourseName: function() {
-        if (sessionStorage.getItem("wace_teacher_mode") === "true") {
-            return sessionStorage.getItem("wace_teacher_course") ||
-                (typeof DEFAULT_COURSE !== "undefined" ? DEFAULT_COURSE : "");
-        }
-        return localStorage.getItem(AccessControl.COURSE_KEY) ||
-            (typeof DEFAULT_COURSE !== "undefined" ? DEFAULT_COURSE : "");
     },
 
     /**
