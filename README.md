@@ -1,4 +1,4 @@
-# WACE Methods Study Trainer
+# WACE Methods Study Trainerd
 
 A web-based study tool for WACE Year 12 Mathematics Methods students featuring intelligent spaced repetition, self-assessment, and progress tracking.
 
