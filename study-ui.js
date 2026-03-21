@@ -346,7 +346,11 @@ var StudyUI = {
         html += '</div></div>';
 
         // Question stimulus
+        // Track images rendered inline via [IMAGE:] to avoid duplicating with diagramPlaceholders
+        var inlineRenderedImages = {};
         if (q.questionStimulus) {
+            var stimImages = StudyUI._extractImageRefs(q.questionStimulus);
+            stimImages.forEach(function(f) { inlineRenderedImages[f] = true; });
             html += '<div class="question-stimulus">' +
                 StudyUI._renderSolutionText(q.questionStimulus, q._pool) + '</div>';
         }
@@ -354,6 +358,8 @@ var StudyUI = {
         // Diagrams (question-level: stem diagrams only from diagramPlaceholders)
         var qDiagrams = (q.diagramPlaceholders && q.diagramPlaceholders.question) || [];
         var stemDiagrams = qDiagrams.filter(function(d) {
+            // Skip images already rendered inline in stimulus
+            if (inlineRenderedImages[d]) return false;
             // Stem diagrams contain "PartStem" or "_Stem", or have no "Part" reference at all
             return d.indexOf("PartStem") !== -1 || d.indexOf("_Stem") !== -1 ||
                    d.indexOf("Part") === -1;
@@ -383,9 +389,14 @@ var StudyUI = {
                 html += '<div class="part-text">' +
                     StudyUI._renderSolutionText(part.questionText, q._pool) + '</div>';
 
+                // Track images rendered inline in this part's questionText
+                var partInlineImages = StudyUI._extractImageRefs(part.questionText);
+
                 // Part-level diagrams (from diagramPlaceholders + diagramsNeeded)
                 var partLabel = part.partLabel;
                 var partDiags = qDiagrams.filter(function(d) {
+                    // Skip images already rendered inline in questionText
+                    if (partInlineImages.indexOf(d) !== -1) return false;
                     // Match diagrams referencing this part, e.g. "Parta)_IMG" or "Parta)Stem"
                     // but exclude stem-only diagrams already shown above
                     if (d.indexOf("PartStem") !== -1) return false;
@@ -770,57 +781,35 @@ var StudyUI = {
                 html += '</div>';
             }
 
-            // Marking criteria
+            // Marking criteria — default all to "met" (correct), toggleable
             if (part.marking && part.marking.length > 0) {
-                html += '<div class="marking-criteria" id="marking-' + partIdx + '">';
-                html += '<div class="marking-header">Marking Criteria</div>';
+                html += '<div class="marking-criteria marking-toggleable" id="marking-' + partIdx + '">';
+                html += '<div class="marking-header">Marking Criteria ' +
+                    '<span class="marking-hint">(tap to toggle)</span></div>';
                 part.marking.forEach(function(m, mIdx) {
-                    html += '<div class="marking-row" data-mark-idx="' + mIdx + '">';
+                    html += '<div class="marking-row mark-toggle mark-met" ' +
+                        'data-mark-idx="' + mIdx + '" data-part-idx="' + partIdx + '">';
                     html += '<span class="mark-awarded">' + m.awarded + '</span>';
                     html += '<span class="mark-text">' +
                         StudyUI._escapeHtml(m.text) + '</span>';
                     html += '</div>';
                 });
                 html += '</div>';
+                html += '<div class="criteria-confirm-area" id="criteria-confirm-' + partIdx + '">';
+                html += '<button class="btn btn-primary" onclick="StudyUI.confirmCriteriaAssessment(' +
+                    partIdx + ')">' + SYMBOLS.CHECK + ' Confirm</button>';
+                html += '</div>';
+            } else {
+                // Fallback for parts with no marking criteria: simple correct/incorrect
+                html += '<div class="self-assess-simple" id="assess-' + partIdx + '">';
+                html += '<button class="btn btn-correct" ' +
+                    'onclick="StudyUI.assessPartSimple(' + partIdx + ', true)">' +
+                    SYMBOLS.CHECK + ' Correct</button>';
+                html += '<button class="btn btn-error" ' +
+                    'onclick="StudyUI.assessPartSimple(' + partIdx + ', false)">' +
+                    SYMBOLS.CROSS + ' Incorrect</button>';
+                html += '</div>';
             }
-
-            // Self-assessment buttons
-            html += '<div class="self-assess" id="assess-' + partIdx + '">';
-            html += '<div class="assess-prompt">How did you go on this part?</div>';
-            html += '<div class="assess-buttons">';
-            html += '<button class="btn btn-correct" ' +
-                'onclick="StudyUI.assessPart(' + partIdx + ', \'correct\')">' +
-                SYMBOLS.CHECK + ' 100% Correct</button>';
-            html += '<button class="btn btn-error" ' +
-                'onclick="StudyUI.assessPart(' + partIdx + ', \'error\')">' +
-                SYMBOLS.CROSS + ' I made an error</button>';
-            html += '</div>';
-            html += '<a href="#" class="unsure-link" ' +
-                'onclick="StudyUI.assessPart(' + partIdx +
-                ', \'unsure\'); return false;">Correct but unsure</a>';
-            html += '</div>';
-
-            // Error line selection (hidden initially)
-            html += '<div class="error-line-select" id="error-select-' + partIdx +
-                '" style="display:none;">';
-            html += '<button class="btn btn-all-wrong" ' +
-                'onclick="StudyUI.selectErrorLine(' + partIdx +
-                ', 1)">Got it completely wrong (0/' + part.partMarks + ')</button>';
-            html += '<div class="error-prompt">Or tap the line where you <strong>first</strong>' +
-                ' went wrong:</div>';
-            if (part.originalSolution) {
-                part.originalSolution.forEach(function(line, lineIdx) {
-                    if (line.shown === false) return;
-                    html += '<div class="error-line-option" ' +
-                        'onclick="StudyUI.selectErrorLine(' + partIdx + ', ' +
-                        (lineIdx + 1) + ')">';
-                    html += '<span class="line-number">' + (lineIdx + 1) + '</span>';
-                    html += '<span class="line-text">' +
-                        StudyUI._renderSolutionText(line.text) + '</span>';
-                    html += '</div>';
-                });
-            }
-            html += '</div>';
 
             // Part result display (hidden initially)
             html += '<div class="part-result" id="result-' + partIdx +
@@ -848,6 +837,9 @@ var StudyUI = {
 
             container.innerHTML = html;
             container.style.display = "block";
+
+            // Wire up marking criteria toggle handlers with cascade
+            StudyUI._bindCriteriaToggles(partIdx);
         });
 
         // ---- Bind event listeners ----
@@ -884,6 +876,13 @@ var StudyUI = {
         });
         if (solArea) UI.renderMath(solArea);
 
+        // Auto-show guided walkthroughs for all parts that have them
+        q.parts.forEach(function(part, partIdx) {
+            if (part.guidedSolution) {
+                StudyUI.showPartGuided(partIdx);
+            }
+        });
+
         // Scroll to the first part's solution
         var firstSol = document.getElementById("part-sol-0");
         if (firstSol) {
@@ -893,39 +892,39 @@ var StudyUI = {
 
     /**
      * Quick-assess ALL parts at once (question-level shortcut).
-     * @param {string} mode - "correct" (all parts full marks) or "wrong" (all parts error at line 1)
+     * @param {string} mode - "correct" (all parts full marks) or "wrong" (all parts 0)
      */
     assessAllParts: function(mode) {
         var q = StudyUI.currentQuestion;
         if (!q || !q.parts) return;
 
-        // Hide the quick-assess buttons
         var quickArea = document.getElementById("quick-assess");
         if (quickArea) quickArea.style.display = "none";
 
         q.parts.forEach(function(part, partIdx) {
-            // Skip already-assessed parts
             if (StudyUI.partResults[part.partLabel]) return;
 
-            if (mode === "correct") {
-                StudyUI.assessPart(partIdx, "correct");
+            var mc = document.getElementById("marking-" + partIdx);
+            if (mc) {
+                var rows = mc.querySelectorAll(".marking-row");
+                rows.forEach(function(el) {
+                    el.classList.remove("mark-met", "mark-not-met");
+                    el.classList.add(mode === "correct" ? "mark-met" : "mark-not-met");
+                });
+                StudyUI.confirmCriteriaAssessment(partIdx);
             } else {
-                // "wrong" -- hide the per-part assess buttons, then mark error at line 1
-                var assessArea = document.getElementById("assess-" + partIdx);
-                if (assessArea) assessArea.style.display = "none";
-                StudyUI.selectErrorLine(partIdx, 1);
+                StudyUI.assessPartSimple(partIdx, mode === "correct");
             }
         });
     },
 
     /**
-     * Handle part self-assessment.
+     * Simple correct/incorrect assessment for parts without marking criteria.
      */
-    assessPart: function(partIdx, result) {
+    assessPartSimple: function(partIdx, correct) {
         var part = StudyUI.currentQuestion.parts[partIdx];
         if (!part) return;
 
-        // Hide question-level quick buttons once per-part assessment starts
         var quickArea = document.getElementById("quick-assess");
         if (quickArea) quickArea.style.display = "none";
 
@@ -935,208 +934,57 @@ var StudyUI = {
             'onclick="StudyUI.resetPartAssessment(' + partIdx +
             '); return false;">Change</a>';
 
-        if (result === "correct") {
-            // Full marks for this part
-            StudyUI.partResults[part.partLabel] = {
-                correct: true,
-                correctButUnsure: false,
-                errorAtLine: null,
-                markingCriteriaFailed: []
-            };
-            if (assessArea) assessArea.style.display = "none";
-            if (resultArea) {
-                resultArea.innerHTML = '<div class="result-correct">' + SYMBOLS.CHECK +
-                    ' All correct! Full marks (' + part.partMarks + '/' +
-                    part.partMarks + ')' + changeLink + '</div>';
-                resultArea.style.display = "block";
-            }
-            StudyUI._highlightSolutionLines(partIdx, -1); // all green
-            StudyUI._makeLinesClickable(partIdx); // allow clicking to switch to error
-            StudyUI._checkAllAssessed();
-
-        } else if (result === "unsure") {
-            // Correct but unsure - add to confidence watch
-            StudyUI.partResults[part.partLabel] = {
-                correct: true,
-                correctButUnsure: true,
-                errorAtLine: null,
-                markingCriteriaFailed: []
-            };
-            if (assessArea) assessArea.style.display = "none";
-            if (resultArea) {
-                resultArea.innerHTML = '<div class="result-unsure">' + SYMBOLS.CHECK +
-                    ' Correct (flagged for review) (' + part.partMarks + '/' +
-                    part.partMarks + ')' + changeLink + '</div>';
-                resultArea.style.display = "block";
-            }
-            StudyUI._highlightSolutionLines(partIdx, -1);
-            StudyUI._makeLinesClickable(partIdx);
-            StudyUI._checkAllAssessed();
-
-        } else if (result === "error") {
-            // Make marking criteria toggleable for direct assessment
-            if (assessArea) assessArea.style.display = "none";
-            StudyUI._makeMarkingCriteriaToggleable(partIdx);
-        }
-    },
-
-    /**
-     * Make solution lines clickable after a "correct" assessment.
-     * Clicking a line switches the assessment to "error at that line".
-     * @private
-     */
-    _makeLinesClickable: function(partIdx) {
-        var linesContainer = document.getElementById("sol-lines-" + partIdx);
-        if (!linesContainer) return;
-
-        var lines = linesContainer.querySelectorAll(".solution-line");
-        lines.forEach(function(el) {
-            el.classList.add("line-clickable");
-            el.onclick = function() {
-                var lineNum = parseInt(el.getAttribute("data-line"), 10);
-                StudyUI.correctLineClick(partIdx, lineNum);
-            };
-        });
-    },
-
-    /**
-     * Handle error line selection.
-     */
-    selectErrorLine: function(partIdx, lineNumber) {
-        var part = StudyUI.currentQuestion.parts[partIdx];
-        if (!part) return;
-
-        var totalLines = 0;
-        if (part.originalSolution) {
-            part.originalSolution.forEach(function(l) {
-                if (l.shown !== false) totalLines++;
-            });
-        }
-        var totalCriteria = part.marking ? part.marking.length : 0;
-        var failedCriteria = mapErrorToCriteria(lineNumber, totalLines, totalCriteria);
-
-        // Calculate marks lost
-        var marksLost = 0;
-        if (part.marking) {
-            failedCriteria.forEach(function(idx) {
-                if (part.marking[idx]) {
-                    marksLost += part.marking[idx].awarded;
-                }
-            });
-        }
-        var marksEarned = part.partMarks - marksLost;
-
         StudyUI.partResults[part.partLabel] = {
-            correct: false,
+            correct: correct,
             correctButUnsure: false,
-            errorAtLine: lineNumber,
-            markingCriteriaFailed: failedCriteria
+            errorAtLine: correct ? null : 1,
+            markingCriteriaFailed: correct ? [] : [0]
         };
 
-        // Hide error selection
-        var errorSelect = document.getElementById("error-select-" + partIdx);
-        if (errorSelect) errorSelect.style.display = "none";
-
-        // Show result with Change link
-        var changeLink = ' <a href="#" class="change-assess-link" ' +
-            'onclick="StudyUI.resetPartAssessment(' + partIdx +
-            '); return false;">Change</a>';
-        var resultArea = document.getElementById("result-" + partIdx);
+        if (assessArea) assessArea.style.display = "none";
         if (resultArea) {
-            resultArea.innerHTML = '<div class="result-error">' + SYMBOLS.CROSS +
-                ' Error at line ' + lineNumber + ' (' + marksEarned + '/' +
-                part.partMarks + ')' + changeLink + '</div>';
+            if (correct) {
+                resultArea.innerHTML = '<div class="result-correct">' + SYMBOLS.CHECK +
+                    ' Correct (' + part.partMarks + '/' +
+                    part.partMarks + ')' + changeLink + '</div>';
+            } else {
+                resultArea.innerHTML = '<div class="result-error">' + SYMBOLS.CROSS +
+                    ' Incorrect (0/' + part.partMarks + ')' + changeLink + '</div>';
+            }
             resultArea.style.display = "block";
         }
-
-        // Highlight solution lines and marking criteria
-        StudyUI._highlightSolutionLines(partIdx, lineNumber);
-        StudyUI._highlightMarkingCriteria(partIdx, failedCriteria);
-
         StudyUI._checkAllAssessed();
     },
 
     /**
-     * Highlight solution lines based on error position.
+     * Bind click handlers on marking criteria rows for toggle + cascade.
+     * Clicking a row toggles it; toggling to not-met cascades to all subsequent rows.
      * @private
      */
-    _highlightSolutionLines: function(partIdx, errorLine) {
-        var linesContainer = document.getElementById("sol-lines-" + partIdx);
-        if (!linesContainer) return;
-
-        var lines = linesContainer.querySelectorAll(".solution-line");
-        lines.forEach(function(el) {
-            var lineNum = parseInt(el.getAttribute("data-line"), 10);
-            if (errorLine === -1) {
-                // All correct
-                el.classList.add("line-correct");
-            } else if (lineNum < errorLine) {
-                el.classList.add("line-correct");
-            } else {
-                el.classList.add("line-error");
-            }
-        });
-    },
-
-    /**
-     * Highlight failed marking criteria.
-     * @private
-     */
-    _highlightMarkingCriteria: function(partIdx, failedIndices) {
+    _bindCriteriaToggles: function(partIdx) {
         var markingContainer = document.getElementById("marking-" + partIdx);
         if (!markingContainer) return;
 
         var rows = markingContainer.querySelectorAll(".marking-row");
-        rows.forEach(function(el) {
-            var idx = parseInt(el.getAttribute("data-mark-idx"), 10);
-            if (failedIndices.indexOf(idx) !== -1) {
-                el.classList.add("mark-failed");
-            } else {
-                el.classList.add("mark-passed");
-            }
-        });
-    },
+        rows.forEach(function(el, idx) {
+            el.addEventListener("click", function() {
+                if (!markingContainer.classList.contains("marking-toggleable")) return;
 
-    /**
-     * Make marking criteria rows toggleable for paper-mode self-assessment.
-     * Student clicks each criterion to mark it as met or not-met.
-     */
-    _makeMarkingCriteriaToggleable: function(partIdx) {
-        var part = StudyUI.currentQuestion.parts[partIdx];
-        if (!part) return;
-
-        var markingContainer = document.getElementById("marking-" + partIdx);
-        if (!markingContainer) return;
-
-        // Add toggleable class to container
-        markingContainer.classList.add("marking-toggleable");
-
-        var rows = markingContainer.querySelectorAll(".marking-row");
-        rows.forEach(function(el) {
-            // Start as not-met (student said they made an error)
-            el.classList.add("mark-toggle", "mark-not-met");
-            el.onclick = function() {
-                if (el.classList.contains("mark-not-met")) {
-                    el.classList.remove("mark-not-met");
-                    el.classList.add("mark-met");
-                } else {
+                if (el.classList.contains("mark-met")) {
+                    // Toggle to not-met + cascade subsequent
                     el.classList.remove("mark-met");
                     el.classList.add("mark-not-met");
+                    for (var j = idx + 1; j < rows.length; j++) {
+                        rows[j].classList.remove("mark-met");
+                        rows[j].classList.add("mark-not-met");
+                    }
+                } else {
+                    // Toggle back to met (no cascade)
+                    el.classList.remove("mark-not-met");
+                    el.classList.add("mark-met");
                 }
-            };
+            });
         });
-
-        // Add instruction + confirm button below the criteria
-        var confirmDiv = document.createElement("div");
-        confirmDiv.className = "criteria-confirm-area";
-        confirmDiv.id = "criteria-confirm-" + partIdx;
-        confirmDiv.innerHTML =
-            '<div class="criteria-confirm-hint">Tap each criterion you <strong>did</strong> get correct, then confirm:</div>' +
-            '<button class="btn btn-primary" onclick="StudyUI.confirmCriteriaAssessment(' +
-            partIdx + ')">' + SYMBOLS.CHECK + ' Confirm</button>' +
-            ' <button class="btn btn-secondary" onclick="StudyUI.resetPartAssessment(' +
-            partIdx + ')">Cancel</button>';
-        markingContainer.parentNode.insertBefore(confirmDiv, markingContainer.nextSibling);
     },
 
     /**
@@ -1162,39 +1010,29 @@ var StudyUI = {
             }
         });
 
-        var allFailed = failedCriteria.length === (part.marking ? part.marking.length : 0);
-
         StudyUI.partResults[part.partLabel] = {
             correct: failedCriteria.length === 0,
             correctButUnsure: false,
-            errorAtLine: allFailed ? 1 : null,
+            errorAtLine: failedCriteria.length === (part.marking ? part.marking.length : 0) ? 1 : null,
             markingCriteriaFailed: failedCriteria
         };
 
-        // Clean up toggle state
-        rows.forEach(function(el) {
-            el.onclick = null;
-            el.classList.remove("mark-toggle");
-        });
+        // Lock: remove toggleable state
         markingContainer.classList.remove("marking-toggleable");
-
-        // Remove confirm area
-        var confirmDiv = document.getElementById("criteria-confirm-" + partIdx);
-        if (confirmDiv) confirmDiv.parentNode.removeChild(confirmDiv);
-
-        // Finalize visual state: lock in passed/failed styling
         rows.forEach(function(el) {
             var idx = parseInt(el.getAttribute("data-mark-idx"), 10);
+            el.classList.remove("mark-toggle", "mark-met", "mark-not-met");
             if (failedCriteria.indexOf(idx) !== -1) {
-                el.classList.remove("mark-met", "mark-not-met");
                 el.classList.add("mark-failed");
             } else {
-                el.classList.remove("mark-met", "mark-not-met");
                 el.classList.add("mark-passed");
             }
         });
 
-        // Show result
+        // Hide confirm button, show result
+        var confirmDiv = document.getElementById("criteria-confirm-" + partIdx);
+        if (confirmDiv) confirmDiv.style.display = "none";
+
         var changeLink = ' <a href="#" class="change-assess-link" ' +
             'onclick="StudyUI.resetPartAssessment(' + partIdx +
             '); return false;">Change</a>';
@@ -1212,113 +1050,57 @@ var StudyUI = {
             resultArea.style.display = "block";
         }
 
+        var quickArea = document.getElementById("quick-assess");
+        if (quickArea) quickArea.style.display = "none";
+
         StudyUI._checkAllAssessed();
     },
 
     /**
      * Reset a part's assessment so the student can re-assess.
-     * Clears highlights, hides results, re-shows assess buttons.
+     * Restores marking criteria to toggleable state, all met by default.
      */
     resetPartAssessment: function(partIdx) {
         var part = StudyUI.currentQuestion.parts[partIdx];
         if (!part) return;
 
-        // Remove from partResults
         delete StudyUI.partResults[part.partLabel];
-
-        // Allow re-recording when all parts are re-assessed
         StudyUI._resultsRecorded = false;
 
-        // Hide result area
+        // Hide result
         var resultArea = document.getElementById("result-" + partIdx);
-        if (resultArea) {
-            resultArea.innerHTML = "";
-            resultArea.style.display = "none";
-        }
+        if (resultArea) { resultArea.innerHTML = ""; resultArea.style.display = "none"; }
 
-        // Re-show self-assess buttons
-        var assessArea = document.getElementById("assess-" + partIdx);
-        if (assessArea) assessArea.style.display = "block";
-
-        // Hide error line selection if visible
-        var errorSelect = document.getElementById("error-select-" + partIdx);
-        if (errorSelect) errorSelect.style.display = "none";
-
-        // Clear solution line highlights and click handlers
-        var linesContainer = document.getElementById("sol-lines-" + partIdx);
-        if (linesContainer) {
-            var lines = linesContainer.querySelectorAll(".solution-line");
-            lines.forEach(function(el) {
-                el.classList.remove("line-correct", "line-error", "line-clickable");
-                el.onclick = null;
-            });
-        }
-
-        // Clear marking criteria highlights and toggle state
-        var markingContainer = document.getElementById("marking-" + partIdx);
-        if (markingContainer) {
-            markingContainer.classList.remove("marking-toggleable");
-            var rows = markingContainer.querySelectorAll(".marking-row");
-            rows.forEach(function(el) {
-                el.classList.remove("mark-passed", "mark-failed", "mark-toggle", "mark-met", "mark-not-met");
-                el.onclick = null;
-            });
-        }
-
-        // Remove criteria confirm area if present
-        var confirmDiv = document.getElementById("criteria-confirm-" + partIdx);
-        if (confirmDiv) confirmDiv.parentNode.removeChild(confirmDiv);
-
-        // If the next-question area was shown, hide it (user is changing their answer)
+        // Hide next-question area
         var nextArea = document.getElementById("next-question-area");
         if (nextArea) nextArea.style.display = "none";
 
-        // Re-show the quick-assess buttons if NO parts are now assessed
+        // Reset marking criteria to toggleable, all met
+        var markingContainer = document.getElementById("marking-" + partIdx);
+        if (markingContainer) {
+            markingContainer.classList.add("marking-toggleable");
+            markingContainer.querySelectorAll(".marking-row").forEach(function(el) {
+                el.classList.remove("mark-passed", "mark-failed", "mark-not-met");
+                el.classList.add("mark-toggle", "mark-met");
+            });
+        }
+
+        // Show confirm button again
+        var confirmDiv = document.getElementById("criteria-confirm-" + partIdx);
+        if (confirmDiv) confirmDiv.style.display = "block";
+
+        // Reset simple assess buttons if present
+        var assessArea = document.getElementById("assess-" + partIdx);
+        if (assessArea && assessArea.classList.contains("self-assess-simple")) {
+            assessArea.style.display = "flex";
+        }
+
+        // Re-show quick-assess if no parts assessed
         if (Object.keys(StudyUI.partResults).length === 0) {
             var quickArea = document.getElementById("quick-assess");
             if (quickArea) quickArea.style.display = "flex";
         }
     },
-
-    /**
-     * Handle a click on a solution line after the part has been assessed as correct.
-     * This lets the student change from "correct" to "error at this line".
-     */
-    correctLineClick: function(partIdx, lineNumber) {
-        var part = StudyUI.currentQuestion.parts[partIdx];
-        if (!part) return;
-
-        // Only allow if this part was previously assessed as correct/unsure
-        var existing = StudyUI.partResults[part.partLabel];
-        if (!existing || !existing.correct) return;
-
-        // Remove the old result and treat as error at this line
-        delete StudyUI.partResults[part.partLabel];
-        StudyUI._resultsRecorded = false;
-
-        // Hide next-question area if shown
-        var nextArea = document.getElementById("next-question-area");
-        if (nextArea) nextArea.style.display = "none";
-
-        // Clear previous highlights
-        var linesContainer = document.getElementById("sol-lines-" + partIdx);
-        if (linesContainer) {
-            linesContainer.querySelectorAll(".solution-line").forEach(function(el) {
-                el.classList.remove("line-correct", "line-error", "line-clickable");
-            });
-        }
-        var markingContainer = document.getElementById("marking-" + partIdx);
-        if (markingContainer) {
-            markingContainer.querySelectorAll(".marking-row").forEach(function(el) {
-                el.classList.remove("mark-passed", "mark-failed");
-            });
-        }
-
-        // Now apply the error at this line
-        StudyUI.selectErrorLine(partIdx, lineNumber);
-    },
-
-    /**
      * Check if all parts have been assessed.
      * Does NOT record results yet -- that happens when user clicks Next.
      * @private
@@ -1877,6 +1659,22 @@ var StudyUI = {
             return '<strong class="guided-bold">' + inner + '</strong>';
         });
         return escaped;
+    },
+
+    /**
+     * Extract image filenames from [IMAGE: filename] markers in text.
+     * Returns array of filenames (without the [IMAGE:] wrapper).
+     * @private
+     */
+    _extractImageRefs: function(text) {
+        if (!text) return [];
+        var refs = [];
+        var pattern = /\[IMAGE:\s*([^\]]+)\]/g;
+        var match;
+        while ((match = pattern.exec(text)) !== null) {
+            refs.push(match[1].trim());
+        }
+        return refs;
     },
 
     /**

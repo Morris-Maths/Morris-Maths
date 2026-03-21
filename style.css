@@ -90,7 +90,7 @@ body {
     --space-2xl: 48px;
 
     /* Layout */
-    --max-width: 960px;
+    --max-width: 1200px;
     --header-height: 56px;
     --tab-height: 48px;
 }
@@ -1337,6 +1337,20 @@ body.dark-theme #welcome-screen {
     margin-bottom: var(--space-sm);
     font-size: 0.9rem;
     color: var(--text-secondary);
+}
+
+.marking-hint {
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: var(--text-muted);
+    margin-left: var(--space-sm);
+}
+
+.self-assess-simple {
+    display: flex;
+    gap: var(--space-md);
+    margin-top: var(--space-md);
+    margin-bottom: var(--space-md);
 }
 
 
@@ -5760,8 +5774,8 @@ body.dark-theme input[type="range"] {
     min-width: 0;
 }
 .part-sol-layout > .solution-part-guided {
-    flex: 0 0 340px;
-    max-width: 400px;
+    flex: 0 0 380px;
+    max-width: 480px;
     max-height: 80vh;
     overflow-y: auto;
     position: sticky;
@@ -5772,15 +5786,24 @@ body.dark-theme input[type="range"] {
     padding: var(--space-md);
 }
 
-/* When guided is expanded, highlight the layout */
+/* When guided is expanded, break out of max-width to use more space */
 .part-sol-layout.part-sol-expanded {
-    /* no special treatment needed — flex handles it */
+    width: calc(100vw - 2 * var(--space-lg));
+    max-width: 1400px;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 /* Collapse guided to below on narrow screens */
 @media (max-width: 900px) {
     .part-sol-layout {
         flex-direction: column;
+    }
+    .part-sol-layout.part-sol-expanded {
+        width: 100%;
+        left: 0;
+        transform: none;
     }
     .part-sol-layout > .solution-part-guided {
         flex: none;
@@ -5825,6 +5848,14 @@ body.dark-theme input[type="range"] {
 /* Hide diagram placeholder text (onerror fallback) */
 .question-diagram[src=""] {
     display: none;
+}
+
+/* Images rendered inline via [IMAGE:] in question text should display as block */
+.part-text .question-diagram,
+.question-stimulus .question-diagram {
+    display: block;
+    margin: var(--space-md) auto;
+    max-width: 100%;
 }
 
 /* Settings course hint */
