@@ -1,6 +1,6 @@
 // ======================================================================
-// ATOMISED DATA LOADER v2.0
-// Merges all 9 topic files into a single ATOMISED_DATA object.
+// ATOMISED DATA LOADER v3.0
+// Merges all 7 topic files into a single ATOMISED_DATA object.
 // Include AFTER the topic-specific JS files in your HTML.
 // ======================================================================
 
@@ -31,14 +31,12 @@ var ATOMISED_DATA = (function() {
   // To add a new topic: create the file, add its global name here.
   var _sources = [
     typeof ATOMISED_FURTHER_DIFFERENTIATION    !== 'undefined' ? ATOMISED_FURTHER_DIFFERENTIATION    : null,
-    typeof ATOMISED_E_GROWTH_AND_DECAY         !== 'undefined' ? ATOMISED_E_GROWTH_AND_DECAY         : null,
     typeof ATOMISED_INTEGRALS                  !== 'undefined' ? ATOMISED_INTEGRALS                  : null,
     typeof ATOMISED_RECTILINEAR_MOTION         !== 'undefined' ? ATOMISED_RECTILINEAR_MOTION         : null,
     typeof ATOMISED_DISCRETE_RANDOM_VARIABLES  !== 'undefined' ? ATOMISED_DISCRETE_RANDOM_VARIABLES  : null,
     typeof ATOMISED_LOGARITHMS                 !== 'undefined' ? ATOMISED_LOGARITHMS                 : null,
     typeof ATOMISED_CONTINUOUS_RANDOM_VARIABLES !== 'undefined' ? ATOMISED_CONTINUOUS_RANDOM_VARIABLES : null,
-    typeof ATOMISED_SAMPLING                   !== 'undefined' ? ATOMISED_SAMPLING                   : null,
-    typeof ATOMISED_CONFIDENCE_INTERVALS       !== 'undefined' ? ATOMISED_CONFIDENCE_INTERVALS       : null,
+    typeof ATOMISED_INTERVAL_ESTIMATES         !== 'undefined' ? ATOMISED_INTERVAL_ESTIMATES          : null,
   ];
 
   var all = [];

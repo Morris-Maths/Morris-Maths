@@ -1,7 +1,7 @@
 // ======================================================================
 // CONCEPTS — CONCEPTS_FURTHER_DIFFERENTIATION
 // Topic: Further Differentiation and Applications
-// 50 concepts mapped to atomised problem types
+// 62 concepts mapped to atomised problem types (includes Exponential Growth and Decay)
 // For use in concept-practice program
 // ======================================================================
 
@@ -125,8 +125,55 @@ var CONCEPTS_FURTHER_DIFFERENTIATION = {
           concept: "e Functions",
           skill: "Differentiation of composite functions — e function as outside function",
           key_idea: "Chain rule with $e^{f(x)}$ where $f$ is non-linear"
-        }
-      ]
+        },
+        {
+          pt_id: "XX_001",
+          concept: "Chain Rule",
+          skill: "Differentiation of composite functions when given separate equations for two related variables",
+          key_idea: "Chain rule with related rates / parametric-style"
+        },
+        {
+          pt_id: "XX_002",
+          concept: "Chain Rule",
+          skill: "Differentiation of reciprocal functions requiring chain rule",
+          key_idea: "Chain rule on negative powers"
+        },
+        {
+          pt_id: "XX_003",
+          concept: "Chain Rule",
+          skill: "Differentiation of simple composite functions",
+          key_idea: "Apply chain rule $\\frac{dy}{dx} = \\frac{dy}{du} \\cdot \\frac{du}{dx}$"
+        },
+        {
+          pt_id: "XX_004",
+          concept: "Chain Rule",
+          skill: "Using a table of values or graphs of two functions and their derivatives to calculate the derivative of a composite function at a given point",
+          key_idea: "$(f \\circ g)'(a) = f'(g(a)) \\cdot g'(a)$"
+        },
+        {
+          pt_id: "XX_005",
+          concept: "Product Rule",
+          skill: "Differentiating $x^n \\cdot \\ln(f(x))$ using product rule",
+          key_idea: "Product rule where one factor is a logarithmic function"
+        },
+        {
+          pt_id: "XX_006",
+          concept: "Product Rule",
+          skill: "Differentiation of a product of functions that requires the use of quotient or chain rule as part of the product rule process",
+          key_idea: "Nested rules — product rule with chain rule inside"
+        },
+        {
+          pt_id: "XX_007",
+          concept: "Product Rule",
+          skill: "Product rule differentiation of simple functions",
+          key_idea: "$(uv)' = u'v + uv'$ with polynomial/simple functions"
+        },
+        {
+          pt_id: "XX_008",
+          concept: "Product Rule",
+          skill: "Using a table of values or graphs of two functions and their derivatives to calculate the derivative of the product of the two functions at a given point",
+          key_idea: "$(fg)'(a) = f'(a)g(a) + f(a)g'(a)$ from table"
+        }]
     },
     {
       section: "Second Derivatives",
@@ -287,55 +334,79 @@ var CONCEPTS_FURTHER_DIFFERENTIATION = {
       ]
     },
     {
-      section: "General",
+      section: "Exponential Growth and Decay",
       concepts: [
         {
-          pt_id: "XX_001",
-          concept: "Chain Rule",
-          skill: "Differentiation of composite functions when given separate equations for two related variables",
-          key_idea: "Chain rule with related rates / parametric-style"
+          pt_id: "FD_NEW_04",
+          concept: "Modelling Continuous Exponential Growth and Decay",
+          skill: "Using P(t2) = P(t1)e^(k(t2-t1)) to find values starting from non-zero time",
+          key_idea: "Recognising dP/dt = kP and applying the shifted-time exponential formula"
         },
         {
-          pt_id: "XX_002",
-          concept: "Chain Rule",
-          skill: "Differentiation of reciprocal functions requiring chain rule",
-          key_idea: "Chain rule on negative powers"
+          pt_id: "FD_017",
+          concept: "Modelling Continuous Exponential Growth and Decay",
+          skill: "Determining decay constant k from given half-life using logarithms",
+          key_idea: "Determining decay constant k from given half-life using logarithms"
         },
         {
-          pt_id: "XX_003",
-          concept: "Chain Rule",
-          skill: "Differentiation of simple composite functions",
-          key_idea: "Apply chain rule $\\frac{dy}{dx} = \\frac{dy}{du} \\cdot \\frac{du}{dx}$"
+          pt_id: "FD_018",
+          concept: "Modelling Continuous Exponential Growth and Decay",
+          skill: "Determining half-lives or other percentage of initial values",
+          key_idea: "Determining half-lives or other percentage of initial values"
         },
         {
-          pt_id: "XX_004",
-          concept: "Chain Rule",
-          skill: "Using a table of values or graphs of two functions and their derivatives to calculate the derivative of a composite function at a given point",
-          key_idea: "$(f \\circ g)'(a) = f'(g(a)) \\cdot g'(a)$"
+          pt_id: "FD_019",
+          concept: "Modelling Continuous Exponential Growth and Decay",
+          skill: "Determining initial value of exponential model",
+          key_idea: "Determining initial value of exponential model"
         },
         {
-          pt_id: "XX_005",
-          concept: "Product Rule",
-          skill: "Differentiating $x^n \\cdot \\ln(f(x))$ using product rule",
-          key_idea: "Product rule where one factor is a logarithmic function"
+          pt_id: "FD_020",
+          concept: "Modelling Continuous Exponential Growth and Decay",
+          skill: "Determining parameters of exponential model from two data points",
+          key_idea: "Determining parameters of exponential model from two data points"
         },
         {
-          pt_id: "XX_006",
-          concept: "Product Rule",
-          skill: "Differentiation of a product of functions that requires the use of quotient or chain rule as part of the product rule process",
-          key_idea: "Nested rules — product rule with chain rule inside"
+          pt_id: "FD_021",
+          concept: "Modelling Continuous Exponential Growth and Decay",
+          skill: "Determining rate of growth or decay by using derivative of e function",
+          key_idea: "Determining rate of growth or decay by using derivative of e function"
         },
         {
-          pt_id: "XX_007",
-          concept: "Product Rule",
-          skill: "Product rule differentiation of simple functions",
-          key_idea: "$(uv)' = u'v + uv'$ with polynomial/simple functions"
+          pt_id: "FD_022",
+          concept: "Modelling Continuous Exponential Growth and Decay",
+          skill: "Determining the time when the value of the exponential model equals a given value",
+          key_idea: "Determining the time when the value of the exponential model equals a given value"
         },
         {
-          pt_id: "XX_008",
-          concept: "Product Rule",
-          skill: "Using a table of values or graphs of two functions and their derivatives to calculate the derivative of the product of the two functions at a given point",
-          key_idea: "$(fg)'(a) = f'(a)g(a) + f(a)g'(a)$ from table"
+          pt_id: "FD_023",
+          concept: "Modelling Continuous Exponential Growth and Decay",
+          skill: "Determining the value of the exponential model as t becomes large",
+          key_idea: "Determining the value of the exponential model as t becomes large"
+        },
+        {
+          pt_id: "FD_024",
+          concept: "Modelling Continuous Exponential Growth and Decay",
+          skill: "Determining the value of the exponential model at a given time",
+          key_idea: "Determining the value of the exponential model at a given time"
+        },
+        {
+          pt_id: "FD_025",
+          concept: "Modelling Continuous Exponential Growth and Decay",
+          skill: "Find the derivative (or rate of change) at a given population/value of the function",
+          key_idea: "Find the derivative (or rate of change) at a given population/value of the function"
+        },
+        {
+          pt_id: "FD_026",
+          concept: "Modelling Continuous Exponential Growth and Decay",
+          skill: "Identifying or determining k (the percentage rate of growth or decay)",
+          key_idea: "Identifying or determining k (the percentage rate of growth or decay)"
+        },
+        {
+          pt_id: "FD_027",
+          concept: "Modelling Continuous Exponential Growth and Decay",
+          skill: "Interpreting derivative's units or interpreting derivative value of a function of e",
+          key_idea: "Interpreting derivative's units or interpreting derivative value of a function of e"
         }
       ]
     }

@@ -10,7 +10,12 @@ var CONCEPTS_RECTILINEAR_MOTION = {
   description: "Displacement, velocity, acceleration relationships via differentiation and integration. Displacement vs distance, velocity vs speed, average velocity/speed, stationary points, direction changes.",
   sections: [
     {
-      section: "Kinematics — Differentiation",
+      section: "Kinematics: General",
+      concepts: [
+      ]
+    },
+    {
+      section: "Kinematics: Differentiation",
       concepts: [
         {
           pt_id: "KN_001",
@@ -81,7 +86,7 @@ var CONCEPTS_RECTILINEAR_MOTION = {
       ]
     },
     {
-      section: "Kinematics — Integration",
+      section: "Kinematics: Integration",
       concepts: [
         {
           pt_id: "KN_012",
