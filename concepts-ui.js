@@ -30,6 +30,10 @@ var ConceptsUI = {
             "Applications of Differentiation",
             "Optimisation Problems"
         ],
+        "Kinematics": [
+            "Kinematics: Differentiation",
+            "Kinematics: Integration"
+        ],
         "Integrals": [
             "Anti-differentiation",
             "Definite Integrals",
@@ -53,11 +57,6 @@ var ConceptsUI = {
             "Random Sampling",
             "Sample Proportions",
             "Confidence Intervals for Proportions"
-        ],
-        "Rectilinear Motion": [
-            "Kinematics: Differentiation",
-            "Kinematics: Integration",
-            "Kinematics: General"
         ]
     },
 
@@ -88,6 +87,10 @@ var ConceptsUI = {
                 ConceptsUI.backToTopics();
             });
         }
+
+        // Wire up targeted-revision toggle buttons
+        ConceptsUI._bindToggleGroup("targeted-section-group");
+        ConceptsUI._bindToggleGroup("targeted-answer-group");
 
         console.log("ConceptsUI: initialised, " +
             Object.keys(ConceptsUI._conceptsBank).length + " topic(s) with concepts data");
@@ -211,8 +214,10 @@ var ConceptsUI = {
                 (hasConcepts ? 'onclick="event.stopPropagation(); ConceptsUI.startConceptReview(\'' +
                 ConceptsUI._escAttr(topic) + '\', \'\')"' :
                 'disabled title="Coming soon"') + '>Concepts</button>';
-            html += '<button class="cs-btn cs-btn-skills" disabled title="Coming soon">Skills</button>';
-            html += '<button class="cs-btn cs-btn-exam" disabled title="Coming soon">Exam Qs</button>';
+            html += '<button class="cs-btn cs-btn-skills" onclick="event.stopPropagation(); ConceptsUI.startTargetedSession(\'' +
+                ConceptsUI._escAttr(topic) + '\', \'\', \'practice\')">Skills</button>';
+            html += '<button class="cs-btn cs-btn-exam" onclick="event.stopPropagation(); ConceptsUI.startTargetedSession(\'' +
+                ConceptsUI._escAttr(topic) + '\', \'\', \'original\')">Exam Qs</button>';
             html += '</div>';
             html += '</div>';
 
@@ -237,8 +242,12 @@ var ConceptsUI = {
                     ConceptsUI._escAttr(topic) + '\', \'' +
                     ConceptsUI._escAttr(sub) + '\')"' :
                     'disabled title="No concepts yet"') + '>Concepts</button>';
-                html += '<button class="cs-btn cs-btn-skills" disabled title="Coming soon">Skills</button>';
-                html += '<button class="cs-btn cs-btn-exam" disabled title="Coming soon">Exam Qs</button>';
+                html += '<button class="cs-btn cs-btn-skills" onclick="ConceptsUI.startTargetedSession(\'' +
+                    ConceptsUI._escAttr(topic) + '\', \'' +
+                    ConceptsUI._escAttr(sub) + '\', \'practice\')">Skills</button>';
+                html += '<button class="cs-btn cs-btn-exam" onclick="ConceptsUI.startTargetedSession(\'' +
+                    ConceptsUI._escAttr(topic) + '\', \'' +
+                    ConceptsUI._escAttr(sub) + '\', \'original\')">Exam Qs</button>';
                 html += '</div>';
                 html += '</div>';
             });
@@ -595,5 +604,105 @@ var ConceptsUI = {
 
     _escAttr: function(s) {
         return s.replace(/'/g, "\\'").replace(/"/g, "&quot;").replace(/</g, "&lt;");
+    },
+
+    // ================================================================
+    // TOGGLE HELPERS (for Targeted Revision config bar)
+    // ================================================================
+    _bindToggleGroup: function(groupId) {
+        var group = document.getElementById(groupId);
+        if (!group) return;
+        var btns = group.querySelectorAll(".config-toggle");
+        btns.forEach(function(btn) {
+            btn.addEventListener("click", function() {
+                btns.forEach(function(b) { b.setAttribute("aria-pressed", "false"); });
+                btn.setAttribute("aria-pressed", "true");
+            });
+        });
+    },
+
+    _getToggleValue: function(groupId) {
+        var group = document.getElementById(groupId);
+        if (!group) return null;
+        var active = group.querySelector('[aria-pressed="true"]');
+        return active ? active.getAttribute("data-value") : null;
+    },
+
+    // ================================================================
+    // SKILLS / EXAM Qs SESSION LAUNCH
+    // ================================================================
+    /**
+     * Launch a targeted revision session for Skills (atomised practice)
+     * or Exam Questions (original exam pool).
+     *
+     * @param {string} topic    - topic name from TAXONOMY
+     * @param {string} subtopic - subtopic name, or "" for whole topic
+     * @param {string} pool     - "practice" for Skills, "original" for Exam Qs
+     */
+    startTargetedSession: function(topic, subtopic, pool) {
+        // Determine filter string and level for SessionEngine
+        var filter = subtopic || topic;
+        var level = subtopic ? "subtopic" : "topic";
+
+        // Read toggle settings
+        var sectionFilter = ConceptsUI._getToggleValue("targeted-section-group") || "mix";
+        var answerMethod = ConceptsUI._getToggleValue("targeted-answer-group") || "paper";
+
+        // Check marking API if stylus mode
+        if (answerMethod === "stylus" && typeof WrittenMode !== "undefined" &&
+            !WrittenMode.hasMarkingAPI()) {
+            alert("Written Mode is not enabled for this class. Your teacher needs to add an API key to the schedule configuration.");
+            return;
+        }
+
+        // Switch UI: hide the topic tree, show the question area
+        var home = document.getElementById("targeted-home");
+        var qArea = document.getElementById("targeted-question-area");
+        if (home) home.style.display = "none";
+        if (qArea) qArea.style.display = "block";
+
+        // Point StudyUI at the targeted question area
+        StudyUI._activeAreaId = "targeted-question-area";
+
+        var goal = 10;
+
+        SessionEngine.start("revision", filter, {
+            goal: goal,
+            sectionFilter: sectionFilter,
+            wrongListOnly: false,
+            answerMethod: answerMethod,
+            markingMode: "instant",
+            poolFilter: pool
+        }).then(function() {
+            var totalAvailable = SessionEngine.wrongList.length +
+                SessionEngine.freshList.length +
+                SessionEngine.improvingList.length +
+                SessionEngine.reviewList.length;
+
+            if (totalAvailable === 0) {
+                var poolLabel = pool === "practice" ? "Skills" : "Exam Questions";
+                qArea.innerHTML =
+                    '<div class="session-empty">' +
+                    '<p>No ' + poolLabel + ' available for <strong>' +
+                    ConceptsUI._escHTML(filter) + '</strong>.</p>' +
+                    '<button class="btn btn-primary" onclick="ConceptsUI.backToTopicsFromSession()">Back to Topics</button>' +
+                    '</div>';
+                return;
+            }
+            StudyUI._nextReminderMinutes = 30;
+            StudyUI.loadNextQuestion();
+        });
+    },
+
+    /**
+     * Return to topic tree from a targeted session.
+     */
+    backToTopicsFromSession: function() {
+        var home = document.getElementById("targeted-home");
+        var qArea = document.getElementById("targeted-question-area");
+        if (home) home.style.display = "block";
+        if (qArea) { qArea.style.display = "none"; qArea.innerHTML = ""; }
+        StudyUI._activeAreaId = "question-area";
+        ConceptsUI.buildTree();
     }
 };

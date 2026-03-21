@@ -1404,7 +1404,11 @@ var UI = {
                 var schedInfo2 = QuestionEngine.getScheduleInfo();
                 courseName = schedInfo2.className || "";
             }
-            appTitle.textContent = config.studentName + "\u2019s " + courseName;
+            var nameStr = config.studentName;
+            var possessive = nameStr.endsWith("s") || nameStr.endsWith("S")
+                ? nameStr + "\u2019 "
+                : nameStr + "\u2019s ";
+            appTitle.textContent = possessive + courseName;
         }
         // Clear the right-side name display (name is now in the title)
         var nameDisplay = document.getElementById("student-name-display");

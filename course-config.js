@@ -63,6 +63,11 @@ var COURSE_REGISTRY = {
                 "Applications of Differentiation",
                 "Optimisation Problems"
             ],
+            "Rectilinear Motion": [
+                "Kinematics: Differentiation",
+                "Kinematics: Integration",
+                "Kinematics: General"
+            ],
             "Integrals": [
                 "Anti-differentiation",
                 "Definite Integrals",
@@ -86,11 +91,6 @@ var COURSE_REGISTRY = {
                 "Random Sampling",
                 "Sample Proportions",
                 "Confidence Intervals"
-            ],
-            "Rectilinear Motion": [
-                "Kinematics: Differentiation",
-                "Kinematics: Integration",
-                "Kinematics: General"
             ]
         }
     },

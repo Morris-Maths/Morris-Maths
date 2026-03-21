@@ -10,6 +10,9 @@ var QuestionSelector = {
     // Section filter: "CA", "CF", or "mix" (no filter)
     sectionFilter: "mix",
 
+    // Pool filter: "practice" (Skills), "original" (Exam Qs), or "mix" (both)
+    poolFilter: "mix",
+
     /**
      * Reset session tracking (called at session start).
      */
@@ -98,7 +101,6 @@ var QuestionSelector = {
 
     /**
      * Find all available questions containing a given problem type.
-     * Checks both classifications[] and legacy problemType field.
      * @private
      */
     _findCandidates: function(problemType) {
@@ -114,11 +116,16 @@ var QuestionSelector = {
                 if (q.sectionName && q.sectionName !== secFilter) continue;
             }
 
+            // Pool filter: practice (Skills), original (Exam Qs), or mix
+            var poolFilter = QuestionSelector.poolFilter;
+            if (poolFilter && poolFilter !== "mix") {
+                if (q._pool && q._pool !== poolFilter) continue;
+            }
+
             // Check if this question contains the target problem type
             var hasPT = false;
             for (var p = 0; p < q.parts.length; p++) {
-                var partPTs = QuestionEngine.getPartProblemTypes(q.parts[p]);
-                if (partPTs.indexOf(problemType) !== -1) {
+                if (q.parts[p].problemType === problemType) {
                     hasPT = true;
                     break;
                 }

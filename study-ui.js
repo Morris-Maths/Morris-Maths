@@ -160,8 +160,9 @@ var StudyUI = {
         });
         var avgMarks = totalMarks / keys.length;
 
-        // ~1 minute per mark
-        var estimated = Math.round(minutes / avgMarks);
+        // ~1.5 minutes per mark (includes reading, working, checking)
+        var minutesPerMark = 1.5;
+        var estimated = Math.round(minutes / (avgMarks * minutesPerMark));
         // Clamp to at least 1 and at most available questions
         return Math.max(1, Math.min(estimated, keys.length));
     },
@@ -1674,6 +1675,17 @@ var StudyUI = {
             }
             StudyUI._activeAreaId = "question-area"; // reset
             ReviseUI.refresh();
+        } else if (StudyUI._activeAreaId === "targeted-question-area") {
+            // Returning from a targeted Skills/Exam session
+            if (typeof ConceptsUI !== "undefined") {
+                ConceptsUI.backToTopicsFromSession();
+            } else {
+                var tHome = document.getElementById("targeted-home");
+                var tArea = document.getElementById("targeted-question-area");
+                if (tHome) tHome.style.display = "block";
+                if (tArea) { tArea.style.display = "none"; tArea.innerHTML = ""; }
+                StudyUI._activeAreaId = "question-area";
+            }
         } else {
             // Normal study session -- go back to study start screen
             var startScreen = document.querySelector(".study-start-screen");
@@ -1703,26 +1715,16 @@ var StudyUI = {
 
     /**
      * Get the diagram path for an image reference.
-     * Uses relativePath from the question data when available (course-aware),
-     * falls back to DIAGRAM_PATH + filename for backward compatibility.
      * @private
      */
     _getDiagramPath: function(imgRef, pool) {
         var filename = "";
-        var relPath = "";
         if (typeof imgRef === "string") {
             filename = imgRef;
         } else if (imgRef && imgRef.filename) {
             filename = imgRef.filename;
-            if (imgRef.relativePath) {
-                relPath = imgRef.relativePath;
-            }
         } else {
             return "";
-        }
-        // Use relativePath if the data provides one (course-aware paths)
-        if (relPath) {
-            return relPath;
         }
         if (pool === "practice") {
             return PRACTICE_DIAGRAM_PATH + filename;
