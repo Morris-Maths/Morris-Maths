@@ -41,7 +41,7 @@ var CONCEPTS_INTEGRALS = {
         {
           qid: "C_IN_04",
           q: "Create your own example of a question where finding the $+C$ is essential. State why $C$ matters in your example.",
-          answer: "Open-ended — You should construct a scenario where a derivative is given plus an initial/boundary condition and explain that without the condition you would have infinitely many possible answers. For example: 'A ball is thrown so that its velocity is $v(t) = 10 - 9.8t$. At $t = 0$ the ball is 1.5 m above the ground. Find the height function.' Here $C = 1.5$ represents the initial height.",
+          answer: "Open-ended — You should construct a scenario where a derivative is given together with an initial/boundary condition and explain that without the condition you would have infinitely many possible answers. For example: 'A ball is thrown so that its velocity is $v(t) = 10 - 9.8t$. At $t = 0$ the ball is 1.5 m above the ground. Find the height function.' Here $C = 1.5$ represents the initial height.",
           diagram: null
         }
       ]
@@ -58,19 +58,19 @@ var CONCEPTS_INTEGRALS = {
         {
           qid: "C_IN_05",
           q: "In your own words, what is the anti-chain rule and when can it be used?",
-          answer: "The anti-chain rule (reverse chain rule) is used when integrating a composite function where a scalar multiple of the derivative of the inner function $g'(x)$ is present.\nIt can be used in expressions that look something like $\\int a \\times g'(x) \\times (g(x))^n \\, dx$. It can only be used when the inner function has scalar multiple ($a$) of the derivative of the expression inside the brackets (or a constant multiple of it is present).",
+          answer: "The anti-chain rule (reverse chain rule) is used when integrating a composite function where a scalar multiple of the derivative of the inner function $g'(x)$ is present.\nIt can be used in expressions that look something like $\\int a \\times g'(x) \\times (g(x))^n \\, dx$. It can only be used when a scalar multiple ($a$) of the derivative of the inner function is present (i.e. a constant multiple of $g'(x)$).",
           diagram: null
         },
         {
           qid: "C_IN_06",
           q: "Explain the steps you follow when performing a reverse chain rule integration.",
-          answer: "Step 1: Identify the 'inner function' $g(x)$ — this is usually the expression inside brackets that are raised to a power.\nStep 2: Check that the derivative of the inner function $g'(x)$ appears as a factor in the integrand (possibly with a constant multiple).\nStep 3: Re-write the expression so it is in the form $a \\int g'(x)(g(x))^n \\, dx$.\nStep 4: Delete the $g'(x)$, raise the power ($n$) of $(g(x))^n$ by 1 and divide by this new power. Multiply by $a$.\nStep 5: Add $+C$.",
+          answer: "Step 1: Identify the 'inner function' $g(x)$ — this is usually the expression inside brackets that are raised to a power.\nStep 2: Check that the derivative of the inner function $g'(x)$ appears as a factor in the integrand (possibly with a constant multiple).\nStep 3: Rewrite the expression so it is in the form $a \\int g'(x)(g(x))^n \\, dx$.\nStep 4: Delete $g'(x)$, raise the power $n$ of $(g(x))^n$ by 1, and divide by this new power; then multiply by $a$.\nStep 5: Add $+C$.",
           diagram: null
         },
         {
           qid: "C_IN_07",
           q: "Create your own example of a reverse chain rule integration and talk through each step.",
-          answer: "A good example: $\\int (5x + 3)^3 \\, dx$.\nInner function is $(5x + 3)$, its derivative is 5 (a constant — so anti-chain rule works).\nRewrite the expression $\\frac{1}{5} \\int 5 \\times (5x + 3)^3 \\, dx$.\nDelete the derivative of the bracket and increase power by 1 and divide by the new power:\n$\\frac{1}{5} \\times \\frac{(5x+3)^4}{4} + C = \\frac{(5x+3)^4}{20} + C$.",
+          answer: "A good example: $\\int (5x + 3)^3 \\, dx$.\nInner function is $(5x + 3)$, its derivative is 5 (a constant — so anti-chain rule works).\nRewrite the expression $\\frac{1}{5} \\int 5 \\times (5x + 3)^3 \\, dx$.\nDelete the derivative of the bracket, increase the power by 1, and divide by the new power:\n$\\frac{1}{5} \\times \\frac{(5x+3)^4}{4} + C = \\frac{(5x+3)^4}{20} + C$.",
           diagram: null
         },
         {
@@ -93,13 +93,13 @@ var CONCEPTS_INTEGRALS = {
         {
           qid: "C_IN_09",
           q: "Describe the basic process for estimating the area under a curve using rectangular strips for these two types of graphs:",
-          answer: "If using upper and lower rectangles:\nStep 1: Divide the interval $[a, b]$ into $n$ equal subintervals, each of width $\\Delta x = \\frac{b-a}{n}$.\nStep 2: For each subinterval, calculate the areas of the 'underestimate' rectangles. Each rectangle's height is determined by the function's value ($y$ value) at a chosen point.\nStep 3: Add up all of the underestimate rectangle's areas. This is your 'underestimate of the area.'\nStep 4: For each subinterval, calculate the areas of the 'overestimate' rectangles.\nStep 5: Add up all of the overestimate rectangle's areas. This is your 'overestimate of the area.'\nStep 6: Average your under and overestimate areas to get your estimated area under the curve.\n\nIf using midpoints of rectangles:\nStep 1: Divide the interval $[a, b]$ into $n$ equal subintervals, each of width $\\Delta x = \\frac{b-a}{n}$.\nStep 2: For each subinterval, construct a rectangle whose width is $\\Delta x$ and whose height is determined by the function value ($y$ value) at the midpoint.\nStep 3: Calculate the area of each rectangle (width times height).\nStep 4: Sum all the rectangle areas to get the total estimated area.",
+          answer: "If using upper and lower rectangles:\nStep 1: Divide the interval $[a, b]$ into $n$ equal subintervals, each of width $\\Delta x = \\frac{b-a}{n}$.\nStep 2: For each subinterval, calculate the areas of the 'underestimate' rectangles. Each rectangle's height is determined by the function value ($y$ value) at a chosen point.\nStep 3: Add up all of the underestimate rectangles' areas. This is your 'underestimate of the area.'\nStep 4: For each subinterval, calculate the areas of the 'overestimate' rectangles.\nStep 5: Add up all of the overestimate rectangles' areas. This is your 'overestimate of the area.'\nStep 6: Average your under and overestimate areas to get your estimated area under the curve.\n\nIf using midpoints of rectangles:\nStep 1: Divide the interval $[a, b]$ into $n$ equal subintervals, each of width $\\Delta x = \\frac{b-a}{n}$.\nStep 2: For each subinterval, construct a rectangle whose width is $\\Delta x$ and whose height is determined by the function value ($y$ value) at the midpoint.\nStep 3: Calculate the area of each rectangle (width times height).\nStep 4: Sum all the rectangle areas to get the total estimated area.",
           diagram: "[IMAGE: C_IN_09_rectangle_types.png]"
         },
         {
           qid: "C_IN_10",
           q: "How could your estimates of areas be improved? Explain why this works.",
-          answer: "Increase the number of rectangles (make $n$ larger).\nThis makes each rectangle narrower, so the gap between the top of the rectangle and the actual curve becomes smaller.\nUse calculus, as this makes the widths of the rectangles infinitesimally small.",
+          answer: "Increase the number of rectangles (make $n$ larger).\nThis makes each rectangle narrower, so the gap between the top of the rectangle and the actual curve becomes smaller.\nUse a definite integral (calculus), which is equivalent to taking the rectangle width infinitesimally small.",
           diagram: null
         }
       ]
@@ -122,13 +122,13 @@ var CONCEPTS_INTEGRALS = {
         {
           qid: "C_IN_12",
           q: "In words, explain how you evaluate a definite integral. What is the relationship between the definite integral and the anti-derivative?",
-          answer: "Find the anti-derivative $F(x)$ of $f(x)$.\nThen evaluate: $F(b) - F(a)$ (anti-derivative at the upper bound minus anti-derivative at the lower bound).\nThis is the Fundamental Theorem of Calculus Part 1: it connects the process of anti-differentiation with the geometric concept of signed area.",
+          answer: "Find the anti-derivative $F(x)$ of $f(x)$.\nThen evaluate: $F(b) - F(a)$ (anti-derivative at the upper bound minus anti-derivative at the lower bound).\nThis is the Fundamental Theorem of Calculus, Part 1: it connects the process of anti-differentiation with the geometric concept of signed area.",
           diagram: null
         },
         {
           qid: "C_IN_13",
           q: "Explain the full process for calculating the total area between a curve and the $x$-axis between bounds $a$ and $b$.",
-          answer: "Step 1: Find any $x$-intercepts of $f(x)$ between $a$ and $b$ — these are where the curve crosses the axis.\nStep 2: Determine where the curve is above or below the $x$-axis between those intercepts.\nStep 3: Calculate the definite integral for each sub-interval separately.\nStep 4: For any sub-interval where the curve is below the $x$-axis, the integral will be negative — add the absolute value of that integral or alternatively subtract the integral as this will make the negative value positive.\nStep 5: Add all the positive areas together.",
+          answer: "Step 1: Find any $x$-intercepts of $f(x)$ between $a$ and $b$ — these are where the curve crosses the axis.\nStep 2: Determine where the curve is above or below the $x$-axis between those intercepts.\nStep 3: Calculate the definite integral for each sub-interval separately.\nStep 4: For any sub-interval where the curve is below the $x$-axis, the integral will be negative — add the absolute value of that integral (or equivalently subtract the negative value) so the area is positive.\nStep 5: Add all the positive areas together.",
           diagram: null
         },
         {
@@ -216,13 +216,13 @@ var CONCEPTS_INTEGRALS = {
         {
           qid: "C_IN_24",
           q: "Explain the logic: If $\\int_a^{-2} f(x) \\, dx + \\int_{-2}^{5} f(x) \\, dx = \\int_{-7}^{5} f(x) \\, dx$. Find $a$.",
-          answer: "In words our question is saying: 'The signed area between $a$ and $-2$ added to the signed area between $-2$ and $5$ = the signed area between $-7$ and $5$.'\n\nThe interval addition property says consecutive integrals combine: $\\int_a^{-2} + \\int_{-2}^{5} = \\int_a^{5}$.\n\nFor this to equal $\\int_{-7}^{5} f(x) \\, dx$, we need $a = -7$.\n\nThe key insight is that the intermediate bound ($-2$) is shared, so the two integrals join to form one integral from $a$ to 5 — which must equal the integral from $-7$ to 5.",
+          answer: "In words, the question is saying: 'The signed area between $a$ and $-2$ added to the signed area between $-2$ and $5$ equals the signed area between $-7$ and $5$.'\n\nThe interval addition property says consecutive integrals combine: $\\int_a^{-2} + \\int_{-2}^{5} = \\int_a^{5}$.\n\nFor this to equal $\\int_{-7}^{5} f(x) \\, dx$, we need $a = -7$.\n\nThe key insight is that the intermediate bound ($-2$) is shared, so the two integrals join to form one integral from $a$ to 5 — which must equal the integral from $-7$ to 5.",
           diagram: "[IMAGE: C_IN_24_interval_splitting.png]"
         },
         {
           qid: "C_IN_25",
           q: "Explain: If $\\int_{-4}^{-1} f(x) \\, dx + \\int_{-1}^{3} f(x) \\, dx - \\int_{-4}^{-3} f(x) \\, dx = \\int_a^b f(x) \\, dx$. Find $a$ and $b$.",
-          answer: "In words: 'The signed area between $-4$ and $-1$ added to the signed area between $-1$ and $3$ minus the signed area between $-4$ and $-3$ = the signed area between $a$ and $b$.'\n\nFirst combine the two additions: $\\int_{-4}^{-1} + \\int_{-1}^{3} = \\int_{-4}^{3}$ (joining at $-1$).\n\nOur problem now says: $\\int_{-4}^{3} - \\int_{-4}^{-3} f(x) \\, dx = \\int_a^b f(x) \\, dx$.\n\nIn other words 'If we subtract the signed area that lies between $-4$ and $-3$ from the whole signed area that lies between $-4$ and $3$, we are left with the signed area between $-3$ and $3$.'\n\nThe answer must be from $-3$ to $3$. So $a = -3$, $b = 3$.",
+          answer: "In words: 'The signed area between $-4$ and $-1$, plus the signed area between $-1$ and $3$, minus the signed area between $-4$ and $-3$ equals the signed area between $a$ and $b$.'\n\nFirst combine the two additions: $\\int_{-4}^{-1} + \\int_{-1}^{3} = \\int_{-4}^{3}$ (joining at $-1$).\n\nOur problem now says: $\\int_{-4}^{3} - \\int_{-4}^{-3} f(x) \\, dx = \\int_a^b f(x) \\, dx$.\n\nIn other words 'If we subtract the signed area that lies between $-4$ and $-3$ from the whole signed area that lies between $-4$ and $3$, we are left with the signed area between $-3$ and $3$.'\n\nThe answer must be from $-3$ to $3$. So $a = -3$, $b = 3$.",
           diagram: "[IMAGE: C_IN_25_interval_trimming.png]"
         },
         {
@@ -285,13 +285,13 @@ var CONCEPTS_INTEGRALS = {
         },
         {
           qid: "C_IN_32",
-          q: "Write a non-motion example where the total change formula is useful. What signals do it use?",
+          q: "Write a non-motion example where the total change formula is useful. What signals does it use?",
           answer: "Example: 'Water flows into a tank at a rate of $R(t) = 50 - 2t$ litres/minute. How much water has flowed into the tank after 10 minutes?'\n\nSignal characteristics: you are given a RATE (litres per minute, dollars per year, etc.) and asked for the change in value at a later time.\n\nThe formula gives: $\\int_0^{10} R(t) \\, dt = \\int_0^{10} (50 - 2t) \\, dt = 400$ litres.",
           diagram: null
         },
         {
           qid: "C_IN_33",
-          q: "Therefore, what part of the graph of a derivative is equivalent to the change in the original function's values between $x = a$ and $x = b$?",
+          q: "Therefore, what part of the graph of a derivative is equivalent to the change in the original function values between $x = a$ and $x = b$?",
           answer: "The signed area between the curve $y = f'(x)$ and the $x$-axis, between $x = a$ and $x = b$, equals $f(b) - f(a)$. Therefore it tells us the amount the $y$-values of the original function change between $a$ and $b$.",
           diagram: null
         }
@@ -344,7 +344,7 @@ var CONCEPTS_INTEGRALS = {
         {
           qid: "C_IN_60",
           q: "What are the steps for anti-differentiating an equation in the form $a \\times g'(x) \\times e^{g(x)}$?\nExample: Anti-differentiate $8e^{2x+1}$.",
-          answer: "Step 1: Identify the derivative of the exponent.\n$g'(x) = 2$.\nStep 2: Re-write integral to form $a \\times \\int g'(x) \\times e^{g(x)} \\, dx$:\n$4 \\int 2 \\times e^{2x+1} \\, dx$.\nStep 3: Anti-differentiate by deleting $g'(x)$ and multiplying by $a$. Add your $+C$:\n$4e^{2x+1} + C$.\nThis is the reverse chain rule where the inner function is $g(x)$.",
+          answer: "Step 1: Identify the derivative of the exponent.\n$g'(x) = 2$.\nStep 2: Rewrite integral to form $a \\times \\int g'(x) \\times e^{g(x)} \\, dx$:\n$4 \\int 2 \\times e^{2x+1} \\, dx$.\nStep 3: Anti-differentiate by deleting $g'(x)$ and multiplying by $a$. Add your $+C$:\n$4e^{2x+1} + C$.\nThis is the reverse chain rule where the inner function is $g(x)$.",
           diagram: null
         },
         {
@@ -373,7 +373,7 @@ var CONCEPTS_INTEGRALS = {
         {
           qid: "C_IN_63",
           q: "Write an example where anti-differentiation of a trig function is needed to find an area.",
-          answer: "Find the area between $y = \\sin(2x)$ and the $x$-axis from $x = 0$ to $x = \\pi$.\nStep 1: Find $x$-intercepts between the bounds. Solve $0 = \\sin(2x)$: the curve crosses zero at $x = 0, \\frac{\\pi}{2}, \\pi$.\nStep 2: Rewrite integral into required form: $\\frac{1}{2} \\int 2\\sin(2x) \\, dx$.\nStep 3: Calculate area = area of sections above curve + |areas below curve|:\nArea $= \\frac{1}{2} \\int_0^{\\pi/2} 2\\sin(2x) \\, dx + \\frac{1}{2} \\left| \\int_{\\pi/2}^{\\pi} 2\\sin(2x) \\, dx \\right|$\n$= \\left[\\frac{-\\cos(2x)}{2}\\right]_0^{\\pi/2} + \\left| \\left[\\frac{-\\cos(2x)}{2}\\right]_{\\pi/2}^{\\pi} \\right|$\n$= \\left(\\frac{1}{2} - \\left(-\\frac{1}{2}\\right)\\right) + \\left| \\left(-\\frac{1}{2} - \\frac{1}{2}\\right) \\right| = 1 + |-1| = 2$ units$^2$.",
+          answer: "Find the area between $y = \sin(2x)$ and the $x$-axis from $x = 0$ to $x = \pi$.\nStep 1: Find $x$-intercepts between the bounds. Solve $0 = \sin(2x)$: the curve crosses zero at $x = 0, \tfrac{\pi}{2}, \pi$.\nStep 2: Rewrite the integral into the required form: $\tfrac{1}{2} \int 2\sin(2x) \, dx$.\nStep 3: Calculate the area as (area above the axis) plus (area below the axis):\nArea $= \int_0^{\pi/2} \sin(2x) \, dx \, + \, \left| \int_{\pi/2}^{\pi} \sin(2x) \, dx \right| = 1 + 1 = 2$ units$^2$.",
           diagram: null
         }
       ]
@@ -396,7 +396,7 @@ var CONCEPTS_INTEGRALS = {
         {
           qid: "C_IN_66",
           q: "Walk through the general process for solving this type of 'hence integrate' questions.",
-          answer: "Step 1: In part (a), differentiate the given expression carefully.\nStep 2: Write the result as: $\\frac{d}{dx}[\\text{given expression}] = [\\text{your derivative}]$.\nStep 3: Integrate both sides from Step 2 with respect to $x$. The left side becomes just the original expression due to FTC. The right side is the integral of your derivative written as $\\int [\\text{your derivative}] \\, dx$.\nStep 4: Use FTC on left side of equation that contains the integral of a derivative.\nStep 5: Rearrange to isolate the specific integral asked for in part (b).\nStep 6: Do not forget $+C$ at any stage you find an integral.",
+          answer: "Step 1: In part (a), differentiate the given expression carefully.\nStep 2: Write the result as: $\\frac{d}{dx}[\\text{given expression}] = [\\text{your derivative}]$.\nStep 3: Integrate both sides from Step 2 with respect to $x$. The left side becomes just the original expression due to FTC. The right side is the integral of your derivative written as $\\int [\\text{your derivative}] \\, dx$.\nStep 4: Use the FTC on the left-hand side of the equation (the side with the integral of a derivative).\nStep 5: Rearrange to isolate the specific integral asked for in part (b).\nStep 6: Do not forget $+C$ at any stage you find an integral.",
           diagram: null
         }
       ]

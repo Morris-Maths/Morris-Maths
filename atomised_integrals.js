@@ -82,7 +82,7 @@ var ATOMISED_INTEGRALS = {
           topic: "Integrals",
           subtopic: "Anti-differentiation",
           concept: "Differentiation (then Integrate)",
-          pt: "Differentiate a function; integrate the resulting identity to hence find the antiderivative",
+          pt: "Differentiate a function; then integrate the resulting identity to find the antiderivative",
           testing: "",
           reason_bank: ["wrong_rule", "sign_error", "missing_chain_factor", "algebra_slip", "substitution_error", "not_sure"],
           easy: [
