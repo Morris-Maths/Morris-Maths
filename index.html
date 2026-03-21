@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WACE Methods Study Trainer</title>
+    <title>Morris Maths</title>
     <link rel="stylesheet" href="style.css">
     <!-- MathJax v3 - loaded from local bundle for offline use -->
     <script>
@@ -57,7 +57,7 @@
     <div id="access-code-screen" class="screen" style="display:none;">
         <div class="welcome-container">
             <div class="welcome-icon" id="access-icon-area"></div>
-            <h1>WACE Methods Study Trainer</h1>
+            <h1>Morris Maths</h1>
             <p class="welcome-subtitle">Enter your access code to get started</p>
             <div class="welcome-form">
                 <label for="access-code-input">Access Code</label>
@@ -78,7 +78,7 @@
     <div id="welcome-screen" class="screen" style="display:none;">
         <div class="welcome-container">
             <div class="welcome-icon" id="welcome-icon-area"></div>
-            <h1>WACE Methods Study Trainer</h1>
+            <h1>Morris Maths</h1>
             <p class="welcome-subtitle" id="welcome-subtitle">Year 12 Mathematics Methods</p>
             <div class="welcome-form">
                 <label for="student-name-input">What's your name?</label>
@@ -103,7 +103,7 @@
         <!-- Top Bar -->
         <header id="top-bar">
             <div class="top-bar-left">
-                <h1 class="app-title">WACE Methods Study Trainer</h1>
+                <h1 class="app-title">Morris Maths</h1>
             </div>
             <div class="top-bar-right">
                 <span id="student-name-display" class="student-name"></span>
@@ -121,8 +121,8 @@
 
         <!-- Tab Navigation -->
         <nav id="tab-nav">
-            <button class="tab-btn active" data-tab="study">Study</button>
-            <button class="tab-btn" data-tab="revise">Revise</button>
+            <button class="tab-btn" data-tab="targeted">Targeted Revision</button>
+            <button class="tab-btn active" data-tab="study">Questions Mix</button>
             <button class="tab-btn" data-tab="print">Print</button>
             <button class="tab-btn" data-tab="dashboard">Dashboard</button>
         </nav>
@@ -132,7 +132,7 @@
             <!-- STUDY TAB -->
             <section id="tab-study" class="tab-panel active">
                 <div class="study-start-screen">
-                    <h2>Study Session</h2>
+                    <h2>Questions Mix</h2>
                     <div class="readiness-ring-container" id="readiness-container">
                         <svg class="readiness-ring" viewBox="0 0 120 120">
                             <circle class="readiness-bg" cx="60" cy="60" r="52"
@@ -254,8 +254,35 @@
                 <div id="exam-results-screen" style="display:none;"></div>
             </section>
 
-            <!-- REVISE TAB -->
-            <section id="tab-revise" class="tab-panel">
+            <!-- TARGETED REVISION TAB -->
+            <section id="tab-targeted" class="tab-panel">
+                <!-- TOPIC TREE VIEW -->
+                <div id="targeted-home">
+                    <div class="revise-header">
+                        <h2>Targeted Revision</h2>
+                        <p class="revise-subtitle">Pick a topic or subtopic, then choose Concepts, Skills, or Exam Questions.</p>
+                    </div>
+                    <div id="targeted-topic-tree"></div>
+                </div>
+
+                <!-- CONCEPTS FLASHCARD REVIEW (overlays the tree) -->
+                <div id="concepts-review-view" style="display:none;">
+                    <div class="concepts-review-header">
+                        <button class="concepts-back-btn" id="concepts-back-btn">&larr; Back to Topics</button>
+                        <div class="concepts-progress-bar">
+                            <div class="concepts-progress-fill" id="concepts-progress-fill"></div>
+                        </div>
+                        <span class="concepts-counter" id="concepts-counter">1 / 10</span>
+                    </div>
+                    <div id="concepts-flashcard-area"></div>
+                </div>
+
+                <!-- EXAM QUESTIONS WITHIN TARGETED (reuses existing question display) -->
+                <div id="targeted-question-area" style="display:none;"></div>
+            </section>
+
+            <!-- OLD REVISE TAB (hidden, kept for backward compat with revise-ui.js) -->
+            <section id="tab-revise" class="tab-panel" style="display:none !important;">
                 <div id="revise-home">
                     <div class="revise-header">
                         <h2>Topic Revision</h2>
@@ -642,7 +669,7 @@
         <!-- Header -->
         <header style="background:#1a1a2e; padding:0 32px; height:60px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100;">
             <div style="font-family:'Crimson Pro',Georgia,serif; font-size:1.3rem; font-weight:600; color:#b8860b; letter-spacing:-.3px;">
-                WACE Trainer <span style="font-weight:300; color:rgba(255,255,255,.45); font-size:1rem; margin-left:10px;">/ Cost Dashboard</span>
+                Morris Maths <span style="font-weight:300; color:rgba(255,255,255,.45); font-size:1rem; margin-left:10px;">/ Cost Dashboard</span>
             </div>
             <div style="display:flex; align-items:center; gap:16px;">
                 <div style="font-size:.78rem; color:rgba(255,255,255,.45); display:flex; align-items:center; gap:6px;">
@@ -742,12 +769,11 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
     <script src="firebase-config.js"></script>
     <script src="firebase-sync.js"></script>
-    <!-- App config loads before access-codes (provides TEACHER_DASHBOARD_PASSWORD, AVAILABLE_COURSES) -->
-    <script src="app-config.js"></script>
     <script src="access-codes.js"></script>
-    <!-- data_bundle.js and schedule.js are now loaded DYNAMICALLY per-course -->
-    <!-- (see app-init.js loadCourseScripts) -->
+    <script src="data_bundle.js"></script>
+    <script src="schedule.js"></script>
     <!-- App modules (split from app.js) -->
+    <script src="app-config.js"></script>
     <script src="db.js"></script>
     <script src="cost-tracker.js"></script>
     <script src="question-engine.js"></script>
@@ -763,6 +789,8 @@
     <script src="celebrations.js"></script>
     <script src="keyboard-shortcuts.js"></script>
     <script src="print-ui.js"></script>
+    <script src="concepts_integrals.js"></script>
+    <script src="concepts-ui.js"></script>
     <script src="app-init.js"></script>
     <script src="teacher-dashboard.js"></script>
 </body>

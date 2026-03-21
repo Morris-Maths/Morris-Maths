@@ -1,0 +1,479 @@
+{
+  "Further differentiation and applications": {
+    "Basic Differentiation Skills": {
+      "Differentiating basics": [
+        "Finding the value of a derivative at a given $x$ or $y$ value",
+        "Finding the coordinates of a point on the curve where the gradient is a given value.",
+        "Finding the equation of a tangent at a given $x$ or $y$ value"
+      ],
+      "Product Rule": [
+        "Product rule differentiation of simple functions",
+        "Differentiation of a product of functions that requires the use of quotient or chain rule as part of the product rule process.",
+        "Using a table of values or graphs of two functions and their derivatives to calculate the derivative of the product of the two functions at a given point."
+      ],
+      "Quotient Rule": [
+        "Quotient rule differentiation of simple functions",
+        "Differentiation of a quotient of functions requiring denominator or numerator to use product or chain rule as part of the quotient rule process.",
+        "Using a table of values or graphs of two functions and their derivatives to calculate the derivative of the quotient of the two functions at a given point."
+      ],
+      "Chain Rule": [
+        "Differentiation of simple composite functions",
+        "Differentiation of composite functions when given separate equations for two related variables i.e. outside and inside functions.",
+        "Differentiation of reciprocal functions requiring chain rule",
+        "Using a table of values or graphs of two functions and their derivatives to calculate the derivative of a composite function involving the two functions at a given point."
+      ],
+      "$e$ functions": [
+        "Using $\\lim_{h \\to 0} \\frac{a^h - 1}{h}$ for $a = e$ in problem solving",
+        "Differentiation of $e^x$ or $e^{g(x)}$",
+        "Differentiation involving the product of functions with one including an e function",
+        "Differentiation involving the quotient of functions with one including an e function",
+        "Differentiation of composite functions- e function as outside function",
+        "Differentiation of composite functions- e function as inside function"
+      ],
+      "Trigonometric functions": [
+        "Differentiation of simple trigonometric functions",
+        "Differentiation involving the product of functions with one including a trigonometric function",
+        "Differentiation involving the quotient of functions with one including a trigonometric function",
+        "Differentiation of composite functions- trigonometric function as outside function",
+        "Differentiation of composite functions- trigonometric function as inside function",
+        "Finding value of a trigonometric function at a given point",
+        "Other trigonometric calculations"
+      ]
+    },
+    "Exponential Growth and Decay": {
+      "Modelling continuous exponential growth and decay": [
+        "Modelling continuous exponential growth and decay with an equation $A(t) = A_0 e^{kt}$",
+        "Determining initial value of exponential model",
+        "Determining the value of the exponential model at a given time",
+        "Determining the value of the exponential model as $t$ becomes large",
+        "Determining the time when the value of the exponential model equals a given value",
+        "Identifying or determining k (the percentage rate of growth or decay per unit of time in $A(t) = A_0 e^{kt}$)",
+        "Determining rate of growth or decay by using derivative of e function",
+        "Interpreting derivative's units or interpreting derivative value of a function of $e$",
+        "Determining half-lifes or other percentage of initial values",
+        "Models where $\\frac{dA}{dx} = kA$ are given",
+        "Find the derivative (or rate of change) of a function at a given population/value of the function",
+        "Find the population/value of the function at a given value for $t$ given the value of the population/value of the function at a different value for $t$"
+      ]
+    },
+    "Second derivatives": {
+      "Calculating second derivatives": [
+        "Calculation of second derivative",
+        "Calculation and interpretation of second derivative in real-world context"
+      ],
+      "Locating critical points": [
+        "Finding $x$ and/or $y$ intercepts",
+        "Finding locations of stationary and/or inflection points",
+        "Determining concavity of a curve at a given point",
+        "Determine the values for which a curve has a given concavity",
+        "Determining nature of stationary or inflection points using second derivative tests",
+        "Finding where maximal rate of change occurs by finding vertical inflection point",
+        "Deriving simultaneous equations from turning point, inflection point, and function value conditions",
+        "Distinguishing between stationary points and turning points",
+        "Recognising that f''(a) = 0 is necessary but not sufficient for an inflection point"
+      ],
+      "Sketching of graphs": [
+        "Sketching graphs of function based on values of function, derivatives, second derivatives from calculations",
+        "Sketching graphs of function based on values of function, derivatives, second derivatives from given table",
+        "Sketching of first or second derivative graphs based on a given graph of function (or first derivative)",
+        "Determining whether a horizontal point of inflection exists using first and/or second derivative graphs"
+      ]
+    },
+    "Small Increments": {
+      "Basic use of small increments formula": [
+        "Using increments formula to approximate change",
+        "Comparing incremental estimate to true value and explaining limitation of linear approximation",
+        "Finding incremental change of variable an equation is usually written in terms of given a percentage/incremental change in the variable the equation is written for e.g. Find the small change in $r$ when area of a circle changes by $5cm^2$",
+        "Finding percentage change of variable an equation is usually written in terms of given a percentage/incremental change in the variable the equation is written for e.g. Find the percentage change in $r$ when area of a circle changes by $1%$",
+        "Using increments formula with a fixed or constrained quantity"
+      ]
+    },
+    "Applications of Differentiation": {
+      "Related Rates": [
+        "Finding a rate of change using the chain rule with a geometric constraint"
+      ]
+    },
+    "Optimisation problems": {
+      "Solving optimisation problems": [
+        "Deriving objective function from constraint (show that)",
+        "Determining optimised result using first and second derivative tests"
+      ]
+    }
+  },
+  "Integrals": {
+    "Anti-differentiation": {
+      "Integration Techniques": [
+        "Anti-differentiation with initial condition",
+        "Anti-differentiating polynomial",
+        "Anti-differentiating trigonometric function with linear argument and initial condition",
+        "Anti-differentiating $e^{ax}$ with initial condition to find function value",
+        "Anti-differentiating $xe^{x^2}$ by recognition with initial condition",
+        "Integrating $f'(x)/f(x)$ form with trigonometric functions",
+        "Integration technique",
+        "Solving for parameter using integration and percentage condition",
+        "Finding equation of curve by determining parameter from stationary point condition and anti-differentiating with initial condition",
+        "Calculating quantity by integration with initial condition"
+      ],
+      "Chain Rule": [
+        "Reverse chain rule integration from prior derivative (hence integrate)",
+        "Evaluating definite integral of composite polynomial function using reverse chain rule"
+      ],
+      "Differentiation": [
+        "Differentiate a function; integrate the resulting identity to hence find the antiderivative of a related integrand."
+      ],
+      "General/Other": [
+        "Evaluating position function at specific time"
+      ]
+    },
+    "Definite integrals": {
+      "Area Calculations": [
+        "Evaluating definite integral using geometric area of circular segments",
+        "Finding upper limit where definite integral equals zero using signed areas",
+        "Evaluating definite integral using signed areas from graph",
+        "Suggesting methods to improve rectangle approximation of area"
+      ],
+      "Numerical Integration": [
+        "Bounding a definite integral using upper and lower rectangle sums with explanation",
+        "Estimating integral using average of upper and lower rectangle sums",
+        "Estimating definite integral using midpoint rule",
+        "Evaluating definite integral of transformed function using linearity"
+      ]
+    },
+    "Fundamental theorem": {
+      "Fundamental Theorem": [
+        "Applying fundamental theorem of calculus",
+        "Applying fundamental theorem to evaluate integral of derivative",
+        "Evaluating definite integral of acceleration using fundamental theorem",
+        "Evaluating definite integral using linearity and interval properties",
+        "Finding maximum of accumulation function $F(x) = \\int_0^x f(t)\\,dt$ using $F'(x) = f(x)$",
+        "Differentiating integral with variable bound using fundamental theorem"
+      ],
+      "Graph Sketching": [
+        "Sketching accumulation function $A(x) = \\int_a^x f(t)\\,dt$ from graph of f"
+      ],
+      "Differentiation": [
+        "Differentiating integral with variable bound using fundamental theorem",
+        "Determining function from integral equation using fundamental theorem and solving ODE with initial condition"
+      ]
+    },
+    "Applications of integration": {
+      "Area Calculations": [
+        "Calculating area bounded by curve, x-axis, and vertical lines using definite integral",
+        "Calculating area between curve and line using integration",
+        "Calculating area between two curves by splitting at intersection point",
+        "Calculating area between parabola and line using integration",
+        "Calculating area bounded by derivative curve and x-axis using absolute value",
+        "Calculating area under curve using definite integral with ln function",
+        "Calculating area using complement and result from previous part (hence)",
+        "Generalizing area calculation with parameter using definite integral and complement",
+        "Writing definite integral for area using inverse function",
+        "Deriving area function by integration and simplifying (show that proof)",
+        "Calculating area using integration",
+        "Calculating area using given regions from graph",
+        "Deriving area formula using geometry",
+        "Explaining equivalence of areas under translation",
+        "Solving for upper limit k when definite integral equals given value"
+      ],
+      "Volume Calculations": [
+        "Calculating volume using definite integrals of piecewise function",
+        "Calculating volume by integration (finding bounds from curve equation, setting up and evaluating integral)",
+        "Inverse volume problem: finding height/level from given volume using integration",
+        "Calculating volume using integration"
+      ],
+      "Calculates Total Change from Rate of Change": [
+        "Calculates total change from rate of change",
+        "Calculates total change from rate of change with initial condition"
+      ],
+      "Integration Techniques": [
+        "Integrating exponential function over specified bounds"
+      ],
+      "Kinematics": [
+        "Kinematics: integrating velocity to find displacement with initial condition",
+        "Kinematics: integration problem"
+      ],
+      "Stationary Points": [
+        "Determining polynomial coefficients from turning point and area condition using integration"
+      ],
+      "Differentiation": [
+        "Optimising area by differentiation and solving for maximum"
+      ],
+      "General/Other": [
+        "Interpreting meaning of derivative in practical context",
+        "Solving for upper limit k when definite integral equals given value"
+      ]
+    }
+  },
+  "Discrete random variables": {
+    "General discrete random variables": {
+      "DRV Distribution Tables": [
+        "Completing probability distribution table",
+        "Probability distribution table problem",
+        "Showing probability calculation for discrete distribution"
+      ],
+      "DRV Probability": [
+        "Calculating probability using probability distribution",
+        "Calculating conditional probability"
+      ],
+      "DRV Expected Value": [
+        "Calculating expected value",
+        "Finding mean and variance under linear transformation $Y = aX + b$"
+      ],
+      "Variance Calculations": [
+        "Calculating variance of discrete random variable",
+        "Calculating standard deviation of discrete random variable"
+      ],
+      "General/Other": [
+        "Determining distribution type from probability properties",
+        "Describing key features of probability distribution from graph"
+      ]
+    },
+    "Bernoulli distributions": {
+      "DRV Distribution Tables": [
+        "Completing probability distribution table for Bernoulli distribution"
+      ],
+      "General/Other": [
+        "Stating Bernoulli distribution from context",
+        "Calculating mean and standard deviation of Bernoulli distribution"
+      ]
+    },
+    "Binomial distributions": {
+      "Binomial Setup": [
+        "Stating binomial distribution $X \\sim \\text{Bin}(n,p)$ from context",
+        "Stating binomial distribution $X \\sim \\text{Bin}(n,p)$ from context and calculating parameters",
+        "Evaluating validity of binomial distribution assumptions in context",
+        "Explaining why a situation cannot be modelled by binomial distribution",
+        "Finding n and p from mean and variance of binomial, then evaluating a probability"
+      ],
+      "Binomial Probability": [
+        "Calculating binomial probability $P(X = k)$",
+        "Calculating binomial tail probability",
+        "Calculating probability using binomial distribution"
+      ],
+      "DRV Expected Value": [
+        "Calculating expected value and variance of binomial distribution"
+      ]
+    }
+  },
+  "The logarithmic function": {
+    "Logarithmic functions": {
+      "Logarithmic Evaluation": [
+        "Evaluating $a^{kp}$ by using log-exponential inverse relationship",
+        "Evaluating $\\log_a(x) = b$ by converting to exponential form $x = a^b$",
+        "Evaluating logarithmic function at a given input",
+        "Evaluating logarithmic model at a given input",
+        "Logarithmic evaluation",
+        "Finding value from logarithmic model and interpreting in context",
+        "Determining parameters of logarithmic function from two points using simultaneous equations",
+        "Determining parameters of logarithmic model from initial conditions",
+        "Comparing parameters of logarithmic models to make contextual interpretation",
+        "Finding x-intercept of translated and vertically shifted logarithmic function",
+        "Interpreting behavior of logarithmic function from equation",
+        "Finding the domain of logarithmic functions"
+      ],
+      "Logarithmic Equations": [
+        "Solving exponential equation by isolating $e^{kx}$ and taking logarithms",
+        "Solving logarithmic equation for variable using log laws",
+        "Solving equation involving logarithm to find specific value",
+        "Finding maximum of logarithmic function using calculus (differentiate, solve, verify)",
+        "Solving equations with log on both sides using the one-to-one property"
+      ],
+      "Logarithmic Graphs": [
+        "Reading value from logarithmic scale/graph",
+        "Identifying equations of translated/reflected logarithmic graphs from diagram",
+        "Identifying parameter from vertical asymptote of logarithmic graph",
+        "Determining parameter from slope of linear log graph",
+        "Deriving linear log relationship and sketching graph",
+        "Sketching logarithmic function with appropriate features",
+        "Sketching logarithmic function with horizontal translation",
+        "Sketching translated and shifted logarithmic graph with key points and asymptote",
+        "Sketching piecewise function involving constant and logarithmic components",
+        "Interpreting minimum from graph of logarithmic function in context",
+        "Logarithmic graph problem"
+      ],
+      "Logarithmic Laws": [
+        "Applying logarithmic laws",
+        "Expressing $\\log_a(k)$ in terms of a defined variable using log laws",
+        "Expressing log of product in terms of defined variables using log laws",
+        "Rearranging linear log relationship into $\\log(M/c)$ form using log laws",
+        "Proving logarithmic identity using log laws (show that)",
+        "Evaluating expression using inverse relationship between log and exponential",
+        "Evaluating logarithmic expression by substitution",
+        "Expressing logarithmic transformation as horizontal dilation using log laws",
+        "Expressing logarithmic transformation as vertical dilation using log laws",
+        "Expressing logarithmic transformation as vertical translation using log laws"
+      ],
+      "Log Scales & Linearisation": [
+        "Determining gradient and intercept of linear log-scale relationship",
+        "Comparing quantities using logarithmic scale by taking ratio of exponential forms",
+        "Converting between logarithmic and exponential forms of data models"
+      ],
+      "General/Other": [
+        "Completing table investigating limit definition of derivative for exponential",
+        "Identifying e as base where derivative of $a^x$ equals $a^x$ using limit definition",
+        "Solving trigonometric equation for parameter"
+      ]
+    },
+    "Calculus of the natural logarithmic function": {
+      "Integration Techniques": [
+        "Integrating $f'(x)/f(x)$ to obtain $\\ln|f(x)|$",
+        "Evaluating definite integrals that yield logarithmic expressions"
+      ],
+      "Logarithmic Differentiation": [
+        "Differentiating ln(f(x)) using the chain rule"
+      ],
+      "Product Rule": [
+        "Differentiating $x \\cdot \\ln(x)$ using product rule",
+        "Anti-differentiating $\\ln(x)$ using integration by parts (reverse product rule)"
+      ],
+      "Logarithmic Evaluation": [
+        "Finding when derivative equals zero by differentiating function with logarithm",
+        "Finding point where derivative of function with trig and log equals given gradient"
+      ],
+      "Logarithmic Laws": [
+        "Integrating $f'(x)/f(x)$ to obtain $\\ln|f(x)|$ with initial condition and log law simplification"
+      ],
+      "Stationary Points": [
+        "Finding and classifying stationary points for function with ln using calculus"
+      ],
+      "Graph Sketching": [
+        "Sketching graph of function with ln showing all key features"
+      ],
+      "General/Other": [
+        "Evaluating derivative of rational function with substitution",
+        "Explaining anti-derivative of $f'(x)/f(x)$ form",
+        "Solving for time using anti-derivative with initial condition and target value"
+      ]
+    }
+  },
+  "Continuous random variables and the normal distribution": {
+    "General continuous random variables": {
+      "Area Calculations": [
+        "Determining parameter of PDF using area condition",
+        "Calculating probability using geometric area from continuous distribution"
+      ],
+      "Cumulative distribution functions": [
+        "Finding cumulative distribution function from continuous distribution function",
+        "Finding continuous distribution function from cumulative distribution function"
+      ],
+      "Expected Value": [
+        "Calculating expected value of continuous random variable using integration",
+        "Reading expected value from continuous probability distribution graph"
+      ],
+      "Integration Techniques": [
+        "Integrating probability density function to find probability",
+        "Finding normalising constant by integrating PDF over domain"
+      ],
+      "Variance Calculations": [
+        "Calculating variance of continuous random variable using integration",
+        "Calculating standard deviation of continuous random variable",
+        "Calculating standard deviation of continuous random variable using variance formula"
+      ],
+      "Uniform Distribution": [
+        "Identifying continuous uniform distribution from probability density function graph",
+        "Identifying or applying properties of continuous uniform distribution",
+        "Calculating probability from continuous uniform distribution"
+      ],
+      "General/Other": [
+        "General continuous random variable problem"
+      ]
+    },
+    "Normal distributions": {
+      "Normal Probability": [
+        "Calculating probability using normal distribution",
+        "Calculating probability using standard normal distribution",
+        "Calculating normal probability $P(a < X < b)$",
+        "Standardising a normal random variable using z-score formula"
+      ],
+      "Inverse Normal": [
+        "Finding value given probability using inverse normal",
+        "Finding mean or standard deviation given probability using inverse normal",
+        "Finding value for specified probability using inverse normal"
+      ],
+      "Expected Value": [
+        "Calculating or interpreting expected value of normal random variable",
+        "Calculating or interpreting expected value in context of normal distribution"
+      ],
+      "General/Other": [
+        "General normal distribution problem"
+      ]
+    }
+  },
+  "Interval estimates for proportions": {
+    "Random sampling": {
+      "Sampling Methods": [
+        "Describing systematic sampling method and justifying appropriateness",
+        "Describing simple random sampling method"
+      ]
+    },
+    "Sample proportions": {
+      "Sample Proportions": [
+        "Calculating sample proportion from frequency data",
+        "Sample proportion calculation",
+        "Stating approximate distribution of sample proportion",
+        "Describing approximate distribution of sample proportion",
+        "Stating condition for normal approximation to sample proportion",
+        "Calculating mean and standard deviation of sample proportion distribution",
+        "Using approximate normality of sample proportion distribution to calculate probability"
+      ]
+    },
+    "Confidence intervals for proportions": {
+      "CI Calculation": [
+        "Calculating CI for proportion from sample data",
+        "Converting confidence interval for proportion to range for expected count",
+        "Calculating minimum sample size for specified margin of error (worst-case $\\hat{p}=0.5$)",
+        "Identifying and explaining factors that affect confidence interval width"
+      ],
+      "Margin of Error": [
+        "Suggesting ways to decrease margin of error"
+      ],
+      "CI Interpretation": [
+        "Making inference from CI about claimed/target value",
+        "Choosing appropriate confidence level based on trade-off between confidence and precision",
+        "Suggesting further testing methods to verify claim"
+      ]
+    }
+  },
+  "Kinematics": {
+    "Kinematics: Differentiation": {
+      "Kinematics calculations": [
+        "Evaluating displacement at given value for $t$ using displacement function ($t=0$ for initial)",
+        "Evaluating distance from origin at given value for $t$ using displacement function",
+        "Evaluating velocity at given value for $t$ using velocity function ($t=0$ for initial)",
+        "Evaluating speed at given value for $t$ using velocity function ($t=0$ for initial)",
+        "Evaluating acceleration at given value for $t$ using acceleration function (t=0 for initial)",
+        "Calculating change in displacement between two specific times using displacement function",
+        "Calculating change in distance from origin between two specific times using displacement function",
+        "Calculating change in velocity between two specific times using velocity function",
+        "Calculating change in speed between two specific times using velocity function",
+        "Calculating change in acceleration between two specific times using acceleration function",
+        "Determining average velocity between two time periods using displacement function",
+        "Determining average speed between two time periods using displacement function"
+      ],
+      "Kinematics differentiation": [
+        "Finding velocity function by differentiating displacement function",
+        "Finding acceleration functions by differentiating velocity function",
+        "Finding when/value of displacement function has stationary point (could be phrased as velocity equals zero)",
+        "Finding when/value of velocity function has stationary point (could be phrased as acceleration equals zero)",
+        "Finding domain when velocity $> 0$ or $< 0$ given displacement function",
+        "Finding domain when acceleration $> 0$ or $< 0$ given velocity function",
+        "Finding maximum/minimum displacement or velocity using calculus",
+        "Finding time of maximum/minimum velocity by identifying point of inflection in displacement function",
+        "Finding time of maximum/minimum acceleration by identifying point of inflection in velocity function",
+        "Finding maximum speed by comparing absolute velocities at critical points",
+        "Interpreting velocity graph to describe displacement behaviour",
+        "Interpreting acceleration graph to describe velocity behaviour",
+        "Determining speeding up or slowing down from signs of velocity and acceleration"
+      ]
+    },
+    "Kinematics: Integration": {
+      "Kinematics": [
+        "Calculating total distance travelled using integration of velocity",
+        "Calculating total change in displacement between two value for $t$ using integration of velocity",
+        "Calculating total change in velocity between two value for $t$ using integration of acceleration",
+        "Finding parameter from initial condition by integrating",
+        "Determining average velocity between two time periods using integration as part of calculations",
+        "Determining average speed between two time periods using integration as part of calculations"
+      ]
+    }
+  }
+}

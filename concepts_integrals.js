@@ -17,6 +17,7 @@ var CONCEPTS_INTEGRALS = {
     // ════════════════════════════════════════════════════════════
     {
       section: "Anti-derivatives — Finding the +C",
+      subtopic: "Anti-differentiation",
       swap_after: true,
       questions: [
         {
@@ -51,6 +52,7 @@ var CONCEPTS_INTEGRALS = {
     // ════════════════════════════════════════════════════════════
     {
       section: "Anti-chain Rule (Reverse Chain Rule)",
+      subtopic: "Anti-differentiation",
       swap_after: true,
       questions: [
         {
@@ -85,6 +87,7 @@ var CONCEPTS_INTEGRALS = {
     // ════════════════════════════════════════════════════════════
     {
       section: "Estimating Area Under Curves Using Rectangular Strips",
+      subtopic: "Definite Integrals",
       swap_after: true,
       questions: [
         {
@@ -107,6 +110,7 @@ var CONCEPTS_INTEGRALS = {
     // ════════════════════════════════════════════════════════════
     {
       section: "Definite Integrals",
+      subtopic: "Definite Integrals",
       swap_after: true,
       questions: [
         {
@@ -153,6 +157,7 @@ var CONCEPTS_INTEGRALS = {
     // ════════════════════════════════════════════════════════════
     {
       section: "Area Between Curve and x-axis — Accumulation Function",
+      subtopic: "Fundamental Theorem",
       swap_after: true,
       questions: [
         {
@@ -205,6 +210,7 @@ var CONCEPTS_INTEGRALS = {
     // ════════════════════════════════════════════════════════════
     {
       section: "Solving for Bounds Using Integral Properties",
+      subtopic: "Fundamental Theorem",
       swap_after: true,
       questions: [
         {
@@ -233,6 +239,7 @@ var CONCEPTS_INTEGRALS = {
     // ════════════════════════════════════════════════════════════
     {
       section: "Areas Between Curves",
+      subtopic: "Applications of Integration",
       swap_after: true,
       questions: [
         {
@@ -261,6 +268,7 @@ var CONCEPTS_INTEGRALS = {
     // ════════════════════════════════════════════════════════════
     {
       section: "Total Change Formula",
+      subtopic: "Applications of Integration",
       swap_after: true,
       questions: [
         {
@@ -295,6 +303,7 @@ var CONCEPTS_INTEGRALS = {
     // ════════════════════════════════════════════════════════════
     {
       section: "Fundamental Theorem of Calculus — Part 2",
+      subtopic: "Fundamental Theorem",
       swap_after: true,
       questions: [
         {
@@ -329,6 +338,7 @@ var CONCEPTS_INTEGRALS = {
     // ════════════════════════════════════════════════════════════
     {
       section: "Anti-differentiating Exponential Functions",
+      subtopic: "Anti-differentiation",
       swap_after: true,
       questions: [
         {
@@ -351,6 +361,7 @@ var CONCEPTS_INTEGRALS = {
     // ════════════════════════════════════════════════════════════
     {
       section: "Anti-differentiating Trigonometric Functions",
+      subtopic: "Anti-differentiation",
       swap_after: true,
       questions: [
         {
@@ -373,6 +384,7 @@ var CONCEPTS_INTEGRALS = {
     // ════════════════════════════════════════════════════════════
     {
       section: "'Hence' Integration — Differentiate Then Integrate",
+      subtopic: "Anti-differentiation",
       swap_after: true,
       questions: [
         {

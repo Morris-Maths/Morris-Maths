@@ -1,6 +1,6 @@
 /* ============================================================================
-   WACE Student Study Trainer - style.css
-   Phase S1: Core Foundation  |  Theme: Warm Academic (dark ink + gold)
+   Morris Maths - style.css
+   Theme: Warm Academic (dark ink + gold)
    ============================================================================
    ENCODING RULE: This file must contain ONLY ASCII characters (0x00-0x7F).
    Use Unicode escapes in content properties where needed: content: "\2713"
@@ -4881,4 +4881,400 @@ body.dark-theme input[type="range"] {
 .dark-theme .teacher-dropdown-exit:hover {
     background: rgba(192, 57, 43, 0.15);
     color: #e74c3c;
+}
+
+/* ============================================================================
+   CONCEPTS & SKILLS UI (Targeted Revision tab)
+   ============================================================================ */
+
+/* ---- Topic tree blocks ---- */
+.cs-topic-block {
+    margin-bottom: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+    background: var(--bg-secondary);
+    box-shadow: var(--shadow-sm);
+}
+
+.cs-topic-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    background: var(--bg-tertiary);
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s;
+    gap: 8px;
+}
+.cs-topic-header:hover { background: var(--bg-hover); }
+
+.cs-topic-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    min-width: 0;
+}
+
+.cs-chevron {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    transition: transform 0.25s;
+    flex-shrink: 0;
+}
+.cs-topic-block.cs-open .cs-chevron {
+    transform: rotate(90deg);
+}
+
+.cs-topic-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+}
+
+.cs-topic-actions {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+/* ---- Buttons: Concepts / Skills / Exam Qs ---- */
+.cs-btn {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 6px;
+    padding: 5px 12px;
+    cursor: pointer;
+    transition: transform 0.1s, box-shadow 0.15s, opacity 0.15s;
+    white-space: nowrap;
+}
+.cs-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+}
+.cs-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+.cs-btn-concepts {
+    background: var(--accent-primary);
+    color: var(--text-inverse);
+}
+.cs-btn-concepts:hover:not(:disabled) {
+    background: var(--accent-primary-hover);
+    box-shadow: 0 2px 6px rgba(184,134,11,0.3);
+}
+
+.cs-btn-skills {
+    background: var(--color-info);
+    color: var(--text-inverse);
+}
+.cs-btn-skills:hover:not(:disabled) {
+    background: #24507a;
+    box-shadow: 0 2px 6px rgba(44,95,138,0.3);
+}
+
+.cs-btn-exam {
+    background: #6b4c8a;
+    color: var(--text-inverse);
+}
+.cs-btn-exam:hover:not(:disabled) {
+    background: #5a3d78;
+    box-shadow: 0 2px 6px rgba(107,76,138,0.3);
+}
+
+/* ---- Progress pills ---- */
+.cs-pill {
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 2px 10px;
+    border-radius: 99px;
+    white-space: nowrap;
+    min-width: 38px;
+    text-align: center;
+    display: inline-block;
+}
+.cs-pill-new     { background: #e8e5e0; color: var(--text-muted); }
+.cs-pill-danger  { background: var(--color-danger-light); color: var(--color-danger); }
+.cs-pill-warning { background: var(--color-warning-light); color: #8a6508; }
+.cs-pill-success { background: var(--color-success-light); color: var(--color-success); }
+.cs-pill-mastered { background: var(--color-success); color: #fff; }
+
+/* ---- Review needed badge ---- */
+.cs-review-badge {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 1px 8px;
+    border-radius: 99px;
+    background: var(--color-danger-light);
+    color: var(--color-danger);
+    margin-left: 6px;
+    white-space: nowrap;
+}
+
+/* ---- Subtopics ---- */
+.cs-subtopic-list {
+    display: none;
+}
+.cs-topic-block.cs-open .cs-subtopic-list {
+    display: block;
+}
+
+.cs-subtopic-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 18px 10px 40px;
+    border-top: 1px solid var(--border-color);
+    transition: background 0.1s;
+    gap: 8px;
+}
+.cs-subtopic-row:hover { background: var(--bg-tertiary); }
+
+.cs-subtopic-name {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    flex: 1;
+    min-width: 0;
+}
+
+/* ---- Flashcard review header ---- */
+.concepts-review-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.concepts-back-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--accent-primary);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px 0;
+    white-space: nowrap;
+}
+.concepts-back-btn:hover { text-decoration: underline; }
+
+.concepts-progress-bar {
+    flex: 1;
+    max-width: 300px;
+    height: 6px;
+    background: var(--bg-tertiary);
+    border-radius: 99px;
+    overflow: hidden;
+}
+.concepts-progress-fill {
+    height: 100%;
+    background: var(--accent-primary);
+    border-radius: 99px;
+    transition: width 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    width: 0%;
+}
+
+.concepts-counter {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+/* ---- Flashcard ---- */
+.cs-flashcard {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+    padding: 32px;
+    margin-bottom: 20px;
+    min-height: 180px;
+}
+
+.cs-flashcard-section {
+    font-size: 0.76rem;
+    font-weight: 600;
+    color: var(--accent-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 14px;
+}
+
+.cs-flashcard-question {
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size: 1.2rem;
+    line-height: 1.65;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+}
+
+.cs-flashcard-answer {
+    display: none;
+    padding-top: 20px;
+    border-top: 2px dashed var(--border-color);
+    margin-top: 8px;
+}
+.cs-flashcard-answer.cs-shown {
+    display: block;
+}
+
+.cs-flashcard-answer-content {
+    font-size: 0.95rem;
+    line-height: 1.75;
+    color: var(--text-secondary);
+    white-space: pre-line;
+}
+
+/* ---- Reveal button ---- */
+.cs-reveal-btn {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border: 2px solid var(--accent-primary);
+    border-radius: var(--border-radius);
+    background: transparent;
+    color: var(--accent-primary);
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+.cs-reveal-btn:hover {
+    background: var(--accent-primary);
+    color: var(--text-inverse);
+}
+
+/* ---- Rating buttons ---- */
+.cs-rating-buttons {
+    display: none;
+    gap: 12px;
+}
+.cs-rating-buttons.cs-shown {
+    display: flex;
+}
+
+.cs-rating-btn {
+    flex: 1;
+    padding: 14px 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.92rem;
+    font-weight: 600;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: transform 0.1s, box-shadow 0.15s;
+}
+.cs-rating-btn:hover {
+    transform: translateY(-2px);
+}
+.cs-btn-nailed {
+    background: var(--color-success);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(26, 122, 76, 0.25);
+}
+.cs-btn-nailed:hover { box-shadow: 0 4px 12px rgba(26, 122, 76, 0.35); }
+
+.cs-btn-revise-again {
+    background: var(--color-danger);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(192, 57, 43, 0.25);
+}
+.cs-btn-revise-again:hover { box-shadow: 0 4px 12px rgba(192, 57, 43, 0.35); }
+
+/* ---- Review complete screen ---- */
+.cs-review-complete {
+    text-align: center;
+    padding: 48px 24px;
+}
+.cs-review-complete h2 {
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+}
+.cs-review-complete p {
+    color: var(--text-secondary);
+    margin-bottom: 28px;
+    font-size: 0.95rem;
+}
+
+.cs-review-stats {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+}
+.cs-review-stat {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 16px 24px;
+    min-width: 120px;
+}
+.cs-review-stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    display: block;
+}
+.cs-review-stat-label {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+}
+.cs-stat-nailed { color: var(--color-success); }
+.cs-stat-revise { color: var(--color-danger); }
+
+/* ---- Dark theme overrides ---- */
+.dark-theme .cs-pill-new { background: var(--bg-tertiary); color: var(--text-muted); }
+.dark-theme .cs-review-badge { background: rgba(192,57,43,0.15); }
+
+/* ---- Responsive ---- */
+@media (max-width: 640px) {
+    .cs-topic-header {
+        padding: 12px 14px;
+        flex-wrap: wrap;
+    }
+    .cs-topic-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+    .cs-subtopic-row {
+        padding-left: 24px;
+        flex-wrap: wrap;
+    }
+    .cs-subtopic-row .cs-topic-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+    .cs-flashcard { padding: 20px; }
+    .cs-flashcard-question { font-size: 1.05rem; }
+    .cs-rating-buttons.cs-shown { flex-direction: column; }
+    .concepts-review-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .concepts-progress-bar {
+        max-width: 100%;
+        width: 100%;
+    }
 }

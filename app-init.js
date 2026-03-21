@@ -1,58 +1,4 @@
 // ============================================================================
-// DYNAMIC COURSE SCRIPT LOADER
-// Loads {courseName}_data_bundle.js and {courseName}_schedule.js at runtime.
-// ============================================================================
-
-/**
- * Dynamically inject a <script> tag and return a Promise that resolves on load.
- * @param {string} src - Script URL to load.
- * @returns {Promise}
- */
-function _loadScript(src) {
-    return new Promise(function(resolve, reject) {
-        var script = document.createElement("script");
-        script.src = src;
-        script.onload = function() {
-            console.log("Loaded: " + src);
-            resolve();
-        };
-        script.onerror = function() {
-            console.error("Failed to load: " + src);
-            reject(new Error("Script load failed: " + src));
-        };
-        document.head.appendChild(script);
-    });
-}
-
-/**
- * Load both course data bundle and schedule for the given course name.
- * Clears any previously loaded QUESTIONS_DATA / TAUGHT_SCHEDULE globals first.
- * @param {string} courseName - e.g. "12Methods"
- * @returns {Promise}
- */
-function loadCourseScripts(courseName) {
-    if (!courseName) {
-        console.warn("loadCourseScripts: No courseName provided, using default");
-        courseName = (typeof DEFAULT_COURSE !== "undefined") ? DEFAULT_COURSE : "12Methods";
-    }
-
-    // Clear previous globals so QuestionEngine picks up fresh data
-    if (typeof QUESTIONS_DATA !== "undefined") { window.QUESTIONS_DATA = undefined; }
-    if (typeof TAXONOMY_DATA !== "undefined") { window.TAXONOMY_DATA = undefined; }
-    if (typeof QUESTION_INDEX !== "undefined") { window.QUESTION_INDEX = undefined; }
-    if (typeof TAUGHT_SCHEDULE !== "undefined") { window.TAUGHT_SCHEDULE = undefined; }
-
-    var bundleSrc = courseName + "_data_bundle.js";
-    var scheduleSrc = courseName + "_schedule.js";
-
-    console.log("Loading course scripts for: " + courseName);
-
-    return _loadScript(bundleSrc).then(function() {
-        return _loadScript(scheduleSrc);
-    });
-}
-
-// ============================================================================
 // TEACHER TOOLBAR (injected when teacher logs in via ?teacher URL)
 // ============================================================================
 function _injectTeacherToolbar() {
@@ -68,19 +14,6 @@ function _injectTeacherToolbar() {
             '<span class="teacher-badge-icon">\uD83C\uDF93</span> Teacher' +
         '</button>' +
         '<div class="teacher-toolbar-dropdown" id="teacher-toolbar-dropdown">' +
-            '<div class="teacher-dropdown-item" style="padding:6px 12px;">' +
-                '<label style="font-size:0.8rem;color:#6b7280;margin-bottom:4px;display:block;">' +
-                    'Course</label>' +
-                '<select id="teacher-course-switcher" style="width:100%;padding:6px 8px;' +
-                    'border:1px solid #ddd;border-radius:6px;font-size:0.85rem;">' +
-                    (typeof AVAILABLE_COURSES !== "undefined" ? AVAILABLE_COURSES : []).map(function(c) {
-                        var sel = (typeof AccessControl !== "undefined" &&
-                            AccessControl.getCourseName() === c) ? ' selected' : '';
-                        return '<option value="' + c + '"' + sel + '>' + c + '</option>';
-                    }).join("") +
-                '</select>' +
-            '</div>' +
-            '<div class="teacher-dropdown-divider"></div>' +
             '<button class="teacher-dropdown-item" id="teacher-menu-costs">' +
                 '<span class="teacher-dropdown-icon">\uD83D\uDCB0</span> Costs Dashboard' +
             '</button>' +
@@ -119,23 +52,10 @@ function _injectTeacherToolbar() {
     document.getElementById("teacher-menu-exit").addEventListener("click", function() {
         dropdown.classList.remove("open");
         sessionStorage.removeItem("wace_teacher_mode");
-        sessionStorage.removeItem("wace_teacher_course");
         // Go back to the code screen (remove ?teacher param)
         var url = window.location.pathname;
         window.location.href = url;
     });
-
-    // Course switcher
-    var courseSwitcher = document.getElementById("teacher-course-switcher");
-    if (courseSwitcher) {
-        courseSwitcher.addEventListener("change", function() {
-            var newCourse = courseSwitcher.value;
-            sessionStorage.setItem("wace_teacher_course", newCourse);
-            dropdown.classList.remove("open");
-            // Reload the page so new course scripts are loaded fresh
-            window.location.reload();
-        });
-    }
 
     console.log("Teacher toolbar injected");
 }
@@ -144,7 +64,7 @@ function _injectTeacherToolbar() {
 // APP INITIALISATION
 // ============================================================================
 function initApp() {
-    console.log("=== WACE Student Study Trainer v" + APP_VERSION + " ===");
+    console.log("=== Morris Maths v" + APP_VERSION + " ===");
     console.log("Initialising...");
 
     // Step 1: Initialise question engine (loads data from script-tag globals)
@@ -152,12 +72,6 @@ function initApp() {
 
     // Step 2: Initialise IndexedDB
     DB.init().then(function() {
-        // Step 2b: Initialise Firebase sync (pulls cloud data into IndexedDB)
-        if (typeof FirebaseSync !== "undefined") {
-            return FirebaseSync.init().then(function() {
-                return DB.getAll(STORE_IMPORTED);
-            });
-        }
         // Step 3: Merge any imported questions
         return DB.getAll(STORE_IMPORTED);
     }).then(function(imported) {
@@ -168,10 +82,14 @@ function initApp() {
     }).then(function(scheduleUpdates) {
         // Step 5: Check config for ahead-of-schedule setting
         return DB.get(STORE_CONFIG, "main").then(function(config) {
-            var aheadOfSchedule = config ? !!config.aheadOfScheduleEnabled : false;
-
-            // Step 6: Compute unlocked problem types
-            QuestionEngine.computeUnlocked(scheduleUpdates, aheadOfSchedule);
+            // Unlock ALL problem types (no schedule gating in Morris Maths)
+            QuestionEngine.computeUnlocked(scheduleUpdates, true);
+            // Safety net: if schedule is empty/missing, unlock everything
+            if (QuestionEngine.unlockedProblemTypes.length === 0) {
+                QuestionEngine.unlockedProblemTypes = QuestionEngine.allProblemTypes.slice();
+                console.log("Morris Maths: unlocked all " +
+                    QuestionEngine.unlockedProblemTypes.length + " problem types (no schedule)");
+            }
 
             return config;
         });
@@ -182,6 +100,11 @@ function initApp() {
         WrittenMode.init();
         PrintUI.init();
         KeyboardShortcuts.init();
+
+        // Step 7b: Initialise Concepts UI (Targeted Revision)
+        if (typeof ConceptsUI !== "undefined") {
+            ConceptsUI.init();
+        }
 
         // Step 8: Show welcome screen or main app
         if (!config) {
@@ -249,33 +172,11 @@ window.addEventListener("DOMContentLoaded", function() {
     if (typeof AccessControl !== "undefined") {
         AccessControl.init().then(function(result) {
             if (result.granted) {
-                // Determine which course to load
-                var courseName = AccessControl.getCourseName();
-                console.log("Course resolved: " + courseName);
-
-                // Dynamically load course data bundle + schedule, then init
-                loadCourseScripts(courseName).then(function() {
-                    initApp();
-                }).catch(function(err) {
-                    console.error("Failed to load course scripts:", err);
-                    document.body.innerHTML =
-                        '<div style="padding:2em;font-family:sans-serif;max-width:600px;margin:0 auto;">' +
-                        '<h1>Course Data Not Found</h1>' +
-                        '<p>Could not load data for course: <strong>' + courseName + '</strong></p>' +
-                        '<p>Expected files: <code>' + courseName + '_data_bundle.js</code> and ' +
-                        '<code>' + courseName + '_schedule.js</code></p>' +
-                        '<p>Check that these files exist in the app folder.</p>' +
-                        '</div>';
-                });
+                initApp();
             }
-            // If not granted, _showCodeScreen handles calling initApp after code entry
         });
     } else {
-        // AccessControl not loaded (scripts missing), try default course
-        loadCourseScripts(DEFAULT_COURSE).then(function() {
-            initApp();
-        }).catch(function() {
-            initApp(); // Proceed anyway, QuestionEngine will warn about missing data
-        });
+        // AccessControl not loaded (scripts missing), proceed directly
+        initApp();
     }
 });
