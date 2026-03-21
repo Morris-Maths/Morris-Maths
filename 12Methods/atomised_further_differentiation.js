@@ -17461,6 +17461,386 @@ var ATOMISED_FURTHER_DIFFERENTIATION = {
           }
         }
           ]
-        }
+        },
+
+    {
+      pt_id: "KN_047",
+      topic: "Further Differentiation and Applications",
+      subtopic: "Basic Differentiation Skills",
+      concept: "Kinematics Integration",
+      pt: "Differentiation of a quotient of functions requiring nested rules",
+      testing: "",
+      reason_bank: [
+            "wrong_rule",
+            "setup_error",
+            "sign_error",
+            "algebra_slip",
+            "missing_chain_factor",
+            "not_sure"
+      ],
+      easy: [],
+      medium: [
+            {
+                  qid: "KN_047_m01",
+                  q: "Differentiate $y = \\frac{\\sin(x)}{(x+1)^2}$.",
+                  a: "$y' = \\frac{\\cos(x)(x+1)^2 - \\sin(x) \\cdot 2(x+1)}{(x+1)^4} = \\frac{\\cos(x)(x+1) - 2\\sin(x)}{(x+1)^3}$",
+                  seedSpec: {
+                        version: 2,
+                        seedable: true,
+                        reason: "Kinematics. Derivatives/integrals verified by SymPy. Numeric values parameterised. Answers must be recomputed for each variant.",
+                        parameters: {
+                              v1: {
+                                    type: "int",
+                                    min: -4,
+                                    max: 6,
+                                    step: 1,
+                                    description: "Value 1 (source: 1)"
+                              }
+                        },
+                        constraints: [
+                              "v1 != 1"
+                        ],
+                        derived: {},
+                        substitutions: {
+                              q: {
+                                    1: "str(v1)"
+                              },
+                              a: {
+                                    1: "str(v1)"
+                              }
+                        },
+                        sourceValues: {
+                              v1: 1
+                        }
+                  }
+            }
+      ],
+      hard: []
+},
+
+    {
+      pt_id: "KN_052",
+      topic: "Further Differentiation and Applications",
+      subtopic: "Exponential Growth and Decay",
+      concept: "Kinematics Integration",
+      pt: "Evaluating exponential model $Ae^{kt}$ at specific time",
+      testing: "",
+      reason_bank: [
+            "wrong_rule",
+            "missing_chain_factor",
+            "substitution_error",
+            "sign_error",
+            "algebra_slip",
+            "not_sure"
+      ],
+      easy: [],
+      medium: [
+            {
+                  qid: "KN_052_m01",
+                  q: "A bacteria population is modelled by $N(t) = 300e^{0.15t}$. Find $N(4)$.",
+                  a: "$N(4) = 300e^{0.6} \\approx 300 \\times 1.822 = 546.6 \\approx 547$",
+                  seedSpec: {
+                        version: 2,
+                        seedable: true,
+                        reason: "Kinematics. Derivatives/integrals verified by SymPy. Numeric values parameterised. Answers must be recomputed for each variant.",
+                        parameters: {
+                              v1: {
+                                    type: "int",
+                                    min: 150,
+                                    max: 450,
+                                    step: 5,
+                                    description: "Value 1 (source: 300)"
+                              },
+                              v2: {
+                                    type: "int",
+                                    min: -1,
+                                    max: 9,
+                                    step: 1,
+                                    description: "Value 2 (source: 4)"
+                              }
+                        },
+                        constraints: [
+                              "v1 != 300 or v2 != 4"
+                        ],
+                        derived: {},
+                        substitutions: {
+                              q: {
+                                    4: "str(v2)",
+                                    300: "str(v1)"
+                              },
+                              a: {
+                                    4: "str(v2)",
+                                    300: "str(v1)"
+                              }
+                        },
+                        sourceValues: {
+                              v1: 300,
+                              v2: 4
+                        }
+                  }
+            }
+      ],
+      hard: []
+},
+
+    {
+      pt_id: "KN_066",
+      topic: "Further Differentiation and Applications",
+      subtopic: "Optimisation Problems",
+      concept: "Kinematics Integration",
+      pt: "Interpreting optimization result in physical context with packing constraints",
+      testing: "",
+      reason_bank: [
+            "setup_error",
+            "wrong_rule",
+            "interpretation_mixup",
+            "sign_error",
+            "algebra_slip",
+            "not_sure"
+      ],
+      easy: [],
+      medium: [
+            {
+                  qid: "KN_066_m01",
+                  q: "A box made from a 20 cm × 30 cm sheet by cutting squares of side $x$ from each corner has volume $V(x) = x(20-2x)(30-2x)$. Find the maximum volume and state any constraints on $x$.",
+                  a: "$V'(x) = 12x^2 - 200x + 600 = 0$. By quadratic formula: $x = \\frac{200 \\pm \\sqrt{40000-28800}}{24} = \\frac{200 \\pm \\sqrt{11200}}{24}$. Valid solution (where $0 < x < 10$): $x \\approx 3.92$ cm. $V_{max} \\approx 1056$ cm³. Constraint: $0 < x < 10$.",
+                  seedSpec: {
+                        version: 2,
+                        seedable: true,
+                        reason: "Kinematics. Derivatives/integrals verified by SymPy. Numeric values parameterised. Answers must be recomputed for each variant.",
+                        parameters: {
+                              v1: {
+                                    type: "int",
+                                    min: 10,
+                                    max: 30,
+                                    step: 5,
+                                    description: "Value 1 (source: 20)"
+                              },
+                              v2: {
+                                    type: "int",
+                                    min: 15,
+                                    max: 45,
+                                    step: 5,
+                                    description: "Value 2 (source: 30)"
+                              },
+                              v3: {
+                                    type: "int",
+                                    min: -7,
+                                    max: 3,
+                                    step: 1,
+                                    description: "Value 3 (source: -2)"
+                              }
+                        },
+                        constraints: [
+                              "v1 != 20 or v2 != 30 or v3 != -2"
+                        ],
+                        derived: {},
+                        substitutions: {
+                              q: {
+                                    20: "str(v1)",
+                                    30: "str(v2)",
+                                    "-2": "str(v3)"
+                              },
+                              a: {
+                                    20: "str(v1)",
+                                    30: "str(v2)",
+                                    "-2": "str(v3)"
+                              }
+                        },
+                        sourceValues: {
+                              v1: 20,
+                              v2: 30,
+                              v3: -2
+                        }
+                  }
+            }
+      ],
+      hard: []
+},
+
+    {
+      pt_id: "KN_069",
+      topic: "Further Differentiation and Applications",
+      subtopic: "Exponential Growth and Decay",
+      concept: "Kinematics Integration",
+      pt: "Models where $\\frac{dA}{dx} = kA$ are given",
+      testing: "",
+      reason_bank: [
+            "setup_error",
+            "wrong_rule",
+            "interpretation_mixup",
+            "sign_error",
+            "substitution_error",
+            "not_sure"
+      ],
+      easy: [],
+      medium: [
+            {
+                  qid: "KN_069_m01",
+                  q: "A quantity $Q$ satisfies $\\frac{dQ}{dt} = -0.05Q$. Given $Q(0) = 200$, find $Q(t)$ and evaluate $Q(10)$.",
+                  a: "$Q(t) = 200e^{-0.05t}$. $Q(10) = 200e^{-0.5} \\approx 121.3$",
+                  seedSpec: {
+                        version: 2,
+                        seedable: true,
+                        reason: "Kinematics. Derivatives/integrals verified by SymPy. Numeric values parameterised. Answers must be recomputed for each variant.",
+                        parameters: {
+                              v1: {
+                                    type: "int",
+                                    min: 100,
+                                    max: 300,
+                                    step: 5,
+                                    description: "Value 1 (source: 200)"
+                              },
+                              v2: {
+                                    type: "int",
+                                    min: 5,
+                                    max: 15,
+                                    step: 1,
+                                    description: "Value 2 (source: 10)"
+                              }
+                        },
+                        constraints: [
+                              "v1 != 200 or v2 != 10"
+                        ],
+                        derived: {},
+                        substitutions: {
+                              q: {
+                                    10: "str(v2)",
+                                    200: "str(v1)"
+                              },
+                              a: {
+                                    10: "str(v2)",
+                                    200: "str(v1)"
+                              }
+                        },
+                        sourceValues: {
+                              v1: 200,
+                              v2: 10
+                        }
+                  }
+            }
+      ],
+      hard: []
+},
+
+    {
+      pt_id: "KN_071",
+      topic: "Further Differentiation and Applications",
+      subtopic: "Basic Differentiation Skills",
+      concept: "Kinematics Integration",
+      pt: "Other trigonometric calculations",
+      testing: "Testing: Using trig identities within differentiation contexts",
+      reason_bank: [
+            "wrong_rule",
+            "missing_chain_factor",
+            "substitution_error",
+            "sign_error",
+            "algebra_slip",
+            "not_sure"
+      ],
+      easy: [],
+      medium: [
+            {
+                  qid: "KN_071_m01",
+                  q: "If $y = \\sin^2(x) + \\cos^2(x)$, find $\\frac{dy}{dx}$.",
+                  a: "$y = 1$ (Pythagorean identity), so $\\frac{dy}{dx} = 0$.",
+                  seedSpec: {
+                        version: 2,
+                        seedable: false,
+                        reason: "No numeric values to parameterise."
+                  }
+            },
+            {
+                  qid: "KN_071_m02",
+                  q: "Simplify $\\frac{d}{dx}[\\sin(2x)]$ using the double angle formula.",
+                  a: "$\\frac{d}{dx}[\\sin(2x)] = 2\\cos(2x)$. Or: $\\sin(2x) = 2\\sin(x)\\cos(x)$, differentiating by product rule gives $2(\\cos^2(x) - \\sin^2(x)) = 2\\cos(2x)$",
+                  seedSpec: {
+                        version: 2,
+                        seedable: true,
+                        reason: "Kinematics. Derivatives/integrals verified by SymPy. Numeric values parameterised. Answers must be recomputed for each variant.",
+                        parameters: {
+                              v1: {
+                                    type: "int",
+                                    min: -3,
+                                    max: 7,
+                                    step: 1,
+                                    description: "Value 1 (source: 2)"
+                              }
+                        },
+                        constraints: [
+                              "v1 != 2"
+                        ],
+                        derived: {},
+                        substitutions: {
+                              q: {
+                                    2: "str(v1)"
+                              },
+                              a: {
+                                    2: "str(v1)"
+                              }
+                        },
+                        sourceValues: {
+                              v1: 2
+                        }
+                  }
+            }
+      ],
+      hard: []
+},
+
+    {
+      pt_id: "KN_075",
+      topic: "Further Differentiation and Applications",
+      subtopic: "Basic Differentiation Skills",
+      concept: "Kinematics Integration",
+      pt: "Using $\\lim_{h \\to 0} \\frac{a^h - 1}{h}$ for $a = e$ in problem solving",
+      testing: "",
+      reason_bank: [
+            "wrong_rule",
+            "missing_chain_factor",
+            "substitution_error",
+            "sign_error",
+            "algebra_slip",
+            "not_sure"
+      ],
+      easy: [],
+      medium: [
+            {
+                  qid: "KN_075_m01",
+                  q: "Evaluate $\\lim_{h \\to 0} \\frac{e^{3h} - 1}{h}$.",
+                  a: "$\\lim_{h \\to 0} \\frac{e^{3h} - 1}{h} = 3 \\cdot \\lim_{h \\to 0} \\frac{e^{3h} - 1}{3h} = 3 \\cdot 1 = 3$",
+                  seedSpec: {
+                        version: 2,
+                        seedable: true,
+                        reason: "Kinematics. Derivatives/integrals verified by SymPy. Numeric values parameterised. Answers must be recomputed for each variant.",
+                        parameters: {
+                              v1: {
+                                    type: "int",
+                                    min: -2,
+                                    max: 8,
+                                    step: 1,
+                                    description: "Value 1 (source: 3)"
+                              }
+                        },
+                        constraints: [
+                              "v1 != 3"
+                        ],
+                        derived: {},
+                        substitutions: {
+                              q: {
+                                    3: "str(v1)"
+                              },
+                              a: {
+                                    3: "str(v1)"
+                              }
+                        },
+                        sourceValues: {
+                              v1: 3
+                        }
+                  }
+            }
+      ],
+      hard: []
+}
   ]
 };

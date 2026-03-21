@@ -82,7 +82,7 @@ var ATOMISED_INTEGRALS = {
           topic: "Integrals",
           subtopic: "Anti-differentiation",
           concept: "Differentiation (then Integrate)",
-          pt: "Differentiate a function; then integrate the resulting identity to find the antiderivative",
+          pt: "Differentiate a function; integrate the resulting identity to hence find the antiderivative",
           testing: "",
           reason_bank: ["wrong_rule", "sign_error", "missing_chain_factor", "algebra_slip", "substitution_error", "not_sure"],
           easy: [
@@ -3197,6 +3197,611 @@ var ATOMISED_INTEGRALS = {
         }
       ],
     }
+,
 
+    {
+      pt_id: "KN_018",
+      topic: "Integrals",
+      subtopic: "Applications of Integration",
+      concept: "Kinematics Integration",
+      pt: "Calculating area bounded by derivative curve and x-axis using absolute value",
+      testing: "",
+      reason_bank: [
+            "wrong_rule",
+            "missing_chain_factor",
+            "substitution_error",
+            "sign_error",
+            "algebra_slip",
+            "not_sure"
+      ],
+      easy: [],
+      medium: [
+            {
+                  qid: "KN_018_m01",
+                  q: "The derivative of $f(x)$ is $f'(x) = x^2 - 1$ for $0 \\leq x \\leq 2$. Find the area between $y = f'(x)$ and the $x$-axis.",
+                  a: "$f'(x) = 0$ at $x = 1$. Area $= \\left|\\int_0^1 (x^2-1) dx\\right| + \\int_1^2 (x^2-1) dx = \\frac{2}{3} + \\frac{4}{3} = 2$",
+                  seedSpec: {
+                        version: 2,
+                        seedable: true,
+                        reason: "Kinematics. Derivatives/integrals verified by SymPy. Numeric values parameterised. Answers must be recomputed for each variant.",
+                        parameters: {
+                              v1: {
+                                    type: "int",
+                                    min: -3,
+                                    max: 7,
+                                    step: 1,
+                                    description: "Value 1 (source: 2)"
+                              }
+                        },
+                        constraints: [
+                              "v1 != 2"
+                        ],
+                        derived: {},
+                        substitutions: {
+                              q: {
+                                    2: "str(v1)"
+                              },
+                              a: {
+                                    2: "str(v1)"
+                              }
+                        },
+                        sourceValues: {
+                              v1: 2
+                        }
+                  }
+            }
+      ],
+      hard: []
+},
+
+    {
+      pt_id: "KN_034",
+      topic: "Integrals",
+      subtopic: "Applications of Integration",
+      concept: "Kinematics Integration",
+      pt: "Calculating volume by integration (finding bounds from curve equation)",
+      testing: "",
+      reason_bank: [
+            "setup_error",
+            "wrong_rule",
+            "interpretation_mixup",
+            "sign_error",
+            "substitution_error",
+            "not_sure"
+      ],
+      easy: [],
+      medium: [
+            {
+                  qid: "KN_034_m01",
+                  q: "Find the volume when $y = 4 - x^2$ (for $y \\geq 0$) is rotated about the $x$-axis.",
+                  a: "$y = 0$ when $x = \\pm 2$. $V = \\pi\\int_{-2}^{2} (4-x^2)^2 dx = \\pi\\int_{-2}^{2} (16 - 8x^2 + x^4) dx = \\pi[16x - \\frac{8x^3}{3} + \\frac{x^5}{5}]_{-2}^{2} = \\frac{512\\pi}{15}$",
+                  seedSpec: {
+                        version: 2,
+                        seedable: true,
+                        reason: "Kinematics. Derivatives/integrals verified by SymPy. Numeric values parameterised. Answers must be recomputed for each variant.",
+                        parameters: {
+                              v1: {
+                                    type: "int",
+                                    min: -1,
+                                    max: 9,
+                                    step: 1,
+                                    description: "Value 1 (source: 4)"
+                              }
+                        },
+                        constraints: [
+                              "v1 != 4"
+                        ],
+                        derived: {},
+                        substitutions: {
+                              q: {
+                                    4: "str(v1)"
+                              },
+                              a: {
+                                    4: "str(v1)"
+                              }
+                        },
+                        sourceValues: {
+                              v1: 4
+                        }
+                  }
+            }
+      ],
+      hard: []
+},
+
+    {
+      pt_id: "KN_037",
+      topic: "Integrals",
+      subtopic: "Definite Integrals",
+      concept: "Kinematics Integration",
+      pt: "Completing table of function values for rectangle approximation",
+      testing: "",
+      reason_bank: [
+            "setup_error",
+            "wrong_rule",
+            "interpretation_mixup",
+            "sign_error",
+            "substitution_error",
+            "not_sure"
+      ],
+      easy: [],
+      medium: [
+            {
+                  qid: "KN_037_m01",
+                  q: "Complete the table for $f(x) = \\frac{1}{x+1}$ to approximate $\\int_0^4 f(x) dx$ using 4 rectangles of width 1:\n| $x$ | 0 | 1 | 2 | 3 | 4 |\n|-----|---|---|---|---|---|\n| $f(x)$ | ? | ? | ? | ? | ? |",
+                  a: "$f(0) = 1$, $f(1) = \\frac{1}{2}$, $f(2) = \\frac{1}{3}$, $f(3) = \\frac{1}{4}$, $f(4) = \\frac{1}{5}$",
+                  seedSpec: {
+                        version: 2,
+                        seedable: true,
+                        reason: "Kinematics. Derivatives/integrals verified by SymPy. Numeric values parameterised. Answers must be recomputed for each variant.",
+                        parameters: {
+                              v1: {
+                                    type: "int",
+                                    min: -1,
+                                    max: 9,
+                                    step: 1,
+                                    description: "Value 1 (source: 4)"
+                              },
+                              v2: {
+                                    type: "int",
+                                    min: -3,
+                                    max: 7,
+                                    step: 1,
+                                    description: "Value 2 (source: 2)"
+                              },
+                              v3: {
+                                    type: "int",
+                                    min: -2,
+                                    max: 8,
+                                    step: 1,
+                                    description: "Value 3 (source: 3)"
+                              }
+                        },
+                        constraints: [
+                              "v1 != 4 or v2 != 2 or v3 != 3"
+                        ],
+                        derived: {},
+                        substitutions: {
+                              q: {
+                                    2: "str(v2)",
+                                    3: "str(v3)",
+                                    4: "str(v1)"
+                              },
+                              a: {
+                                    2: "str(v2)",
+                                    3: "str(v3)",
+                                    4: "str(v1)"
+                              }
+                        },
+                        sourceValues: {
+                              v1: 4,
+                              v2: 2,
+                              v3: 3
+                        }
+                  }
+            }
+      ],
+      hard: []
+},
+
+    {
+      pt_id: "KN_043",
+      topic: "Integrals",
+      subtopic: "Fundamental Theorem",
+      concept: "Kinematics Integration",
+      pt: "Determining function from integral equation using fundamental theorem and solving ODE",
+      testing: "",
+      reason_bank: [
+            "wrong_rule",
+            "missing_chain_factor",
+            "substitution_error",
+            "sign_error",
+            "algebra_slip",
+            "not_sure"
+      ],
+      easy: [],
+      medium: [
+            {
+                  qid: "KN_043_m01",
+                  q: "If $F(x) = \\int_0^x (3t^2 - 2) dt + 5$, find $F(2)$.",
+                  a: "$F(2) = [t^3 - 2t]_0^2 + 5 = (8-4) + 5 = 9$",
+                  seedSpec: {
+                        version: 2,
+                        seedable: true,
+                        reason: "Kinematics. Derivatives/integrals verified by SymPy. Numeric values parameterised. Answers must be recomputed for each variant.",
+                        parameters: {
+                              v1: {
+                                    type: "int",
+                                    min: -2,
+                                    max: 8,
+                                    step: 1,
+                                    description: "Value 1 (source: 3)"
+                              },
+                              v2: {
+                                    type: "int",
+                                    min: -3,
+                                    max: 7,
+                                    step: 1,
+                                    description: "Value 2 (source: 2)"
+                              },
+                              v3: {
+                                    type: "int",
+                                    min: 0,
+                                    max: 10,
+                                    step: 1,
+                                    description: "Value 3 (source: 5)"
+                              }
+                        },
+                        constraints: [
+                              "v1 != 3 or v2 != 2 or v3 != 5"
+                        ],
+                        derived: {},
+                        substitutions: {
+                              q: {
+                                    2: "str(v2)",
+                                    3: "str(v1)",
+                                    5: "str(v3)"
+                              },
+                              a: {
+                                    2: "str(v2)",
+                                    3: "str(v1)",
+                                    5: "str(v3)"
+                              }
+                        },
+                        sourceValues: {
+                              v1: 3,
+                              v2: 2,
+                              v3: 5
+                        }
+                  }
+            }
+      ],
+      hard: []
+},
+
+    {
+      pt_id: "KN_046",
+      topic: "Integrals",
+      subtopic: "Applications of Integration",
+      concept: "Kinematics Integration",
+      pt: "Determining polynomial coefficients from turning point and area condition",
+      testing: "",
+      reason_bank: [
+            "setup_error",
+            "sign_error",
+            "wrong_rule",
+            "interpretation_mixup",
+            "algebra_slip",
+            "not_sure"
+      ],
+      easy: [],
+      medium: [
+            {
+                  qid: "KN_046_m01",
+                  q: "$f(x) = ax^2 + bx$ has a turning point at $x = 2$ and $\\int_0^4 f(x) dx = 16$. Find $a$ and $b$.",
+                  a: "$f'(x) = 2ax + b = 0$ at $x=2$: $4a + b = 0$ ①. $\\int_0^4 (ax^2 + bx) dx = \\frac{64a}{3} + 8b = 16$ ②. From ①: $b = -4a$. Sub into ②: $\\frac{64a}{3} - 32a = 16 \\Rightarrow -\\frac{32a}{3} = 16 \\Rightarrow a = -\\frac{3}{2}$, $b = 6$. Check: $\\int_0^4 (-\\frac{3}{2}x^2 + 6x)dx = [-\\frac{x^3}{2} + 3x^2]_0^4 = -32 + 48 = 16$",
+                  seedSpec: {
+                        version: 2,
+                        seedable: true,
+                        reason: "Kinematics. Derivatives/integrals verified by SymPy. Numeric values parameterised. Answers must be recomputed for each variant.",
+                        parameters: {
+                              v1: {
+                                    type: "int",
+                                    min: -3,
+                                    max: 7,
+                                    step: 1,
+                                    description: "Value 1 (source: 2)"
+                              },
+                              v2: {
+                                    type: "int",
+                                    min: 8,
+                                    max: 24,
+                                    step: 1,
+                                    description: "Value 2 (source: 16)"
+                              }
+                        },
+                        constraints: [
+                              "v1 != 2 or v2 != 16"
+                        ],
+                        derived: {},
+                        substitutions: {
+                              q: {
+                                    2: "str(v1)",
+                                    16: "str(v2)"
+                              },
+                              a: {
+                                    2: "str(v1)",
+                                    16: "str(v2)"
+                              }
+                        },
+                        sourceValues: {
+                              v1: 2,
+                              v2: 16
+                        }
+                  }
+            }
+      ],
+      hard: []
+},
+
+    {
+      pt_id: "KN_050",
+      topic: "Integrals",
+      subtopic: "Definite Integrals",
+      concept: "Kinematics Integration",
+      pt: "Evaluating definite integral of transformed trigonometric function",
+      testing: "",
+      reason_bank: [
+            "wrong_rule",
+            "missing_chain_factor",
+            "substitution_error",
+            "sign_error",
+            "algebra_slip",
+            "not_sure"
+      ],
+      easy: [],
+      medium: [
+            {
+                  qid: "KN_050_m01",
+                  q: "Given $\\int_0^{\\pi} \\sin(x) dx = 2$, evaluate $\\int_0^{\\pi} [3\\sin(x) + 1] dx$.",
+                  a: "$3\\int_0^{\\pi} \\sin(x) dx + \\int_0^{\\pi} 1 \\, dx = 3(2) + \\pi = 6 + \\pi \\approx 9.142$",
+                  seedSpec: {
+                        version: 2,
+                        seedable: true,
+                        reason: "Kinematics. Derivatives/integrals verified by SymPy. Numeric values parameterised. Answers must be recomputed for each variant.",
+                        parameters: {
+                              v1: {
+                                    type: "int",
+                                    min: -3,
+                                    max: 7,
+                                    step: 1,
+                                    description: "Value 1 (source: 2)"
+                              },
+                              v2: {
+                                    type: "int",
+                                    min: -2,
+                                    max: 8,
+                                    step: 1,
+                                    description: "Value 2 (source: 3)"
+                              }
+                        },
+                        constraints: [
+                              "v1 != 2 or v2 != 3"
+                        ],
+                        derived: {},
+                        substitutions: {
+                              q: {
+                                    2: "str(v1)",
+                                    3: "str(v2)"
+                              },
+                              a: {
+                                    2: "str(v1)",
+                                    3: "str(v2)"
+                              }
+                        },
+                        sourceValues: {
+                              v1: 2,
+                              v2: 3
+                        }
+                  }
+            }
+      ],
+      hard: []
+},
+
+    {
+      pt_id: "KN_064",
+      topic: "Integrals",
+      subtopic: "Definite Integrals",
+      concept: "Kinematics Integration",
+      pt: "Integrating exponential function over specified bounds",
+      testing: "",
+      reason_bank: [
+            "wrong_rule",
+            "missing_chain_factor",
+            "substitution_error",
+            "sign_error",
+            "algebra_slip",
+            "not_sure"
+      ],
+      easy: [],
+      medium: [
+            {
+                  qid: "KN_064_m01",
+                  q: "Evaluate $\\int_0^2 3e^{-x} dx$.",
+                  a: "$[-3e^{-x}]_0^2 = -3e^{-2} + 3 = 3(1 - e^{-2}) \\approx 2.594$",
+                  seedSpec: {
+                        version: 2,
+                        seedable: true,
+                        reason: "Kinematics. Derivatives/integrals verified by SymPy. Numeric values parameterised. Answers must be recomputed for each variant.",
+                        parameters: {
+                              v1: {
+                                    type: "int",
+                                    min: -2,
+                                    max: 8,
+                                    step: 1,
+                                    description: "Value 1 (source: 3)"
+                              }
+                        },
+                        constraints: [
+                              "v1 != 3"
+                        ],
+                        derived: {},
+                        substitutions: {
+                              q: {
+                                    3: "str(v1)"
+                              },
+                              a: {
+                                    3: "str(v1)"
+                              }
+                        },
+                        sourceValues: {
+                              v1: 3
+                        }
+                  }
+            }
+      ],
+      hard: []
+},
+
+    {
+      pt_id: "KN_068",
+      topic: "Integrals",
+      subtopic: "Applications of Integration",
+      concept: "Kinematics Integration",
+      pt: "Inverse volume problem: finding height/level from given volume",
+      testing: "",
+      reason_bank: [
+            "setup_error",
+            "wrong_rule",
+            "interpretation_mixup",
+            "sign_error",
+            "substitution_error",
+            "not_sure"
+      ],
+      easy: [],
+      medium: [
+            {
+                  qid: "KN_068_m01",
+                  q: "A container has cross-sectional area $A(h) = \\pi h$ at height $h$. The volume up to height $H$ is $V = \\int_0^H \\pi h \\, dh$. Find the height when $V = 8\\pi$.",
+                  a: "$V = \\pi\\left[\\frac{h^2}{2}\\right]_0^H = \\frac{\\pi H^2}{2} = 8\\pi \\Rightarrow H^2 = 16 \\Rightarrow H = 4$",
+                  seedSpec: {
+                        version: 2,
+                        seedable: true,
+                        reason: "Kinematics. Derivatives/integrals verified by SymPy. Numeric values parameterised. Answers must be recomputed for each variant.",
+                        parameters: {
+                              v1: {
+                                    type: "int",
+                                    min: 3,
+                                    max: 13,
+                                    step: 1,
+                                    description: "Value 1 (source: 8)"
+                              }
+                        },
+                        constraints: [
+                              "v1 != 8"
+                        ],
+                        derived: {},
+                        substitutions: {
+                              q: {
+                                    8: "str(v1)"
+                              },
+                              a: {
+                                    8: "str(v1)"
+                              }
+                        },
+                        sourceValues: {
+                              v1: 8
+                        }
+                  }
+            }
+      ],
+      hard: []
+},
+
+    {
+      pt_id: "KN_070",
+      topic: "Integrals",
+      subtopic: "Definite Integrals",
+      concept: "Kinematics Integration",
+      pt: "Numerical integration approximation (trapezoidal rule)",
+      testing: "",
+      reason_bank: [
+            "setup_error",
+            "wrong_rule",
+            "interpretation_mixup",
+            "sign_error",
+            "substitution_error",
+            "not_sure"
+      ],
+      easy: [],
+      medium: [
+            {
+                  qid: "KN_070_m01",
+                  q: "Use the trapezoidal rule with 4 strips to approximate $\\int_0^2 e^{x^2} dx$ given:\n| $x$ | 0 | 0.5 | 1.0 | 1.5 | 2.0 |\n|-----|---|---|---|---|---|\n| $e^{x^2}$ | 1 | 1.284 | 2.718 | 9.488 | 54.598 |",
+                  a: "$T = \\frac{h}{2}[f(x_0) + 2f(x_1) + 2f(x_2) + 2f(x_3) + f(x_4)] = \\frac{0.5}{2}[1 + 2(1.284) + 2(2.718) + 2(9.488) + 54.598] = 0.25 \\times 82.578 \\approx 20.64$",
+                  seedSpec: {
+                        version: 2,
+                        seedable: true,
+                        reason: "Kinematics. Derivatives/integrals verified by SymPy. Numeric values parameterised. Answers must be recomputed for each variant.",
+                        parameters: {
+                              v1: {
+                                    type: "int",
+                                    min: -1,
+                                    max: 9,
+                                    step: 1,
+                                    description: "Value 1 (source: 4)"
+                              },
+                              v2: {
+                                    type: "float",
+                                    min: 1,
+                                    max: 2,
+                                    step: 0.05,
+                                    description: "Value 2 (source: 1.5)"
+                              },
+                              v3: {
+                                    type: "int",
+                                    min: -3,
+                                    max: 7,
+                                    step: 1,
+                                    description: "Value 3 (source: 2)"
+                              },
+                              v4: {
+                                    type: "float",
+                                    min: 0.78,
+                                    max: 1.78,
+                                    step: 0.05,
+                                    description: "Value 4 (source: 1.284)"
+                              },
+                              v5: {
+                                    type: "float",
+                                    min: 2.22,
+                                    max: 3.22,
+                                    step: 0.05,
+                                    description: "Value 5 (source: 2.718)"
+                              },
+                              v6: {
+                                    type: "float",
+                                    min: 8.99,
+                                    max: 9.99,
+                                    step: 0.05,
+                                    description: "Value 6 (source: 9.488)"
+                              }
+                        },
+                        constraints: [
+                              "v1 != 4 or v2 != 1.5 or v3 != 2"
+                        ],
+                        derived: {},
+                        substitutions: {
+                              q: {
+                                    2: "str(v3)",
+                                    4: "str(v1)",
+                                    "1.5": "str(v2)",
+                                    "1.284": "str(v4)",
+                                    "2.718": "str(v5)",
+                                    "9.488": "str(v6)"
+                              },
+                              a: {
+                                    2: "str(v3)",
+                                    4: "str(v1)",
+                                    "1.5": "str(v2)",
+                                    "1.284": "str(v4)",
+                                    "2.718": "str(v5)",
+                                    "9.488": "str(v6)"
+                              }
+                        },
+                        sourceValues: {
+                              v1: 4,
+                              v2: 1.5,
+                              v3: 2,
+                              v4: 1.284,
+                              v5: 2.718,
+                              v6: 9.488
+                        }
+                  }
+            }
+      ],
+      hard: []
+}
   ]
 };

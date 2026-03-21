@@ -60,7 +60,7 @@ var CONCEPTS_RECTILINEAR_MOTION = {
         {
           qid: "C_KN_38",
           q: "If $v(2) = -4$, describe the motion of the particle at $t = 2$. What is its speed?",
-          answer: "The particle is moving in the negative direction (to the left) at $t = 2$, with a velocity of $-4$ units/s.\nIts speed is $|-4| = 4$ units/s.\nSpeed is the magnitude of velocity — it tells you how fast without indicating direction.",
+          answer: "The particle is moving in the negative direction (to the left) at $t = 2$, with a velocity of $-4$ units per second.\nIts speed is $|-4| = 4$ units per second.\nSpeed is the magnitude of velocity — it tells you how fast without indicating direction.",
           diagram: null
         }
       ]
@@ -108,7 +108,7 @@ var CONCEPTS_RECTILINEAR_MOTION = {
         {
           qid: "C_KN_42",
           q: "What conditions must be met for a particle to change direction?",
-          answer: "The velocity must equal zero AND then change sign (a max or min on the displacement-time graph).\nBoth conditions are needed. $v(t) = 0$ alone is not sufficient — if the velocity touches zero but its derivative (gradient) does not change sign (like at a horizontal inflection point in the displacement function), the particle momentarily pauses but does not reverse.\nFor a genuine direction change, $v$ (displacement's derivative) must go from positive to negative or vice versa.",
+          answer: "The velocity must equal zero AND then change sign (a max or min on the displacement curve).\nBoth conditions are needed. $v(t) = 0$ alone is not sufficient — if the velocity touches zero but its derivative (gradient) does not change sign (like at a horizontal inflection point in the displacement function), the particle momentarily pauses but does not reverse.\nFor a genuine direction change, $v$ (displacement's derivative) must go from positive to negative or vice versa.",
           diagram: null
         }
       ]
@@ -150,12 +150,12 @@ var CONCEPTS_RECTILINEAR_MOTION = {
         {
           qid: "C_KN_45",
           q: "On a velocity-time graph, how can you tell when the particle is:\n(a) moving right,\n(b) moving left,\n(c) at rest,\n(d) at maximum displacement?",
-          answer: "(a) Moving right: where $v(t) > 0$, the graph is above the $t$-axis. This tells us the gradient of the displacement-time graph is positive.\n(b) Moving left: where $v(t) < 0$, the graph is below the $t$-axis. This tells us the gradient of the displacement-time graph is negative.\n(c) At rest: where $v(t) = 0$, the graph crosses or touches the $t$-axis. Gradient is 0 on the displacement-time graph.\n(d) Maximum displacement: where $v(t) = 0$ and changes from positive to negative — the particle stops moving forward and starts going back. We need to check endpoints to see if there is a global maximum.",
+          answer: "(a) Moving right: where $v(t) > 0$, the graph is above the $t$-axis. This tells us the gradient of the displacement curve is positive.\n(b) Moving left: where $v(t) < 0$, the graph is below the $t$-axis. This tells us the gradient of the displacement curve is negative.\n(c) At rest: where $v(t) = 0$, the graph crosses or touches the $t$-axis. Gradient is 0 on the displacement curve.\n(d) Maximum displacement: where $v(t) = 0$ and changes from positive to negative — the particle stops moving forward and starts going back. We need to check endpoints to see if there is a global maximum.",
           diagram: null
         },
         {
           qid: "C_KN_46",
-          q: "On a velocity-time graph, what does the area between the curve and the $t$-axis represent?",
+          q: "On a velocity-time graph, what does the area between the curve and the time axis represent?",
           answer: "The signed area represents displacement (change in position).\nArea above the $t$-axis = displacement in the positive direction.\nArea below = displacement in the negative direction.\nThe NET signed area gives total displacement.\nThe TOTAL area (all sections positive) gives total distance travelled.\nThis is why distance and displacement calculations require different treatments.",
           diagram: null
         },
@@ -192,7 +192,7 @@ var CONCEPTS_RECTILINEAR_MOTION = {
         {
           qid: "C_KN_50",
           q: "How can you find distance travelled from $t = a$ to $t = b$ when you are given the $v(t)$ equation, without using $\\int_a^b |v(t)| \\, dt$ on ClassPad?",
-          answer: "Find when $v(t)$ intersects the $t$-axis (zeros of $v$) and split at those times.\nCalculate the signed area on each sub-interval using definite integrals, take absolute values, and add them.\ne.g. $\, \left|\int_a^{c_1} v(t)\,dt\right| + \left|\int_{c_1}^{c_2} v(t)\,dt\right| + \left|\int_{c_2}^{c_3} v(t)\,dt\right| + \left|\int_{c_3}^{b} v(t)\,dt\right|$.",
+          answer: "Find when $v(t)$ intersects the $t$-axis and goes from above the axis to below.\nCalculate the area between the curve in the sections between intercepts (by finding the integrals for each section). Make all areas positive and add them together.\ne.g. $\\int_a^{c_1} v(t) \\, dt + \\left| \\int_{c_1}^{c_2} v(t) \\, dt \\right| + \\int_{c_2}^{c_3} v(t) \\, dt + \\left| \\int_{c_3}^{b} v(t) \\, dt \\right|$",
           diagram: null
         },
         {
@@ -259,7 +259,7 @@ var CONCEPTS_RECTILINEAR_MOTION = {
   diagrams: [
     {
       filename: "C_KN_36_velocity_signed_total_area.png",
-      description: "A velocity-time graph showing v(t) as a smooth curve that starts positive, dips below the $t$-axis, then returns positive. The region from t=a to where v(t) crosses zero is shaded lightly (positive area = forward displacement). The region below the $t$-axis is shaded with crosshatch (negative area = backward displacement). Below the graph: two annotations — 'Signed area = change in displacement' and 'Total area (all positive) = distance travelled'. Points a and b marked on $t$-axis. The curve label v(t) on the right.",
+      description: "A velocity-time graph showing v(t) as a smooth curve that starts positive, dips below the t-axis, then returns positive. The region from t=a to where v(t) crosses zero is shaded lightly (positive area = forward displacement). The region below the t-axis is shaded with crosshatch (negative area = backward displacement). Below the graph: two annotations — 'Signed area = change in displacement' and 'Total area (all positive) = distance travelled'. Points a and b marked on t-axis. The curve label v(t) on the right.",
       type: "function_graph",
       forQuestion: "C_KN_36"
     }

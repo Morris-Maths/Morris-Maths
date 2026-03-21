@@ -689,5 +689,501 @@ var ATOMISED_INTERVAL_ESTIMATES = {
     
         // Sampling Methods > Identifying sources of bias in sampling procedure with
 
+    {
+      pt_id: "KN_016",
+      topic: "Interval Estimates for Proportions",
+      subtopic: "Sample Proportions",
+      concept: "Kinematics Integration",
+      pt: "Assessing normality of sampling distribution",
+      testing: "",
+      reason_bank: [
+            "wrong_rule",
+            "missing_chain_factor",
+            "substitution_error",
+            "sign_error",
+            "algebra_slip",
+            "not_sure"
+      ],
+      easy: [],
+      medium: [
+            {
+                  qid: "KN_016_m01",
+                  q: "$n = 15$ and $\\hat{p} = 0.1$. Can we use the normal approximation for $\\hat{P}$? Explain.",
+                  a: "$n\\hat{p} = 15 \\times 0.1 = 1.5 < 10$. The condition $n\\hat{p} \\geq 10$ is not met, so the normal approximation is **not** appropriate. The sample size is too small relative to how rare the event is.",
+                  seedSpec: {
+                        version: 2,
+                        seedable: false,
+                        reason: "Conceptual/explanatory question — no numeric parameterisation."
+                  }
+            }
+      ],
+      hard: []
+},
+
+    {
+      pt_id: "KN_024",
+      topic: "Interval Estimates for Proportions",
+      subtopic: "Confidence Intervals for Proportions",
+      concept: "Kinematics Integration",
+      pt: "Calculating maximum margin of error for given sample size and confidence level",
+      testing: "",
+      reason_bank: [
+            "setup_error",
+            "wrong_rule",
+            "interpretation_mixup",
+            "sign_error",
+            "substitution_error",
+            "not_sure"
+      ],
+      easy: [],
+      medium: [
+            {
+                  qid: "KN_024_m01",
+                  q: "For $n = 400$ and 95% confidence, find the maximum possible margin of error.",
+                  a: "Maximum ME occurs at $\\hat{p} = 0.5$: $ME = 1.96\\sqrt{\\frac{0.25}{400}} = 1.96 \\times 0.025 = 0.049$",
+                  seedSpec: {
+                        version: 2,
+                        seedable: true,
+                        reason: "Kinematics. Derivatives/integrals verified by SymPy. Numeric values parameterised. Answers must be recomputed for each variant.",
+                        parameters: {
+                              v1: {
+                                    type: "int",
+                                    min: 200,
+                                    max: 600,
+                                    step: 5,
+                                    description: "Value 1 (source: 400)"
+                              },
+                              v2: {
+                                    type: "int",
+                                    min: 48,
+                                    max: 142,
+                                    step: 5,
+                                    description: "Value 2 (source: 95)"
+                              }
+                        },
+                        constraints: [
+                              "v1 != 400 or v2 != 95"
+                        ],
+                        derived: {},
+                        substitutions: {
+                              q: {
+                                    95: "str(v2)",
+                                    400: "str(v1)"
+                              },
+                              a: {
+                                    95: "str(v2)",
+                                    400: "str(v1)"
+                              }
+                        },
+                        sourceValues: {
+                              v1: 400,
+                              v2: 95
+                        }
+                  }
+            }
+      ],
+      hard: []
+},
+
+    {
+      pt_id: "KN_027",
+      topic: "Interval Estimates for Proportions",
+      subtopic: "Confidence Intervals for Proportions",
+      concept: "Kinematics Integration",
+      pt: "Calculating probability of confidence interval coverage using binomial distribution",
+      testing: "",
+      reason_bank: [
+            "wrong_rule",
+            "missing_chain_factor",
+            "substitution_error",
+            "sign_error",
+            "algebra_slip",
+            "not_sure"
+      ],
+      easy: [],
+      medium: [
+            {
+                  qid: "KN_027_m01",
+                  q: "20 independent 90% confidence intervals are constructed. Find the probability that all 20 contain the true proportion.",
+                  a: "Each CI has 0.9 probability of covering. $P(\\text{all 20}) = 0.9^{20} \\approx 0.1216$",
+                  seedSpec: {
+                        version: 2,
+                        seedable: true,
+                        reason: "Kinematics. Derivatives/integrals verified by SymPy. Numeric values parameterised. Answers must be recomputed for each variant.",
+                        parameters: {
+                              v1: {
+                                    type: "int",
+                                    min: 10,
+                                    max: 30,
+                                    step: 5,
+                                    description: "Value 1 (source: 20)"
+                              },
+                              v2: {
+                                    type: "int",
+                                    min: 45,
+                                    max: 135,
+                                    step: 5,
+                                    description: "Value 2 (source: 90)"
+                              }
+                        },
+                        constraints: [
+                              "v1 != 20 or v2 != 90"
+                        ],
+                        derived: {},
+                        substitutions: {
+                              q: {
+                                    20: "str(v1)",
+                                    90: "str(v2)"
+                              },
+                              a: {
+                                    20: "str(v1)",
+                                    90: "str(v2)"
+                              }
+                        },
+                        sourceValues: {
+                              v1: 20,
+                              v2: 90
+                        }
+                  }
+            }
+      ],
+      hard: []
+},
+
+    {
+      pt_id: "KN_039",
+      topic: "Interval Estimates for Proportions",
+      subtopic: "Confidence Intervals for Proportions",
+      concept: "Kinematics Integration",
+      pt: "Converting confidence interval for proportion to range for expected count",
+      testing: "",
+      reason_bank: [
+            "setup_error",
+            "wrong_rule",
+            "interpretation_mixup",
+            "sign_error",
+            "substitution_error",
+            "not_sure"
+      ],
+      easy: [],
+      medium: [
+            {
+                  qid: "KN_039_m01",
+                  q: "A 95% CI for the proportion of defective items is $(0.03, 0.07)$. In a batch of 500, how many defective items would you expect?",
+                  a: "Expected count range: $500 \\times 0.03 = 15$ to $500 \\times 0.07 = 35$ defective items.",
+                  seedSpec: {
+                        version: 2,
+                        seedable: true,
+                        reason: "Kinematics. Derivatives/integrals verified by SymPy. Numeric values parameterised. Answers must be recomputed for each variant.",
+                        parameters: {
+                              v1: {
+                                    type: "int",
+                                    min: 48,
+                                    max: 142,
+                                    step: 5,
+                                    description: "Value 1 (source: 95)"
+                              },
+                              v2: {
+                                    type: "int",
+                                    min: 250,
+                                    max: 750,
+                                    step: 5,
+                                    description: "Value 2 (source: 500)"
+                              }
+                        },
+                        constraints: [
+                              "v1 != 95 or v2 != 500"
+                        ],
+                        derived: {},
+                        substitutions: {
+                              q: {
+                                    95: "str(v1)",
+                                    500: "str(v2)"
+                              },
+                              a: {
+                                    95: "str(v1)",
+                                    500: "str(v2)"
+                              }
+                        },
+                        sourceValues: {
+                              v1: 95,
+                              v2: 500
+                        }
+                  }
+            }
+      ],
+      hard: []
+},
+
+    {
+      pt_id: "KN_040",
+      topic: "Interval Estimates for Proportions",
+      subtopic: "Random Sampling",
+      concept: "Kinematics Integration",
+      pt: "Describing systematic sampling method and suggesting random alternative",
+      testing: "",
+      reason_bank: [
+            "setup_error",
+            "wrong_rule",
+            "interpretation_mixup",
+            "sign_error",
+            "substitution_error",
+            "not_sure"
+      ],
+      easy: [],
+      medium: [
+            {
+                  qid: "KN_040_m01",
+                  q: "A factory produces 5000 items per day. Describe how to select a systematic sample of 100 items. What is one advantage over simple random sampling?",
+                  a: "Calculate interval: $k = 5000/100 = 50$. Randomly select a starting item between 1 and 50, then select every 50th item. Advantage: it spreads the sample evenly across the production run, capturing any time-dependent variation (e.g. machine warm-up effects) that simple random sampling might miss.",
+                  seedSpec: {
+                        version: 2,
+                        seedable: false,
+                        reason: "Conceptual/explanatory question — no numeric parameterisation."
+                  }
+            }
+      ],
+      hard: []
+},
+
+    {
+      pt_id: "KN_041",
+      topic: "Interval Estimates for Proportions",
+      subtopic: "Confidence Intervals for Proportions",
+      concept: "Kinematics Integration",
+      pt: "Determining confidence level from given confidence interval",
+      testing: "",
+      reason_bank: [
+            "setup_error",
+            "wrong_rule",
+            "interpretation_mixup",
+            "sign_error",
+            "substitution_error",
+            "not_sure"
+      ],
+      easy: [],
+      medium: [
+            {
+                  qid: "KN_041_m01",
+                  q: "A sample gives $\\hatp = 0.4$, $n = 100$. The CI is $(0.3265, 0.4735)$. What confidence level was used?",
+                  a: "$ME = 0.4735 - 0.4 = 0.0735$. $SE = \\sqrt{\\frac{0.4 \\times 0.6}{100}} = 0.04899$. $z = \\frac{0.0735}{0.04899} \\approx 1.50$. From $z$-tables, $P(-1.5 < Z < 1.5) \\approx 0.8664$. The confidence level is approximately $86.6\\%$.",
+                  seedSpec: {
+                        version: 2,
+                        seedable: true,
+                        reason: "Kinematics. Derivatives/integrals verified by SymPy. Numeric values parameterised. Answers must be recomputed for each variant.",
+                        parameters: {
+                              v1: {
+                                    type: "int",
+                                    min: 50,
+                                    max: 150,
+                                    step: 5,
+                                    description: "Value 1 (source: 100)"
+                              }
+                        },
+                        constraints: [
+                              "v1 != 100"
+                        ],
+                        derived: {},
+                        substitutions: {
+                              q: {
+                                    100: "str(v1)"
+                              },
+                              a: {
+                                    100: "str(v1)"
+                              }
+                        },
+                        sourceValues: {
+                              v1: 100
+                        }
+                  }
+            }
+      ],
+      hard: []
+},
+
+    {
+      pt_id: "KN_042",
+      topic: "Interval Estimates for Proportions",
+      subtopic: "Sample Proportions",
+      concept: "Kinematics Integration",
+      pt: "Determining count from sample proportion given standard deviations from mean",
+      testing: "",
+      reason_bank: [
+            "setup_error",
+            "wrong_rule",
+            "interpretation_mixup",
+            "sign_error",
+            "substitution_error",
+            "not_sure"
+      ],
+      easy: [],
+      medium: [
+            {
+                  qid: "KN_042_m01",
+                  q: "$\\hat{P} \\sim N(0.6, \\sigma^2)$ where $\\sigma = 0.03$. In a sample of $n = 200$, how many successes correspond to $\\hat{p}$ being 2 SDs above the mean?",
+                  a: "$\\hat{p} = 0.6 + 2(0.03) = 0.66$. Count $= 200 \\times 0.66 = 132$.",
+                  seedSpec: {
+                        version: 2,
+                        seedable: true,
+                        reason: "Kinematics. Derivatives/integrals verified by SymPy. Numeric values parameterised. Answers must be recomputed for each variant.",
+                        parameters: {
+                              v1: {
+                                    type: "int",
+                                    min: 100,
+                                    max: 300,
+                                    step: 5,
+                                    description: "Value 1 (source: 200)"
+                              },
+                              v2: {
+                                    type: "int",
+                                    min: -3,
+                                    max: 7,
+                                    step: 1,
+                                    description: "Value 2 (source: 2)"
+                              }
+                        },
+                        constraints: [
+                              "v1 != 200 or v2 != 2"
+                        ],
+                        derived: {},
+                        substitutions: {
+                              q: {
+                                    2: "str(v2)",
+                                    200: "str(v1)"
+                              },
+                              a: {
+                                    2: "str(v2)",
+                                    200: "str(v1)"
+                              }
+                        },
+                        sourceValues: {
+                              v1: 200,
+                              v2: 2
+                        }
+                  }
+            }
+      ],
+      hard: []
+},
+
+    {
+      pt_id: "KN_065",
+      topic: "Interval Estimates for Proportions",
+      subtopic: "Confidence Intervals for Proportions",
+      concept: "Kinematics Integration",
+      pt: "Interpreting confidence interval coverage and sampling variability",
+      testing: "",
+      reason_bank: [
+            "setup_error",
+            "wrong_rule",
+            "interpretation_mixup",
+            "sign_error",
+            "substitution_error",
+            "not_sure"
+      ],
+      easy: [],
+      medium: [
+            {
+                  qid: "KN_065_m01",
+                  q: "If we construct 95% confidence intervals from 200 independent samples, approximately how many would we expect to contain the true proportion?",
+                  a: "Approximately $200 \\times 0.95 = 190$ of the intervals would contain the true proportion.",
+                  seedSpec: {
+                        version: 2,
+                        seedable: true,
+                        reason: "Kinematics. Derivatives/integrals verified by SymPy. Numeric values parameterised. Answers must be recomputed for each variant.",
+                        parameters: {
+                              v1: {
+                                    type: "int",
+                                    min: 48,
+                                    max: 142,
+                                    step: 5,
+                                    description: "Value 1 (source: 95)"
+                              },
+                              v2: {
+                                    type: "int",
+                                    min: 100,
+                                    max: 300,
+                                    step: 5,
+                                    description: "Value 2 (source: 200)"
+                              }
+                        },
+                        constraints: [
+                              "v1 != 95 or v2 != 200"
+                        ],
+                        derived: {},
+                        substitutions: {
+                              q: {
+                                    95: "str(v1)",
+                                    200: "str(v2)"
+                              },
+                              a: {
+                                    95: "str(v1)",
+                                    200: "str(v2)"
+                              }
+                        },
+                        sourceValues: {
+                              v1: 95,
+                              v2: 200
+                        }
+                  }
+            }
+      ],
+      hard: []
+},
+
+    {
+      pt_id: "KN_074",
+      topic: "Interval Estimates for Proportions",
+      subtopic: "Confidence Intervals for Proportions",
+      concept: "Kinematics Integration",
+      pt: "Suggesting ways to decrease margin of error",
+      testing: "",
+      reason_bank: [
+            "setup_error",
+            "wrong_rule",
+            "interpretation_mixup",
+            "sign_error",
+            "substitution_error",
+            "not_sure"
+      ],
+      easy: [],
+      medium: [
+            {
+                  qid: "KN_074_m01",
+                  q: "A researcher obtains a 95% CI of $(0.35, 0.65)$. Suggest two ways to reduce the margin of error.",
+                  a: "(1) Increase the sample size $n$ — this decreases $\\sqrt{\\hat{p}(1-\\hat{p})/n}$. (2) Decrease the confidence level (e.g. from 95% to 90%) — this decreases the $z$-value. Both reduce the margin of error $ME = z\\sqrt{\\hat{p}(1-\\hat{p})/n}$.",
+                  seedSpec: {
+                        version: 2,
+                        seedable: true,
+                        reason: "Kinematics. Derivatives/integrals verified by SymPy. Numeric values parameterised. Answers must be recomputed for each variant.",
+                        parameters: {
+                              v1: {
+                                    type: "int",
+                                    min: 48,
+                                    max: 142,
+                                    step: 5,
+                                    description: "Value 1 (source: 95)"
+                              }
+                        },
+                        constraints: [
+                              "v1 != 95"
+                        ],
+                        derived: {},
+                        substitutions: {
+                              q: {
+                                    95: "str(v1)"
+                              },
+                              a: {
+                                    95: "str(v1)"
+                              }
+                        },
+                        sourceValues: {
+                              v1: 95
+                        }
+                  }
+            }
+      ],
+      hard: []
+}
   ]
 };
