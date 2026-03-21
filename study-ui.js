@@ -1101,6 +1101,8 @@ var StudyUI = {
             if (quickArea) quickArea.style.display = "flex";
         }
     },
+
+    /**
      * Check if all parts have been assessed.
      * Does NOT record results yet -- that happens when user clicks Next.
      * @private
