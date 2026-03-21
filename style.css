@@ -4883,24 +4883,35 @@ body.dark-theme input[type="range"] {
     color: #e74c3c;
 }
 
-/* Teacher course switcher */
-.teacher-dropdown-label {
-    padding: 6px 14px 4px;
-    font-size: 0.7rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: #999;
+/* Teacher course switcher <select> in top bar */
+.teacher-course-select {
+    margin-left: 12px;
+    padding: 4px 8px;
+    font-size: 0.8rem;
+    font-family: inherit;
+    color: rgba(250, 249, 246, 0.85);
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 6px;
+    cursor: pointer;
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='rgba(255,255,255,0.6)'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    padding-right: 24px;
 }
-.dark-theme .teacher-dropdown-label {
-    color: #777;
+.teacher-course-select:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.4);
 }
-.teacher-course-active {
-    font-weight: 600;
-    color: #d4a017 !important;
+.teacher-course-select:focus {
+    border-color: #d4a017;
 }
-.dark-theme .teacher-course-active {
-    color: #f0c040 !important;
+.teacher-course-select option {
+    background: #2a2a3e;
+    color: #e0ddd8;
 }
 
 /* ============================================================================

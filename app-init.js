@@ -2,34 +2,48 @@
 // TEACHER TOOLBAR (injected when teacher logs in via ?teacher URL)
 // ============================================================================
 function _injectTeacherToolbar() {
+    var topBarLeft = document.querySelector(".top-bar-left");
     var topBarRight = document.querySelector(".top-bar-right");
     if (!topBarRight) return;
 
-    // Build course switcher options (teacher gets all courses)
-    var courseSwitcherHTML = "";
-    if (typeof COURSE_REGISTRY !== "undefined") {
+    // ---- Course switcher <select> in the top-bar-left (always visible) ----
+    if (topBarLeft && typeof COURSE_REGISTRY !== "undefined") {
         var courseKeys = Object.keys(COURSE_REGISTRY);
-        if (courseKeys.length > 1) {
+        if (courseKeys.length > 0) {
             var currentId = (typeof CourseLoader !== "undefined")
                 ? CourseLoader.getCourseId() : DEFAULT_COURSE_ID;
-            courseSwitcherHTML =
-                '<div class="teacher-dropdown-divider"></div>' +
-                '<div class="teacher-dropdown-label">Switch course</div>';
+
+            var selectEl = document.createElement("select");
+            selectEl.id = "teacher-course-select";
+            selectEl.className = "teacher-course-select";
+            selectEl.title = "Switch course";
+
             courseKeys.forEach(function(key) {
-                var cfg = COURSE_REGISTRY[key];
-                var active = (key === currentId) ? " teacher-course-active" : "";
-                courseSwitcherHTML +=
-                    '<button class="teacher-dropdown-item teacher-course-item' + active +
-                    '" data-course="' + key + '">' +
-                    '<span class="teacher-dropdown-icon">\uD83D\uDCDA</span> ' +
-                    cfg.displayName +
-                    (key === currentId ? ' \u2713' : '') +
-                    '</button>';
+                var opt = document.createElement("option");
+                opt.value = key;
+                opt.textContent = COURSE_REGISTRY[key].displayName;
+                if (key === currentId) opt.selected = true;
+                selectEl.appendChild(opt);
             });
+
+            selectEl.addEventListener("change", function() {
+                var newCourse = selectEl.value;
+                if (!newCourse) return;
+                if (typeof CourseLoader !== "undefined") {
+                    localStorage.setItem(CourseLoader.COURSE_KEY, newCourse);
+                } else {
+                    localStorage.setItem("wace_course_id", newCourse);
+                }
+                // Reload with new course (sessionStorage preserves teacher mode)
+                var url = window.location.pathname + "?course=" + newCourse;
+                window.location.href = url;
+            });
+
+            topBarLeft.appendChild(selectEl);
         }
     }
 
-    // Create the teacher menu container
+    // ---- Teacher menu button in top-bar-right ----
     var teacherMenu = document.createElement("div");
     teacherMenu.id = "teacher-toolbar";
     teacherMenu.className = "teacher-toolbar";
@@ -41,14 +55,12 @@ function _injectTeacherToolbar() {
             '<button class="teacher-dropdown-item" id="teacher-menu-costs">' +
                 '<span class="teacher-dropdown-icon">\uD83D\uDCB0</span> Costs Dashboard' +
             '</button>' +
-            courseSwitcherHTML +
             '<div class="teacher-dropdown-divider"></div>' +
             '<button class="teacher-dropdown-item teacher-dropdown-exit" id="teacher-menu-exit">' +
                 '<span class="teacher-dropdown-icon">\u2190</span> Exit Teacher Mode' +
             '</button>' +
         '</div>';
 
-    // Insert before the student name
     topBarRight.insertBefore(teacherMenu, topBarRight.firstChild);
 
     // Toggle dropdown
@@ -60,7 +72,6 @@ function _injectTeacherToolbar() {
         dropdown.classList.toggle("open");
     });
 
-    // Close dropdown when clicking outside
     document.addEventListener("click", function() {
         dropdown.classList.remove("open");
     });
@@ -68,7 +79,6 @@ function _injectTeacherToolbar() {
     // Costs dashboard
     document.getElementById("teacher-menu-costs").addEventListener("click", function() {
         dropdown.classList.remove("open");
-        // Hide the main app, show the teacher dashboard overlay
         document.getElementById("app-container").style.display = "none";
         TeacherDashboard.open();
     });
@@ -77,32 +87,11 @@ function _injectTeacherToolbar() {
     document.getElementById("teacher-menu-exit").addEventListener("click", function() {
         dropdown.classList.remove("open");
         sessionStorage.removeItem("wace_teacher_mode");
-        // Go back to the code screen (remove ?teacher param)
         var url = window.location.pathname;
         window.location.href = url;
     });
 
-    // Course switcher items (teacher only)
-    var courseItems = document.querySelectorAll(".teacher-course-item");
-    courseItems.forEach(function(item) {
-        item.addEventListener("click", function() {
-            var newCourse = item.getAttribute("data-course");
-            if (!newCourse) return;
-            dropdown.classList.remove("open");
-            // Store the new course and reload so all scripts reload cleanly
-            if (typeof CourseLoader !== "undefined") {
-                localStorage.setItem(CourseLoader.COURSE_KEY, newCourse);
-            } else {
-                localStorage.setItem("wace_course_id", newCourse);
-            }
-            // Preserve teacher mode across reload (sessionStorage persists in same tab)
-            // Don't include ?teacher to avoid re-showing code screen
-            var url = window.location.pathname + "?course=" + newCourse;
-            window.location.href = url;
-        });
-    });
-
-    console.log("Teacher toolbar injected");
+    console.log("Teacher toolbar injected (course select + menu)");
 }
 
 // ============================================================================
