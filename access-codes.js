@@ -275,6 +275,10 @@ var AccessControl = {
                     { valid: true, alreadyMine: true, offline: true }
                 ).then(function(result) {
                     if (result.valid && result.alreadyMine) {
+                        // Set course from Firestore if available
+                        if (result.course && typeof CourseLoader !== "undefined") {
+                            CourseLoader.setCourseFromCode(result.course);
+                        }
                         if (result.offline) {
                             console.log("AccessControl: Firebase unreachable, granting access from local storage");
                         } else {
@@ -397,6 +401,11 @@ var AccessControl = {
                     return;
                 }
 
+                // Set course from access code document (if CourseLoader available)
+                if (result.course && typeof CourseLoader !== "undefined") {
+                    CourseLoader.setCourseFromCode(result.course);
+                }
+
                 if (result.alreadyMine) {
                     // Re-use existing claim
                     AccessControl._saveCredential(AccessControl.CODE_KEY, code);
@@ -437,20 +446,22 @@ var AccessControl = {
                     return { valid: false, reason: "That code is not valid. Check with your teacher." };
                 }
                 var data = doc.data();
+                // Extract course from access code document (if present)
+                var course = data.course || null;
                 if (data.claimed) {
                     // Check if it is ours
                     var existingToken = localStorage.getItem(AccessControl.TOKEN_KEY);
                     if (data.deviceToken && data.deviceToken === existingToken) {
-                        return { valid: true, alreadyMine: true };
+                        return { valid: true, alreadyMine: true, course: course };
                     }
                     return { valid: false, reason: "That code has already been used by another student." };
                 }
-                return { valid: true, alreadyMine: false };
+                return { valid: true, alreadyMine: false, course: course };
             })
             .catch(function(err) {
                 // Network error (blocked, offline, etc.) -- trust local credentials
                 console.warn("AccessControl: Verify failed (network):", err.message || err);
-                return { valid: true, alreadyMine: true, offline: true };
+                return { valid: true, alreadyMine: true, offline: true, course: null };
             });
     },
 
@@ -481,14 +492,12 @@ var AccessControl = {
     claimCode: function(code, studentName) {
         var db = firebase.firestore();
         var token = localStorage.getItem(AccessControl.TOKEN_KEY);
-        var currentUser = firebase.auth().currentUser;
 
         return db.collection("accessCodes").doc(code.toUpperCase()).update({
             claimed: true,
             deviceToken: token,
             studentName: studentName,
-            claimedAt: firebase.firestore.FieldValue.serverTimestamp(),
-            authUid: currentUser ? currentUser.uid : null
+            claimedAt: firebase.firestore.FieldValue.serverTimestamp()
         }).then(function() {
             localStorage.removeItem("wace_pending_claim");
             console.log("AccessControl: Code " + code + " claimed by " + studentName);

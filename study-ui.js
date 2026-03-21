@@ -1322,28 +1322,22 @@ var StudyUI = {
 
         if (q.parts) {
             q.parts.forEach(function(p) {
-                var partPTs = QuestionEngine.getPartProblemTypes(p);
-                partPTs.forEach(function(pt) {
-                    if (allPTs.indexOf(pt) === -1) {
-                        allPTs.push(pt);
-                    }
-                });
+                if (p.problemType && allPTs.indexOf(p.problemType) === -1) {
+                    allPTs.push(p.problemType);
+                }
             });
         }
 
         Object.keys(StudyUI.partResults).forEach(function(label) {
             if (!StudyUI.partResults[label].correct) {
                 allCorrect = false;
-                // Find the problem type(s) for this part
+                // Find the problem type for this part
                 if (q.parts) {
                     q.parts.forEach(function(p) {
-                        if (p.partLabel === label) {
-                            var partPTs = QuestionEngine.getPartProblemTypes(p);
-                            partPTs.forEach(function(pt) {
-                                if (wrongPTs.indexOf(pt) === -1) {
-                                    wrongPTs.push(pt);
-                                }
-                            });
+                        if (p.partLabel === label && p.problemType) {
+                            if (wrongPTs.indexOf(p.problemType) === -1) {
+                                wrongPTs.push(p.problemType);
+                            }
                         }
                     });
                 }
@@ -1477,12 +1471,9 @@ var StudyUI = {
             StudyUI.guidedAccessedThisQuestion = true;
             var pts = [];
             q.parts.forEach(function(p) {
-                var partPTs = QuestionEngine.getPartProblemTypes(p);
-                partPTs.forEach(function(pt) {
-                    if (pts.indexOf(pt) === -1) {
-                        pts.push(pt);
-                    }
-                });
+                if (p.problemType && pts.indexOf(p.problemType) === -1) {
+                    pts.push(p.problemType);
+                }
             });
             SessionEngine.recordGuidedAccess(pts);
         }
@@ -1712,16 +1703,26 @@ var StudyUI = {
 
     /**
      * Get the diagram path for an image reference.
+     * Uses relativePath from the question data when available (course-aware),
+     * falls back to DIAGRAM_PATH + filename for backward compatibility.
      * @private
      */
     _getDiagramPath: function(imgRef, pool) {
         var filename = "";
+        var relPath = "";
         if (typeof imgRef === "string") {
             filename = imgRef;
         } else if (imgRef && imgRef.filename) {
             filename = imgRef.filename;
+            if (imgRef.relativePath) {
+                relPath = imgRef.relativePath;
+            }
         } else {
             return "";
+        }
+        // Use relativePath if the data provides one (course-aware paths)
+        if (relPath) {
+            return relPath;
         }
         if (pool === "practice") {
             return PRACTICE_DIAGRAM_PATH + filename;
@@ -1736,11 +1737,7 @@ var StudyUI = {
      * @private
      */
     _isDrawOnPart: function(part, q) {
-        if (!part) return false;
-        // Check formOfQuestion field (new data format)
-        if (part.formOfQuestion === "draw-on" || part.formOfQuestion === "fill-table") return true;
-        // Legacy heuristic: check questionText for keywords
-        if (!part.questionText) return false;
+        if (!part || !part.questionText) return false;
         var hasKeyword = /sketch|draw|on the axes|on the graph|shade|complete the table|fill in.*table|complete the following table/i
             .test(part.questionText);
         if (!hasKeyword) return false;

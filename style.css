@@ -4883,6 +4883,26 @@ body.dark-theme input[type="range"] {
     color: #e74c3c;
 }
 
+/* Teacher course switcher */
+.teacher-dropdown-label {
+    padding: 6px 14px 4px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #999;
+}
+.dark-theme .teacher-dropdown-label {
+    color: #777;
+}
+.teacher-course-active {
+    font-weight: 600;
+    color: #d4a017 !important;
+}
+.dark-theme .teacher-course-active {
+    color: #f0c040 !important;
+}
+
 /* ============================================================================
    CONCEPTS & SKILLS UI (Targeted Revision tab)
    ============================================================================ */

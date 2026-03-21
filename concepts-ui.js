@@ -19,46 +19,8 @@ var ConceptsUI = {
     _loaded: false,
 
     // ---- Canonical taxonomy (topics -> subtopics) ----
-    // This is the display taxonomy for the Targeted Revision tree.
-    // It maps topic names to arrays of subtopic names.
-    TAXONOMY: {
-        "Further Differentiation and Applications": [
-            "Basic Differentiation Skills",
-            "Exponential Growth and Decay",
-            "Second Derivatives",
-            "Small Increments",
-            "Applications of Differentiation",
-            "Optimisation Problems"
-        ],
-        "Integrals": [
-            "Anti-differentiation",
-            "Definite Integrals",
-            "Fundamental Theorem",
-            "Applications of Integration"
-        ],
-        "Discrete Random Variables": [
-            "General Discrete Random Variables",
-            "Bernoulli Distributions",
-            "Binomial Distributions"
-        ],
-        "The Logarithmic Function": [
-            "Logarithmic Functions",
-            "Calculus of the Natural Logarithmic Function"
-        ],
-        "Continuous Random Variables and the Normal Distribution": [
-            "General Continuous Random Variables",
-            "Normal Distributions"
-        ],
-        "Interval Estimates for Proportions": [
-            "Random Sampling",
-            "Sample Proportions",
-            "Confidence Intervals for Proportions"
-        ],
-        "Kinematics": [
-            "Kinematics: Differentiation",
-            "Kinematics: Integration"
-        ]
-    },
+    // Loaded from CourseLoader at init time. Fallback to empty if no course loaded.
+    TAXONOMY: {},
 
     // ---- All loaded concepts data ----
     // Populated by _registerConceptsData() from global CONCEPTS_* variables
@@ -70,6 +32,11 @@ var ConceptsUI = {
     init: function() {
         if (ConceptsUI._loaded) return;
         ConceptsUI._loaded = true;
+
+        // Load taxonomy from CourseLoader (course-aware)
+        if (typeof CourseLoader !== "undefined") {
+            ConceptsUI.TAXONOMY = CourseLoader.getTaxonomy();
+        }
 
         // Register any CONCEPTS_* globals
         ConceptsUI._registerConceptsData();
@@ -96,16 +63,24 @@ var ConceptsUI = {
     // DATA REGISTRATION
     // ================================================================
     _registerConceptsData: function() {
-        // Look for global CONCEPTS_* variables and register them
-        var globals = [
-            { varName: "CONCEPTS_INTEGRALS",           topic: "Integrals" },
-            { varName: "CONCEPTS_DIFFERENTIATION",     topic: "Further Differentiation and Applications" },
-            { varName: "CONCEPTS_LOGARITHMIC",         topic: "The Logarithmic Function" },
-            { varName: "CONCEPTS_DRV",                 topic: "Discrete Random Variables" },
-            { varName: "CONCEPTS_CRV_NORMAL",          topic: "Continuous Random Variables and the Normal Distribution" },
-            { varName: "CONCEPTS_INTERVAL_ESTIMATES",   topic: "Interval Estimates for Proportions" },
-            { varName: "CONCEPTS_KINEMATICS",          topic: "Kinematics" }
-        ];
+        // Get registration list from CourseLoader (course-aware),
+        // falling back to legacy hardcoded list for backward compatibility
+        var globals;
+        if (typeof CourseLoader !== "undefined" && CourseLoader.getConceptsRegistration) {
+            globals = CourseLoader.getConceptsRegistration();
+        }
+        // Fallback: legacy hardcoded list (only if CourseLoader not available)
+        if (!globals || globals.length === 0) {
+            globals = [
+                { varName: "CONCEPTS_INTEGRALS",           topic: "Integrals" },
+                { varName: "CONCEPTS_DIFFERENTIATION",     topic: "Further Differentiation and Applications" },
+                { varName: "CONCEPTS_LOGARITHMIC",         topic: "The Logarithmic Function" },
+                { varName: "CONCEPTS_DRV",                 topic: "Discrete Random Variables" },
+                { varName: "CONCEPTS_CRV_NORMAL",          topic: "Continuous Random Variables and the Normal Distribution" },
+                { varName: "CONCEPTS_INTERVAL_ESTIMATES",   topic: "Interval Estimates for Proportions" },
+                { varName: "CONCEPTS_KINEMATICS",          topic: "Kinematics" }
+            ];
+        }
 
         globals.forEach(function(entry) {
             if (typeof window[entry.varName] !== "undefined") {
@@ -436,7 +411,7 @@ var ConceptsUI = {
             html += '<div class="cs-flashcard-diagram">';
             // Extract filename from "[IMAGE: filename.png]" format
             var diagFile = card.diagram.replace(/\[IMAGE:\s*/, "").replace(/\]$/, "");
-            html += '<img src="concepts_diagrams/' + ConceptsUI._escAttr(diagFile) +
+            html += '<img src="' + CONCEPTS_DIAGRAM_PATH + ConceptsUI._escAttr(diagFile) +
                 '" alt="Diagram" onerror="this.style.display=\'none\'" ' +
                 'style="max-width:100%;border-radius:8px;margin-top:8px;">';
             html += '</div>';

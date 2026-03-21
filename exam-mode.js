@@ -1292,6 +1292,8 @@ var UI = {
         // Trigger tab-specific refresh
         if (tabName === "study") {
             UI.refreshStudyTab();
+        } else if (tabName === "targeted") {
+            if (typeof ConceptsUI !== "undefined") ConceptsUI.buildTree();
         } else if (tabName === "revise") {
             ReviseUI.refresh();
         } else if (tabName === "print") {
@@ -1368,11 +1370,6 @@ var UI = {
         DB.put(STORE_CONFIG, config).then(function() {
             console.log("Config saved for: " + name);
 
-            // Sync profile to cloud
-            if (typeof FirebaseSync !== "undefined" && FirebaseSync.saveProfile) {
-                FirebaseSync.saveProfile(config);
-            }
-
             // Complete access code claim if applicable
             if (typeof AccessControl !== "undefined" &&
                 typeof AccessControl.completeClaim === "function") {
@@ -1396,10 +1393,24 @@ var UI = {
         if (codeScreen) codeScreen.style.display = "none";
         document.getElementById("app-container").style.display = "block";
 
-        // Set student name in header
+        // Set student name in header title (left side: "Name's Course")
+        var appTitle = document.querySelector(".app-title");
+        if (appTitle && config && config.studentName) {
+            var courseName = "";
+            if (typeof CURRENT_COURSE_CONFIG !== "undefined" && CURRENT_COURSE_CONFIG &&
+                CURRENT_COURSE_CONFIG.displayName) {
+                courseName = CURRENT_COURSE_CONFIG.displayName;
+            } else {
+                var schedInfo2 = QuestionEngine.getScheduleInfo();
+                courseName = schedInfo2.className || "";
+            }
+            appTitle.textContent = config.studentName + "\u2019s " + courseName;
+        }
+        // Clear the right-side name display (name is now in the title)
         var nameDisplay = document.getElementById("student-name-display");
-        if (nameDisplay && config) {
-            nameDisplay.textContent = config.studentName;
+        if (nameDisplay) {
+            nameDisplay.textContent = "";
+            nameDisplay.style.display = "none";
         }
 
         // Apply saved theme
@@ -1642,11 +1653,7 @@ var UI = {
         DB.get(STORE_CONFIG, "main").then(function(config) {
             if (config) {
                 config[key] = value;
-                return DB.put(STORE_CONFIG, config).then(function() {
-                    if (typeof FirebaseSync !== "undefined" && FirebaseSync.saveProfile) {
-                        FirebaseSync.saveProfile(config);
-                    }
-                });
+                return DB.put(STORE_CONFIG, config);
             }
         }).then(function() {
             console.log("Preference saved: " + key + " = " + value);

@@ -1,6 +1,5 @@
 // ============================================================================
-// WACE Student Study Trainer - app.js
-// Phase S1: Core Foundation
+// Morris Maths - app-config.js
 // ============================================================================
 // ENCODING RULE: This file must contain ONLY ASCII characters (0x00-0x7F).
 // All non-ASCII UI symbols are defined as Unicode escapes in SYMBOLS below.
@@ -44,20 +43,15 @@ var APP_VERSION = "2.0.0";
 var DB_NAME = "WACEStudentTrainer";
 var DB_VERSION = 2;
 
-// ---- MULTI-COURSE CONFIG ----
-// Teacher password (moved from schedule.js so it is available before dynamic load).
-var TEACHER_DASHBOARD_PASSWORD = "MrMorris2026";
-
-// Courses available in this deployment.
-// Each entry needs a matching {name}_data_bundle.js and {name}_schedule.js file.
-var AVAILABLE_COURSES = ["12Methods", "11Methods"];
-var DEFAULT_COURSE = "12Methods";
-
-// Base path for all data files (relative to the HTML file).
-// In the restructured project, all files are flat in system_trainer/.
+// ---- COURSE-AWARE PATHS ----
+// These are overwritten by CourseLoader.detectCourse() before initApp() runs.
+// Defaults point to 12Methods for backward compatibility.
+var CURRENT_COURSE = "12Methods";
+var CURRENT_COURSE_CONFIG = null;
 var DATA_PATH = "";
-var DIAGRAM_PATH = "diagrams/";
-var PRACTICE_DIAGRAM_PATH = "practice_diagrams/";
+var DIAGRAM_PATH = "12Methods/diagrams/";
+var CONCEPTS_DIAGRAM_PATH = "12Methods/concepts_diagrams/";
+var PRACTICE_DIAGRAM_PATH = "12Methods/practice_diagrams/";
 
 // Object store names
 var STORE_CONFIG = "config";
