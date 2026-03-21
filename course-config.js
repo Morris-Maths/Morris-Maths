@@ -29,28 +29,27 @@ var COURSE_REGISTRY = {
         // Atomised skills files (loaded in order, loader last)
         atomisedFiles: [
             "12Methods/atomised_further_differentiation.js",
-            "12Methods/atomised_logarithms.js",
-            "12Methods/atomised_e_growth_and_decay.js",
+            "12Methods/atomised_logarithmic_edited.js",
             "12Methods/atomised_integrals.js",
             "12Methods/atomised_rectilinear_motion.js",
-            "12Methods/atomised_continuous_random_variables.js",
-            "12Methods/atomised_discrete_random_variables.js",
-            "12Methods/atomised_confidence_intervals.js",
-            "12Methods/atomised_sampling.js",
+            "12Methods/atomised_crv_normal.js",
+            "12Methods/atomised_drv.js",
+            "12Methods/atomised_interval_estimates.js",
+            "12Methods/atomised_uncategorised.js",
             "12Methods/atomised_loader.js"
         ],
 
         // Concepts files (global var name + topic label for ConceptsUI registration)
+        // NOTE: Only concepts_integrals.js exists so far. Add others as they are created.
         conceptsFiles: [
-            { src: "12Methods/concepts_further_differentiation.js",       globalVar: "CONCEPTS_FURTHER_DIFFERENTIATION",       topic: "Further Differentiation and Applications" },
-            { src: "12Methods/concepts_integrals.js",                     globalVar: "CONCEPTS_INTEGRALS",                     topic: "Integrals" },
-            { src: "12Methods/concepts_e_growth_and_decay.js",            globalVar: "CONCEPTS_E_GROWTH_AND_DECAY",            topic: "Exponential Growth and Decay" },
-            { src: "12Methods/concepts_logarithms.js",                    globalVar: "CONCEPTS_LOGARITHMS",                    topic: "The Logarithmic Function" },
-            { src: "12Methods/concepts_discrete_random_variables.js",     globalVar: "CONCEPTS_DISCRETE_RANDOM_VARIABLES",     topic: "Discrete Random Variables" },
-            { src: "12Methods/concepts_continuous_random_variables.js",    globalVar: "CONCEPTS_CONTINUOUS_RANDOM_VARIABLES",   topic: "Continuous Random Variables and the Normal Distribution" },
-            { src: "12Methods/concepts_confidence_intervals.js",          globalVar: "CONCEPTS_CONFIDENCE_INTERVALS",          topic: "Confidence Intervals for Proportions" },
-            { src: "12Methods/concepts_sampling.js",                      globalVar: "CONCEPTS_SAMPLING",                      topic: "Sampling" },
-            { src: "12Methods/concepts_rectilinear_motion.js",            globalVar: "CONCEPTS_RECTILINEAR_MOTION",            topic: "Rectilinear Motion" }
+            { src: "12Methods/concepts_integrals.js",  globalVar: "CONCEPTS_INTEGRALS",  topic: "Integrals" }
+            // Future:
+            // { src: "12Methods/concepts_further_differentiation.js",    globalVar: "CONCEPTS_FURTHER_DIFFERENTIATION",    topic: "Further Differentiation and Applications" },
+            // { src: "12Methods/concepts_logarithms.js",                 globalVar: "CONCEPTS_LOGARITHMS",                 topic: "The Logarithmic Function" },
+            // { src: "12Methods/concepts_discrete_random_variables.js",  globalVar: "CONCEPTS_DISCRETE_RANDOM_VARIABLES",  topic: "Discrete Random Variables" },
+            // { src: "12Methods/concepts_crv_normal.js",                 globalVar: "CONCEPTS_CRV_NORMAL",                 topic: "Continuous Random Variables and the Normal Distribution" },
+            // { src: "12Methods/concepts_interval_estimates.js",         globalVar: "CONCEPTS_INTERVAL_ESTIMATES",          topic: "Confidence Intervals for Proportions" },
+            // { src: "12Methods/concepts_rectilinear_motion.js",         globalVar: "CONCEPTS_RECTILINEAR_MOTION",          topic: "Rectilinear Motion" }
         ],
 
         // Taxonomy for Targeted Revision topic tree (topics -> subtopics)
