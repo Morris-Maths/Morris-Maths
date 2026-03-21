@@ -89,7 +89,8 @@ var COURSE_REGISTRY = {
             ],
             "Rectilinear Motion": [
                 "Kinematics: Differentiation",
-                "Kinematics: Integration"
+                "Kinematics: Integration",
+                "Kinematics: General"
             ]
         }
     },
