@@ -34,7 +34,7 @@ function _injectTeacherToolbar() {
                 } else {
                     localStorage.setItem("wace_course_id", newCourse);
                 }
-                // Reload with new course (sessionStorage preserves teacher mode)
+                // Reload with new course (sessionStorage preserves teacher mode within tab)
                 var url = window.location.pathname + "?course=" + newCourse;
                 window.location.href = url;
             });
@@ -164,6 +164,9 @@ function initApp() {
             _injectTeacherToolbar();
         }
 
+        // Step 10: Populate course switcher in settings modal (always available)
+        _initSettingsCourseSelect();
+
         console.log("Initialisation complete.");
 
         // Check MathJax loaded after a delay -- warn user if not
@@ -210,6 +213,46 @@ function initApp() {
     });
 }
 
+// ============================================================================
+// SETTINGS: COURSE SWITCHER (always available when multiple courses exist)
+// ============================================================================
+function _initSettingsCourseSelect() {
+    if (typeof COURSE_REGISTRY === "undefined") return;
+    var courseKeys = Object.keys(COURSE_REGISTRY);
+    if (courseKeys.length < 2) return; // No point showing if only one course
+
+    var group = document.getElementById("settings-course-group");
+    var selectEl = document.getElementById("settings-course-select");
+    if (!group || !selectEl) return;
+
+    var currentId = (typeof CourseLoader !== "undefined")
+        ? CourseLoader.getCourseId() : DEFAULT_COURSE_ID;
+
+    courseKeys.forEach(function(key) {
+        var opt = document.createElement("option");
+        opt.value = key;
+        opt.textContent = COURSE_REGISTRY[key].displayName;
+        if (key === currentId) opt.selected = true;
+        selectEl.appendChild(opt);
+    });
+
+    selectEl.addEventListener("change", function() {
+        var newCourse = selectEl.value;
+        if (!newCourse || newCourse === currentId) return;
+        if (typeof CourseLoader !== "undefined") {
+            localStorage.setItem(CourseLoader.COURSE_KEY, newCourse);
+        } else {
+            localStorage.setItem("wace_course_id", newCourse);
+        }
+        // Reload with new course (sessionStorage preserves teacher mode within tab)
+        var url = window.location.pathname + "?course=" + newCourse;
+        window.location.href = url;
+    });
+
+    group.style.display = "block";
+    console.log("Settings: Course switcher populated (" + courseKeys.length + " courses)");
+}
+
 // Start when DOM is ready
 window.addEventListener("DOMContentLoaded", function() {
     // Step 0: Detect which course to load (sets paths, stores course ID)
@@ -226,6 +269,11 @@ window.addEventListener("DOMContentLoaded", function() {
         });
     } else {
         // AccessControl not loaded (scripts missing), proceed directly
+        // If ?teacher is in the URL without Firebase, activate teacher mode
+        var urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has("teacher")) {
+            sessionStorage.setItem("wace_teacher_mode", "true");
+        }
         initApp();
     }
 });

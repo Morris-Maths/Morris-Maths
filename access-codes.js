@@ -240,6 +240,11 @@ var AccessControl = {
     init: function() {
         // If Firebase is not enabled, skip access control entirely
         if (!FIREBASE_ENABLED || !FIREBASE_CONFIG || !FIREBASE_CONFIG.apiKey) {
+            // If ?teacher in URL with no Firebase, activate teacher mode directly
+            var urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has("teacher")) {
+                sessionStorage.setItem("wace_teacher_mode", "true");
+            }
             return Promise.resolve({ granted: true });
         }
 
@@ -249,13 +254,30 @@ var AccessControl = {
         }
 
         // --- Teacher mode URL parameter ---
-        // If ?teacher is in the URL, always show the code screen
-        // so the teacher can enter their password (bypasses auto-login).
+        // If ?teacher is in the URL and teacher mode is NOT already active,
+        // show the code screen so the teacher can enter their password.
+        // If teacher mode IS already active (e.g. after a course switch),
+        // skip the code screen and proceed normally.
         var urlParams = new URLSearchParams(window.location.search);
         if (urlParams.has("teacher")) {
+            if (sessionStorage.getItem("wace_teacher_mode") === "true") {
+                // Already authenticated as teacher this session -- proceed
+                return AccessControl._restoreFromIDB().then(function() {
+                    return { granted: true };
+                });
+            }
             return AccessControl._restoreFromIDB().then(function() {
                 AccessControl._showCodeScreen();
                 return { granted: false };
+            });
+        }
+
+        // --- Teacher session persistence ---
+        // If teacher already authenticated this session (e.g. after course switch
+        // where URL no longer has ?teacher), skip access control.
+        if (sessionStorage.getItem("wace_teacher_mode") === "true") {
+            return AccessControl._restoreFromIDB().then(function() {
+                return { granted: true };
             });
         }
 
@@ -275,10 +297,6 @@ var AccessControl = {
                     { valid: true, alreadyMine: true, offline: true }
                 ).then(function(result) {
                     if (result.valid && result.alreadyMine) {
-                        // Set course from Firestore if available
-                        if (result.course && typeof CourseLoader !== "undefined") {
-                            CourseLoader.setCourseFromCode(result.course);
-                        }
                         if (result.offline) {
                             console.log("AccessControl: Firebase unreachable, granting access from local storage");
                         } else {
@@ -401,11 +419,6 @@ var AccessControl = {
                     return;
                 }
 
-                // Set course from access code document (if CourseLoader available)
-                if (result.course && typeof CourseLoader !== "undefined") {
-                    CourseLoader.setCourseFromCode(result.course);
-                }
-
                 if (result.alreadyMine) {
                     // Re-use existing claim
                     AccessControl._saveCredential(AccessControl.CODE_KEY, code);
@@ -446,22 +459,20 @@ var AccessControl = {
                     return { valid: false, reason: "That code is not valid. Check with your teacher." };
                 }
                 var data = doc.data();
-                // Extract course from access code document (if present)
-                var course = data.course || null;
                 if (data.claimed) {
                     // Check if it is ours
                     var existingToken = localStorage.getItem(AccessControl.TOKEN_KEY);
                     if (data.deviceToken && data.deviceToken === existingToken) {
-                        return { valid: true, alreadyMine: true, course: course };
+                        return { valid: true, alreadyMine: true };
                     }
                     return { valid: false, reason: "That code has already been used by another student." };
                 }
-                return { valid: true, alreadyMine: false, course: course };
+                return { valid: true, alreadyMine: false };
             })
             .catch(function(err) {
                 // Network error (blocked, offline, etc.) -- trust local credentials
                 console.warn("AccessControl: Verify failed (network):", err.message || err);
-                return { valid: true, alreadyMine: true, offline: true, course: null };
+                return { valid: true, alreadyMine: true, offline: true };
             });
     },
 

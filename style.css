@@ -5826,3 +5826,10 @@ body.dark-theme input[type="range"] {
 .question-diagram[src=""] {
     display: none;
 }
+
+/* Settings course hint */
+.settings-hint {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: var(--space-xs);
+}
