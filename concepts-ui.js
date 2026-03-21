@@ -640,9 +640,28 @@ var ConceptsUI = {
      * @param {string} pool     - "practice" for Skills, "original" for Exam Qs
      */
     startTargetedSession: function(topic, subtopic, pool) {
-        // Determine filter string and level for SessionEngine
+        // Switch UI: hide the topic tree, show the question area
+        var home = document.getElementById("targeted-home");
+        var qArea = document.getElementById("targeted-question-area");
+        if (home) home.style.display = "none";
+        if (qArea) qArea.style.display = "block";
+
+        // ---- Skills mode: route to SkillsPractice (atomised data) ----
+        if (pool === "practice") {
+            if (typeof SkillsPractice !== "undefined") {
+                SkillsPractice.start(topic, subtopic);
+            } else {
+                qArea.innerHTML =
+                    '<div class="session-empty">' +
+                    '<p>Skills practice module not loaded. Please refresh the page.</p>' +
+                    '<button class="btn btn-primary" onclick="ConceptsUI.backToTopicsFromSession()">Back to Topics</button>' +
+                    '</div>';
+            }
+            return;
+        }
+
+        // ---- Exam Questions mode: route through SessionEngine ----
         var filter = subtopic || topic;
-        var level = subtopic ? "subtopic" : "topic";
 
         // Read toggle settings
         var sectionFilter = ConceptsUI._getToggleValue("targeted-section-group") || "mix";
@@ -655,28 +674,6 @@ var ConceptsUI = {
             return;
         }
 
-        // Switch UI: hide the topic tree, show the question area
-        var home = document.getElementById("targeted-home");
-        var qArea = document.getElementById("targeted-question-area");
-        if (home) home.style.display = "none";
-        if (qArea) qArea.style.display = "block";
-
-        // ---- Skills mode: route to SkillsPractice module ----
-        if (pool === "practice") {
-            if (typeof SkillsPractice !== "undefined") {
-                SkillsPractice._areaId = "targeted-question-area";
-                SkillsPractice.start(topic, subtopic);
-            } else {
-                qArea.innerHTML =
-                    '<div class="session-empty">' +
-                    '<p>Skills practice module not loaded. Please refresh the page.</p>' +
-                    '<button class="btn btn-primary" onclick="ConceptsUI.backToTopicsFromSession()">Back to Topics</button>' +
-                    '</div>';
-            }
-            return;
-        }
-
-        // ---- Exam Questions mode: use SessionEngine as before ----
         // Point StudyUI at the targeted question area
         StudyUI._activeAreaId = "targeted-question-area";
 
@@ -687,8 +684,7 @@ var ConceptsUI = {
             sectionFilter: sectionFilter,
             wrongListOnly: false,
             answerMethod: answerMethod,
-            markingMode: "instant",
-            poolFilter: pool
+            markingMode: "instant"
         }).then(function() {
             var totalAvailable = SessionEngine.wrongList.length +
                 SessionEngine.freshList.length +
@@ -696,10 +692,9 @@ var ConceptsUI = {
                 SessionEngine.reviewList.length;
 
             if (totalAvailable === 0) {
-                var poolLabel = "Exam Questions";
                 qArea.innerHTML =
                     '<div class="session-empty">' +
-                    '<p>No ' + poolLabel + ' available for <strong>' +
+                    '<p>No Exam Questions available for <strong>' +
                     ConceptsUI._escHTML(filter) + '</strong>.</p>' +
                     '<button class="btn btn-primary" onclick="ConceptsUI.backToTopicsFromSession()">Back to Topics</button>' +
                     '</div>';
@@ -719,10 +714,6 @@ var ConceptsUI = {
         if (home) home.style.display = "block";
         if (qArea) { qArea.style.display = "none"; qArea.innerHTML = ""; }
         StudyUI._activeAreaId = "question-area";
-        // Clean up skills practice state if active
-        if (typeof SkillsPractice !== "undefined") {
-            SkillsPractice.active = false;
-        }
         ConceptsUI.buildTree();
     }
 };
