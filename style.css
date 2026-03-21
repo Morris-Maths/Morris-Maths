@@ -5365,3 +5365,329 @@ body.dark-theme input[type="range"] {
         width: 100%;
     }
 }
+/* ============================================================================
+   SKILLS PRACTICE UI STYLES
+   ============================================================================ */
+
+/* ---- Container ---- */
+.sp-container {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: var(--space-md);
+}
+
+/* ---- Progress bar ---- */
+.sp-progress-bar {
+    width: 100%;
+    height: 6px;
+    background: var(--bg-tertiary);
+    border-radius: 3px;
+    margin-bottom: var(--space-lg);
+    overflow: hidden;
+}
+.sp-progress-fill {
+    height: 100%;
+    background: var(--color-info);
+    border-radius: 3px;
+    transition: width 0.4s ease;
+}
+
+/* ---- Header ---- */
+.sp-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--space-lg);
+    gap: var(--space-md);
+    flex-wrap: wrap;
+}
+.sp-header-left {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.sp-concept {
+    font-family: 'Crimson Pro', serif;
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+.sp-skill {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+.sp-header-right {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    flex-shrink: 0;
+}
+.sp-counter {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+.sp-diff {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.sp-diff-easy {
+    background: var(--color-success-light);
+    color: var(--color-success);
+}
+.sp-diff-medium {
+    background: var(--color-warning-light);
+    color: var(--color-warning);
+}
+.sp-diff-hard {
+    background: var(--color-danger-light);
+    color: var(--color-danger);
+}
+.sp-status {
+    font-size: 1rem;
+}
+
+/* ---- Question box ---- */
+.sp-question-box {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-lg);
+    padding: var(--space-xl) var(--space-lg);
+    margin-bottom: var(--space-lg);
+    box-shadow: var(--shadow-sm);
+}
+.sp-question {
+    font-family: 'Crimson Pro', serif;
+    font-size: 1.25rem;
+    line-height: 1.7;
+    color: var(--text-primary);
+}
+
+/* ---- Answer section ---- */
+.sp-answer-section {
+    background: var(--accent-light);
+    border: 1px solid var(--accent-primary);
+    border-radius: var(--border-radius-lg);
+    padding: var(--space-lg);
+    margin-bottom: var(--space-lg);
+    animation: sp-fade-in 0.3s ease;
+}
+.sp-answer-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--accent-primary);
+    margin-bottom: var(--space-sm);
+}
+.sp-answer {
+    font-family: 'Crimson Pro', serif;
+    font-size: 1.15rem;
+    line-height: 1.8;
+    color: var(--text-primary);
+}
+
+@keyframes sp-fade-in {
+    from { opacity: 0; transform: translateY(-8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---- Action buttons ---- */
+.sp-actions {
+    display: flex;
+    gap: var(--space-md);
+    justify-content: center;
+    margin-bottom: var(--space-lg);
+    flex-wrap: wrap;
+}
+.sp-reveal-btn {
+    min-width: 200px;
+}
+.sp-btn-correct {
+    background: var(--color-success) !important;
+    color: var(--text-inverse) !important;
+    padding: 12px 28px;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: background 0.2s, transform 0.1s;
+}
+.sp-btn-correct:hover {
+    background: #15663f !important;
+    transform: translateY(-1px);
+}
+.sp-btn-incorrect {
+    background: var(--color-danger) !important;
+    color: var(--text-inverse) !important;
+    padding: 12px 28px;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: background 0.2s, transform 0.1s;
+}
+.sp-btn-incorrect:hover {
+    background: #a93226 !important;
+    transform: translateY(-1px);
+}
+
+/* ---- Feedback messages ---- */
+.sp-feedback-msg {
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: 600;
+    padding: var(--space-md);
+    border-radius: var(--border-radius);
+    margin-bottom: var(--space-md);
+    animation: sp-fade-in 0.3s ease;
+}
+.sp-feedback-correct {
+    background: var(--color-success-light);
+    color: var(--color-success);
+}
+.sp-feedback-incorrect {
+    background: var(--color-danger-light);
+    color: var(--color-danger);
+}
+.sp-feedback-extra {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* ---- Reason picker ---- */
+.sp-reason-picker {
+    animation: sp-fade-in 0.3s ease;
+}
+.sp-reason-prompt {
+    font-weight: 600;
+    margin-bottom: var(--space-md);
+    color: var(--text-primary);
+    font-size: 1rem;
+}
+.sp-reason-option {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: 10px var(--space-md);
+    margin-bottom: var(--space-xs);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: background 0.15s;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+}
+.sp-reason-option:hover {
+    background: var(--bg-hover);
+}
+.sp-reason-option input[type="radio"] {
+    accent-color: var(--color-info);
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}
+.sp-continue-btn {
+    margin-top: var(--space-md);
+    width: 100%;
+}
+.sp-continue-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ---- End session row ---- */
+.sp-end-row {
+    text-align: center;
+    margin-top: var(--space-md);
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--border-color);
+}
+.sp-end-btn {
+    font-size: 0.85rem;
+}
+
+/* ---- Summary additions ---- */
+.sp-summary-topic {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    margin-top: var(--space-xs);
+}
+.sp-mastery-overview {
+    margin-top: var(--space-lg);
+    padding: var(--space-lg);
+    background: var(--bg-secondary);
+    border-radius: var(--border-radius-lg);
+    border: 1px solid var(--border-color);
+}
+.sp-mastery-overview h3 {
+    font-family: 'Crimson Pro', serif;
+    font-size: 1.1rem;
+    margin-bottom: var(--space-md);
+    color: var(--text-primary);
+}
+.sp-stacked-bar {
+    display: flex;
+    height: 12px;
+    border-radius: 6px;
+    overflow: hidden;
+    background: var(--bg-tertiary);
+    margin-bottom: var(--space-sm);
+}
+.sp-bar-seg {
+    height: 100%;
+    transition: width 0.4s ease;
+}
+.sp-bar-mastered { background: var(--mastery-mastered); }
+.sp-bar-improving { background: var(--mastery-improving); }
+.sp-bar-struggling { background: var(--mastery-struggling); }
+.sp-bar-new { background: var(--mastery-new); }
+
+.sp-bar-legend {
+    display: flex;
+    gap: var(--space-md);
+    flex-wrap: wrap;
+}
+.sp-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+.sp-legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+/* ---- Status indicators in header ---- */
+.sp-status-new { color: var(--mastery-new); }
+.sp-status-struggling { color: var(--mastery-struggling); }
+.sp-status-improving { color: var(--mastery-improving); }
+.sp-status-mastered { color: var(--mastery-mastered); }
+.sp-status-review { color: var(--mastery-review); }
+
+/* ---- Responsive ---- */
+@media (max-width: 600px) {
+    .sp-header {
+        flex-direction: column;
+    }
+    .sp-header-right {
+        align-self: flex-start;
+    }
+    .sp-actions {
+        flex-direction: column;
+    }
+    .sp-btn-correct,
+    .sp-btn-incorrect {
+        width: 100%;
+        text-align: center;
+    }
+}

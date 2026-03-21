@@ -661,6 +661,22 @@ var ConceptsUI = {
         if (home) home.style.display = "none";
         if (qArea) qArea.style.display = "block";
 
+        // ---- Skills mode: route to SkillsPractice module ----
+        if (pool === "practice") {
+            if (typeof SkillsPractice !== "undefined") {
+                SkillsPractice._areaId = "targeted-question-area";
+                SkillsPractice.start(topic, subtopic);
+            } else {
+                qArea.innerHTML =
+                    '<div class="session-empty">' +
+                    '<p>Skills practice module not loaded. Please refresh the page.</p>' +
+                    '<button class="btn btn-primary" onclick="ConceptsUI.backToTopicsFromSession()">Back to Topics</button>' +
+                    '</div>';
+            }
+            return;
+        }
+
+        // ---- Exam Questions mode: use SessionEngine as before ----
         // Point StudyUI at the targeted question area
         StudyUI._activeAreaId = "targeted-question-area";
 
@@ -680,7 +696,7 @@ var ConceptsUI = {
                 SessionEngine.reviewList.length;
 
             if (totalAvailable === 0) {
-                var poolLabel = pool === "practice" ? "Skills" : "Exam Questions";
+                var poolLabel = "Exam Questions";
                 qArea.innerHTML =
                     '<div class="session-empty">' +
                     '<p>No ' + poolLabel + ' available for <strong>' +
@@ -703,6 +719,10 @@ var ConceptsUI = {
         if (home) home.style.display = "block";
         if (qArea) { qArea.style.display = "none"; qArea.innerHTML = ""; }
         StudyUI._activeAreaId = "question-area";
+        // Clean up skills practice state if active
+        if (typeof SkillsPractice !== "undefined") {
+            SkillsPractice.active = false;
+        }
         ConceptsUI.buildTree();
     }
 };

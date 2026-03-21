@@ -41,7 +41,7 @@ var SYMBOLS = {
 // ---- APP CONSTANTS ----
 var APP_VERSION = "2.0.0";
 var DB_NAME = "WACEStudentTrainer";
-var DB_VERSION = 2;
+var DB_VERSION = 3;
 
 // ---- COURSE-AWARE PATHS ----
 // These are overwritten by CourseLoader.detectCourse() before initApp() runs.
@@ -62,6 +62,8 @@ var STORE_IMPORTED = "importedQuestions";
 var STORE_SCHEDULE_UPDATES = "scheduleUpdates";
 var STORE_CONFIDENCE = "confidenceWatch";
 var STORE_DIAGRAMS = "diagramCache";
+var STORE_SKILLS_MASTERY = "skillsMastery";
+var STORE_SKILLS_ATTEMPTS = "skillsAttempts";
 
 // All object store definitions for DB creation
 var OBJECT_STORES = [
@@ -73,7 +75,9 @@ var OBJECT_STORES = [
     { name: STORE_SCHEDULE_UPDATES, keyPath: "updateId" },
     { name: STORE_CONFIDENCE,       keyPath: "problemType" },
     { name: STORE_DIAGRAMS,         keyPath: "filename" },
-    { name: "apiCosts",             keyPath: "id" }
+    { name: "apiCosts",             keyPath: "id" },
+    { name: STORE_SKILLS_MASTERY,   keyPath: "pt_id" },
+    { name: STORE_SKILLS_ATTEMPTS,  keyPath: "attempt_id" }
 ];
 
 
