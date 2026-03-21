@@ -1,484 +1,267 @@
 // ======================================================================
-// CONCEPTS — CONCEPTS_RECTILINEAR_MOTION
-// Topic: Rectilinear Motion (Kinematics)
-// 76 concepts mapped to atomised problem types
-// For use in concept-practice program
+// CONCEPTS — Rectilinear Motion
+// Full conceptual revision content (Pairs Activity format)
+// 22 questions across 9 subsections in 3 platform sections
+// Source: Integration_Kinematics_Pair_Revision.pdf (pages 14-21)
 // ======================================================================
 
 var CONCEPTS_RECTILINEAR_MOTION = {
-  topic: "Rectilinear Motion (Kinematics)",
-  description: "Displacement, velocity, acceleration relationships via differentiation and integration. Displacement vs distance, velocity vs speed, average velocity/speed, stationary points, direction changes.",
+  topic: "Rectilinear Motion",
+  subtitle: "Conceptual Revision — Pair Activity",
+  instructions: "Work in pairs. One student is the Reader and the other is the Responder. The Reader reads each prompt aloud. The Responder must explain their answer in words — not just write equations. The goal is to articulate your understanding, not perform calculations. Swap roles after each section. If used individually: Cover the answer, attempt a verbal explanation, then check.",
+
   sections: [
+
+    // ════════════════════════════════════════════════════════════
+    // SECTION 1: Displacement vs Distance from Origin
+    // Platform section: Kinematics: General
+    // ════════════════════════════════════════════════════════════
     {
-      section: "Kinematics: General",
-      concepts: [
-      ]
-    },
-    {
-      section: "Kinematics: Differentiation",
-      concepts: [
+      section: "Displacement vs Distance from Origin",
+      subtopic: "Kinematics: General",
+      swap_after: true,
+      questions: [
         {
-          pt_id: "KN_001",
-          concept: "Kinematics Calculations",
-          skill: "Evaluating acceleration at given value for t",
-          key_idea: "Evaluating acceleration at given value for t"
+          qid: "C_KN_34",
+          q: "A particle has displacement function $x(t)$.\nIf $x(3) = -5$, what is the displacement at $t = 3$?\nWhat is the distance from the origin at $t = 3$? Why are these different?",
+          answer: "Displacement at $t = 3$ is $-5$ (this is $x(3)$ directly — it includes direction/sign).\nDistance from the origin at $t = 3$ is $|-5| = 5$ (always positive).\nThey differ because displacement is a signed quantity indicating position relative to the origin (negative = left of origin), while distance from origin is a magnitude (always positive).",
+          diagram: null
         },
         {
-          pt_id: "KN_002",
-          concept: "Kinematics Calculations",
-          skill: "Evaluating displacement at given value for t",
-          key_idea: "Evaluating displacement at given value for t"
+          qid: "C_KN_35",
+          q: "Explain the difference between 'change in displacement between $t = 1$ and $t = 4$' and 'change in distance from origin between $t = 1$ and $t = 4$'.",
+          answer: "Change in displacement $= x(4) - x(1)$: the net shift in position.\nChange in distance from origin $= |x(4)| - |x(1)|$: whether the particle is closer to or further from the origin.\nThese can be very different — e.g. if $x(1) = -3$ and $x(4) = 2$: change in displacement $= 5$ (moved 5 right), but change in distance from origin $= 2 - 3 = -1$ (actually closer to the origin).",
+          diagram: null
         },
         {
-          pt_id: "KN_003",
-          concept: "Kinematics Calculations",
-          skill: "Evaluating speed at given value for t",
-          key_idea: "Evaluating speed at given value for t"
-        },
-        {
-          pt_id: "KN_004",
-          concept: "Kinematics Calculations",
-          skill: "Evaluating velocity at given value for t",
-          key_idea: "Evaluating velocity at given value for t"
-        },
-        {
-          pt_id: "KN_005",
-          concept: "Kinematics Differentiation",
-          skill: "Determining speeding up or slowing down from signs of velocity and acceleration",
-          key_idea: "Determining speeding up or slowing down from signs of velocity and acceleration"
-        },
-        {
-          pt_id: "KN_006",
-          concept: "Kinematics Differentiation",
-          skill: "Finding acceleration function by differentiating velocity function",
-          key_idea: "Finding acceleration function by differentiating velocity function"
-        },
-        {
-          pt_id: "KN_007",
-          concept: "Kinematics Differentiation",
-          skill: "Finding maximum/minimum displacement or velocity using calculus",
-          key_idea: "Finding maximum/minimum displacement or velocity using calculus"
-        },
-        {
-          pt_id: "KN_008",
-          concept: "Kinematics Differentiation",
-          skill: "Finding velocity function by differentiating displacement function",
-          key_idea: "Finding velocity function by differentiating displacement function"
-        },
-        {
-          pt_id: "KN_009",
-          concept: "Kinematics Differentiation",
-          skill: "Finding when displacement function has stationary point (velocity = 0)",
-          key_idea: "Finding when displacement function has stationary point (velocity = 0)"
-        },
-        {
-          pt_id: "KN_010",
-          concept: "Kinematics Differentiation",
-          skill: "Finding when velocity function has stationary point (acceleration = 0)",
-          key_idea: "Finding when velocity function has stationary point (acceleration = 0)"
-        },
-        {
-          pt_id: "KN_011",
-          concept: "Kinematics Differentiation",
-          skill: "Interpreting acceleration graph to describe velocity behaviour",
-          key_idea: "Interpreting acceleration graph to describe velocity behaviour"
+          qid: "C_KN_36",
+          q: "Therefore, what part of the velocity graph is equivalent to the change in displacement between $t = a$ and $t = b$?\nWhat part of the velocity graph is equivalent to the distance travelled between $t = a$ and $t = b$?",
+          answer: "The **signed area** between the $t$-axis and the velocity curve (between $t = a$ and $t = b$) tells us about the change in displacement between $t = a$ and $t = b$.\n\nThe **total area** between the $t$-axis and the velocity curve (between $t = a$ and $t = b$) tells us the distance travelled between $t = a$ and $t = b$.",
+          diagram: "C_KN_36_velocity_signed_total_area.png"
         }
       ]
     },
+
+    // ════════════════════════════════════════════════════════════
+    // SECTION 2: Velocity vs Speed
+    // Platform section: Kinematics: General
+    // ════════════════════════════════════════════════════════════
     {
-      section: "Kinematics: Integration",
-      concepts: [
-        {
-          pt_id: "KN_012",
-          concept: "Kinematics Integration",
-          skill: "Anti-differentiating $e^{ax}$ with initial condition to find function value",
-          key_idea: "Anti-differentiating $e^{ax}$ with initial condition to find function value"
-        },
-        {
-          pt_id: "KN_013",
-          concept: "Kinematics Integration",
-          skill: "Anti-differentiating polynomial",
-          key_idea: "Anti-differentiating polynomial"
-        },
-        {
-          pt_id: "KN_014",
-          concept: "Kinematics Integration",
-          skill: "Anti-differentiating trigonometric function with linear argument and initial condition",
-          key_idea: "Anti-differentiating trigonometric function with linear argument and initial condition"
-        },
-        {
-          pt_id: "KN_015",
-          concept: "Kinematics Integration",
-          skill: "Assessing appropriateness of normal model from histogram shape",
-          key_idea: "Assessing appropriateness of normal model from histogram shape"
-        },
-        {
-          pt_id: "KN_016",
-          concept: "Kinematics Integration",
-          skill: "Assessing normality of sampling distribution",
-          key_idea: "Assessing normality of sampling distribution"
-        },
-        {
-          pt_id: "KN_017",
-          concept: "Kinematics Integration",
-          skill: "Calculating P(a ≤ X ≤ b) from CDF",
-          key_idea: "Calculating P(a ≤ X ≤ b) from CDF"
-        },
-        {
-          pt_id: "KN_018",
-          concept: "Kinematics Integration",
-          skill: "Calculating area bounded by derivative curve and x-axis using absolute value",
-          key_idea: "Calculating area bounded by derivative curve and x-axis using absolute value"
-        },
-        {
-          pt_id: "KN_019",
-          concept: "Kinematics Integration",
-          skill: "Calculating area under curve using definite integral with ln function",
-          key_idea: "Calculating area under curve using definite integral with ln function"
-        },
-        {
-          pt_id: "KN_020",
-          concept: "Kinematics Integration",
-          skill: "Calculating average speed over a time interval",
-          key_idea: "Average speed = total distance travelled / time"
-        },
-        {
-          pt_id: "KN_021",
-          concept: "Kinematics Integration",
-          skill: "Calculating average velocity over a time interval",
-          key_idea: "Average velocity = change in displacement / change in time"
-        },
-        {
-          pt_id: "KN_022",
-          concept: "Kinematics Integration",
-          skill: "Calculating change in displacement between two specific times using displacement function",
-          key_idea: "Calculating change in displacement between two specific times using displacement function"
-        },
-        {
-          pt_id: "KN_023",
-          concept: "Kinematics Integration",
-          skill: "Calculating complementary binomial probability",
-          key_idea: "Calculating complementary binomial probability"
-        },
-        {
-          pt_id: "KN_024",
-          concept: "Kinematics Integration",
-          skill: "Calculating maximum margin of error for given sample size and confidence level",
-          key_idea: "Calculating maximum margin of error for given sample size and confidence level"
-        },
-        {
-          pt_id: "KN_025",
-          concept: "Kinematics Integration",
-          skill: "Calculating probability from histogram by summing relative frequencies",
-          key_idea: "Calculating probability from histogram by summing relative frequencies"
-        },
-        {
-          pt_id: "KN_026",
-          concept: "Kinematics Integration",
-          skill: "Calculating probability involving transformation of uniform random variable",
-          key_idea: "Calculating probability involving transformation of uniform random variable"
-        },
-        {
-          pt_id: "KN_027",
-          concept: "Kinematics Integration",
-          skill: "Calculating probability of confidence interval coverage using binomial distribution",
-          key_idea: "Calculating probability of confidence interval coverage using binomial distribution"
-        },
-        {
-          pt_id: "KN_028",
-          concept: "Kinematics Integration",
-          skill: "Calculating probability of independent events using multiplication rule (complement)",
-          key_idea: "Calculating probability of independent events using multiplication rule (complement)"
-        },
-        {
-          pt_id: "KN_029",
-          concept: "Kinematics Integration",
-          skill: "Calculating probability using geometric area from continuous distribution",
-          key_idea: "Calculating probability using geometric area from continuous distribution"
-        },
-        {
-          pt_id: "KN_030",
-          concept: "Kinematics Integration",
-          skill: "Calculating total change in displacement between two values for t using integration of velocity",
-          key_idea: "Calculating total change in displacement between two values for t using integration of velocity"
-        },
-        {
-          pt_id: "KN_031",
-          concept: "Kinematics Integration",
-          skill: "Calculating total change in velocity using integration of acceleration",
-          key_idea: "Calculating total change in velocity using integration of acceleration"
-        },
-        {
-          pt_id: "KN_032",
-          concept: "Kinematics Integration",
-          skill: "Calculating total distance travelled using integration of velocity",
-          key_idea: "Calculating total distance travelled using integration of velocity"
-        },
-        {
-          pt_id: "KN_033",
-          concept: "Kinematics Integration",
-          skill: "Calculating variance of uniform distribution by integration",
-          key_idea: "Calculating variance of uniform distribution by integration"
-        },
-        {
-          pt_id: "KN_034",
-          concept: "Kinematics Integration",
-          skill: "Calculating volume by integration (finding bounds from curve equation)",
-          key_idea: "Calculating volume by integration (finding bounds from curve equation)"
-        },
-        {
-          pt_id: "KN_035",
-          concept: "Kinematics Integration",
-          skill: "Completing cumulative distribution table",
-          key_idea: "Completing cumulative distribution table"
-        },
-        {
-          pt_id: "KN_036",
-          concept: "Kinematics Integration",
-          skill: "Completing probability distribution table for sum of two dice",
-          key_idea: "Completing probability distribution table for sum of two dice"
-        },
-        {
-          pt_id: "KN_037",
-          concept: "Kinematics Integration",
-          skill: "Completing table of function values for rectangle approximation",
-          key_idea: "Completing table of function values for rectangle approximation"
-        },
-        {
-          pt_id: "KN_038",
-          concept: "Kinematics Integration",
-          skill: "Constructing sample space table for sum of discrete random variables",
-          key_idea: "Constructing sample space table for sum of discrete random variables"
-        },
-        {
-          pt_id: "KN_039",
-          concept: "Kinematics Integration",
-          skill: "Converting confidence interval for proportion to range for expected count",
-          key_idea: "Converting confidence interval for proportion to range for expected count"
-        },
-        {
-          pt_id: "KN_040",
-          concept: "Kinematics Integration",
-          skill: "Describing systematic sampling method and suggesting random alternative",
-          key_idea: "Describing systematic sampling method and suggesting random alternative"
-        },
-        {
-          pt_id: "KN_041",
-          concept: "Kinematics Integration",
-          skill: "Determining confidence level from given confidence interval",
-          key_idea: "Determining confidence level from given confidence interval"
-        },
-        {
-          pt_id: "KN_042",
-          concept: "Kinematics Integration",
-          skill: "Determining count from sample proportion given standard deviations from mean",
-          key_idea: "Determining count from sample proportion given standard deviations from mean"
-        },
-        {
-          pt_id: "KN_043",
-          concept: "Kinematics Integration",
-          skill: "Determining function from integral equation using fundamental theorem and solving ODE",
-          key_idea: "Determining function from integral equation using fundamental theorem and solving ODE"
-        },
-        {
-          pt_id: "KN_044",
-          concept: "Kinematics Integration",
-          skill: "Determining parameters of linear transformation from given distribution properties",
-          key_idea: "Determining parameters of linear transformation from given distribution properties"
-        },
-        {
-          pt_id: "KN_045",
-          concept: "Kinematics Integration",
-          skill: "Determining parameters of logarithmic model from initial conditions",
-          key_idea: "Determining parameters of logarithmic model from initial conditions"
-        },
-        {
-          pt_id: "KN_046",
-          concept: "Kinematics Integration",
-          skill: "Determining polynomial coefficients from turning point and area condition",
-          key_idea: "Determining polynomial coefficients from turning point and area condition"
-        },
-        {
-          pt_id: "KN_047",
-          concept: "Kinematics Integration",
-          skill: "Differentiation of a quotient of functions requiring nested rules",
-          key_idea: "Differentiation of a quotient of functions requiring nested rules"
-        },
-        {
-          pt_id: "KN_048",
-          concept: "Kinematics Integration",
-          skill: "Estimating expected value from histogram using interval midpoints",
-          key_idea: "Estimating expected value from histogram using interval midpoints"
-        },
-        {
-          pt_id: "KN_049",
-          concept: "Kinematics Integration",
-          skill: "Evaluating assumptions of binomial model in context",
-          key_idea: "Evaluating assumptions of binomial model in context"
-        },
-        {
-          pt_id: "KN_050",
-          concept: "Kinematics Integration",
-          skill: "Evaluating definite integral of transformed trigonometric function",
-          key_idea: "Evaluating definite integral of transformed trigonometric function"
-        },
-        {
-          pt_id: "KN_051",
-          concept: "Kinematics Integration",
-          skill: "Evaluating distance from origin at given value for $t$",
-          key_idea: "Evaluating distance from origin at given value for $t$"
-        },
-        {
-          pt_id: "KN_052",
-          concept: "Kinematics Integration",
-          skill: "Evaluating exponential model $Ae^{kt}$ at specific time",
-          key_idea: "Evaluating exponential model $Ae^{kt}$ at specific time"
-        },
-        {
-          pt_id: "KN_053",
-          concept: "Kinematics Integration",
-          skill: "Evaluating logarithmic model at a given input",
-          key_idea: "Evaluating logarithmic model at a given input"
-        },
-        {
-          pt_id: "KN_054",
-          concept: "Kinematics Integration",
-          skill: "Explaining inappropriateness of normal model in context",
-          key_idea: "Explaining inappropriateness of normal model in context"
-        },
-        {
-          pt_id: "KN_055",
-          concept: "Kinematics Integration",
-          skill: "Explaining why a situation cannot be modelled by binomial distribution",
-          key_idea: "Explaining why a situation cannot be modelled by binomial distribution"
-        },
-        {
-          pt_id: "KN_056",
-          concept: "Kinematics Integration",
-          skill: "Expressing logarithmic transformation as horizontal dilation using log laws",
-          key_idea: "Expressing logarithmic transformation as horizontal dilation using log laws"
-        },
-        {
-          pt_id: "KN_057",
-          concept: "Kinematics Integration",
-          skill: "Expressing logarithmic transformation as vertical translation using log laws",
-          key_idea: "Expressing logarithmic transformation as vertical translation using log laws"
-        },
-        {
-          pt_id: "KN_058",
-          concept: "Kinematics Integration",
-          skill: "Finding break-even price from expected value equation",
-          key_idea: "Finding break-even price from expected value equation"
-        },
-        {
-          pt_id: "KN_059",
-          concept: "Kinematics Integration",
-          skill: "Finding maximum of logarithmic function using calculus",
-          key_idea: "Finding maximum of logarithmic function using calculus"
-        },
-        {
-          pt_id: "KN_060",
-          concept: "Kinematics Integration",
-          skill: "Finding maximum speed by comparing absolute velocities at critical points",
-          key_idea: "Finding maximum speed by comparing absolute velocities at critical points"
-        },
-        {
-          pt_id: "KN_061",
-          concept: "Kinematics Integration",
-          skill: "Finding parameter from initial condition by integrating",
-          key_idea: "Finding parameter from initial condition by integrating"
-        },
-        {
-          pt_id: "KN_062",
-          concept: "Kinematics Integration",
-          skill: "Finding parameter value to achieve target tail probability",
-          key_idea: "Finding parameter value to achieve target tail probability"
-        },
-        {
-          pt_id: "KN_063",
-          concept: "Kinematics Integration",
-          skill: "Finding value for specified percentage using empirical rule",
-          key_idea: "Finding value for specified percentage using empirical rule"
-        },
-        {
-          pt_id: "KN_064",
-          concept: "Kinematics Integration",
-          skill: "Integrating exponential function over specified bounds",
-          key_idea: "Integrating exponential function over specified bounds"
-        },
-        {
-          pt_id: "KN_065",
-          concept: "Kinematics Integration",
-          skill: "Interpreting confidence interval coverage and sampling variability",
-          key_idea: "Interpreting confidence interval coverage and sampling variability"
-        },
-        {
-          pt_id: "KN_066",
-          concept: "Kinematics Integration",
-          skill: "Interpreting optimization result in physical context with packing constraints",
-          key_idea: "Interpreting optimization result in physical context with packing constraints"
-        },
-        {
-          pt_id: "KN_067",
-          concept: "Kinematics Integration",
-          skill: "Interpreting range in terms of standard deviations",
-          key_idea: "Interpreting range in terms of standard deviations"
-        },
-        {
-          pt_id: "KN_068",
-          concept: "Kinematics Integration",
-          skill: "Inverse volume problem: finding height/level from given volume",
-          key_idea: "Inverse volume problem: finding height/level from given volume"
-        },
-        {
-          pt_id: "KN_069",
-          concept: "Kinematics Integration",
-          skill: "Models where $\\frac{dA}{dx} = kA$ are given",
-          key_idea: "Models where $\\frac{dA}{dx} = kA$ are given"
-        },
-        {
-          pt_id: "KN_070",
-          concept: "Kinematics Integration",
-          skill: "Numerical integration approximation (trapezoidal rule)",
-          key_idea: "Numerical integration approximation (trapezoidal rule)"
-        },
-        {
-          pt_id: "KN_071",
-          concept: "Kinematics Integration",
-          skill: "Other trigonometric calculations",
-          key_idea: "Using trig identities within differentiation contexts"
-        },
-        {
-          pt_id: "KN_072",
-          concept: "Kinematics Integration",
-          skill: "Sketching piecewise function involving constant and logarithmic components",
-          key_idea: "Sketching piecewise function involving constant and logarithmic components"
-        },
-        {
-          pt_id: "KN_073",
-          concept: "Kinematics Integration",
-          skill: "Solving inverse probability problem for uniform distribution in context",
-          key_idea: "Solving inverse probability problem for uniform distribution in context"
-        },
-        {
-          pt_id: "KN_074",
-          concept: "Kinematics Integration",
-          skill: "Suggesting ways to decrease margin of error",
-          key_idea: "Suggesting ways to decrease margin of error"
-        },
-        {
-          pt_id: "KN_075",
-          concept: "Kinematics Integration",
-          skill: "Using $\\lim_{h \\to 0} \\frac{a^h - 1}{h}$ for $a = e$ in problem solving",
-          key_idea: "Using $\\lim_{h \\to 0} \\frac{a^h - 1}{h}$ for $a = e$ in problem solving"
-        },
-        {
-          pt_id: "KN_076",
-          concept: "Kinematics Integration",
-          skill: "Using expected value to evaluate fairness of game",
-          key_idea: "Using expected value to evaluate fairness of game"
+      section: "Velocity vs Speed",
+      subtopic: "Kinematics: General",
+      swap_after: true,
+      questions: [
+        {
+          qid: "C_KN_37",
+          q: "What are the differences between velocity and speed?",
+          answer: "Velocity tells us both the direction of travel and the instantaneous rate the displacement from the origin is changing.\nThe sign indicates direction: positive = moving right, negative = moving left.\nSpeed only tells us the instantaneous rate the distance from the origin is changing.\nSpeed $= |v(t)|$.\nA particle moving left at 3 m/s has velocity $= -3$ m/s but speed $= 3$ m/s. Speed $= 0$ only when the particle is momentarily at rest ($v = 0$).",
+          diagram: null
+        },
+        {
+          qid: "C_KN_38",
+          q: "If $v(2) = -4$, describe the motion of the particle at $t = 2$. What is its speed?",
+          answer: "The particle is moving in the negative direction (to the left) at $t = 2$, with a velocity of $-4$ units/s.\nIts speed is $|-4| = 4$ units/s.\nSpeed is the magnitude of velocity — it tells you how fast without indicating direction.",
+          diagram: null
         }
       ]
+    },
+
+    // ════════════════════════════════════════════════════════════
+    // SECTION 3: Speeding Up vs Slowing Down
+    // Platform section: Kinematics: General
+    // ════════════════════════════════════════════════════════════
+    {
+      section: "Speeding Up vs Slowing Down",
+      subtopic: "Kinematics: General",
+      swap_after: true,
+      questions: [
+        {
+          qid: "C_KN_39",
+          q: "A particle has $v(3) = -2$ and $a(3) = -1$. Is it speeding up or slowing down at $t = 3$? Explain.",
+          answer: "It is SPEEDING UP.\nBoth velocity and acceleration are negative — they have the SAME SIGN.\nWhen velocity and acceleration share the same sign, the acceleration pushes the particle faster in the direction it is already moving.\nHere the particle moves left ($v < 0$) and accelerates left ($a < 0$), so it goes faster to the left.",
+          diagram: null
+        },
+        {
+          qid: "C_KN_40",
+          q: "A particle has $v(5) = 3$ and $a(5) = -2$. Is it speeding up or slowing down? Explain.",
+          answer: "It is SLOWING DOWN.\nVelocity is positive but acceleration is negative — they have OPPOSITE SIGNS.\nThe acceleration opposes the direction of motion, acting as a braking force.\nCommon misconception: Do not assume negative acceleration always means slowing down — it doesn't! It depends on the sign of velocity too.",
+          diagram: null
+        },
+        {
+          qid: "C_KN_41",
+          q: "State the complete rule for determining speeding up vs slowing down.",
+          answer: "Speeding up: velocity and acceleration have the SAME sign (both positive, both negative).\nSlowing down: velocity and acceleration have OPPOSITE signs.\nWhen either $v = 0$ or $a = 0$, the particle is neither speeding up nor slowing down at that instant.",
+          diagram: null
+        }
+      ]
+    },
+
+    // ════════════════════════════════════════════════════════════
+    // SECTION 4: Changing Direction
+    // Platform section: Kinematics: General
+    // ════════════════════════════════════════════════════════════
+    {
+      section: "Changing Direction",
+      subtopic: "Kinematics: General",
+      swap_after: true,
+      questions: [
+        {
+          qid: "C_KN_42",
+          q: "What conditions must be met for a particle to change direction?",
+          answer: "The velocity must equal zero AND then change sign (a max or min on the displacement-time graph).\nBoth conditions are needed. $v(t) = 0$ alone is not sufficient — if the velocity touches zero but its derivative (gradient) does not change sign (like at a horizontal inflection point in the displacement function), the particle momentarily pauses but does not reverse.\nFor a genuine direction change, $v$ (displacement's derivative) must go from positive to negative or vice versa.",
+          diagram: null
+        }
+      ]
+    },
+
+    // ════════════════════════════════════════════════════════════
+    // SECTION 5: Maximum Speed vs Maximum Velocity
+    // Platform section: Kinematics: Differentiation
+    // ════════════════════════════════════════════════════════════
+    {
+      section: "Maximum Speed vs Maximum Velocity",
+      subtopic: "Kinematics: Differentiation",
+      swap_after: true,
+      questions: [
+        {
+          qid: "C_KN_43",
+          q: "Why is finding maximum speed harder than finding maximum velocity? What extra work is involved?",
+          answer: "Maximum velocity just requires finding where $a(t) = 0$ and checking the sign change (standard calculus maximum).\nBut maximum SPEED is the maximum of $|v(t)|$, which could occur at maximum velocity OR at minimum velocity (most negative).\nYou must:\n(1) Find all critical points where $a(t) = 0$.\n(2) Evaluate $|v(t)|$ at each critical point AND at the endpoints.\n(3) Compare all absolute values to find the largest.",
+          diagram: null
+        },
+        {
+          qid: "C_KN_44",
+          q: "A particle's velocity function has a maximum of 6 m/s and a minimum of $-8$ m/s. What is the maximum speed?",
+          answer: "The maximum speed is 8 m/s.\nThe particle moves fastest when its velocity is $-8$ m/s.\nMoving left at 8 m/s is faster than moving right at 6 m/s. Speed does not care about direction.",
+          diagram: null
+        }
+      ]
+    },
+
+    // ════════════════════════════════════════════════════════════
+    // SECTION 6: Interpreting Velocity and Acceleration Graphs
+    // Platform section: Kinematics: Differentiation
+    // ════════════════════════════════════════════════════════════
+    {
+      section: "Interpreting Velocity and Acceleration Graphs",
+      subtopic: "Kinematics: Differentiation",
+      swap_after: true,
+      questions: [
+        {
+          qid: "C_KN_45",
+          q: "On a velocity-time graph, how can you tell when the particle is:\n(a) moving right,\n(b) moving left,\n(c) at rest,\n(d) at maximum displacement?",
+          answer: "(a) Moving right: where $v(t) > 0$, the graph is above the $t$-axis. This tells us the gradient of the displacement-time graph is positive.\n(b) Moving left: where $v(t) < 0$, the graph is below the $t$-axis. This tells us the gradient of the displacement-time graph is negative.\n(c) At rest: where $v(t) = 0$, the graph crosses or touches the $t$-axis. Gradient is 0 on the displacement-time graph.\n(d) Maximum displacement: where $v(t) = 0$ and changes from positive to negative — the particle stops moving forward and starts going back. We need to check endpoints to see if there is a global maximum.",
+          diagram: null
+        },
+        {
+          qid: "C_KN_46",
+          q: "On a velocity-time graph, what does the area between the curve and the $t$-axis represent?",
+          answer: "The signed area represents displacement (change in position).\nArea above the $t$-axis = displacement in the positive direction.\nArea below = displacement in the negative direction.\nThe NET signed area gives total displacement.\nThe TOTAL area (all sections positive) gives total distance travelled.\nThis is why distance and displacement calculations require different treatments.",
+          diagram: null
+        },
+        {
+          qid: "C_KN_47",
+          q: "On an acceleration-time graph, what does a positive value mean? What does the definite integral of acceleration represent?",
+          answer: "Positive acceleration means the velocity is increasing (not necessarily speeding up — that depends on direction of motion).\nNegative acceleration means velocity is decreasing.\nThe signed area under the acceleration graph between two times gives the total change in velocity:\n$v(b) - v(a) = \\int_a^b a(t) \\, dt$.",
+          diagram: null
+        }
+      ]
+    },
+
+    // ════════════════════════════════════════════════════════════
+    // SECTION 7: Rectilinear Motion — Integration
+    // Platform section: Kinematics: Integration
+    // ════════════════════════════════════════════════════════════
+    {
+      section: "Rectilinear Motion — Integration",
+      subtopic: "Kinematics: Integration",
+      swap_after: true,
+      questions: [
+        {
+          qid: "C_KN_48",
+          q: "What does $\\int_a^b v(t) \\, dt$ represent?",
+          answer: "$\\int_a^b v(t) \\, dt$ represents the total displacement (net change in position) between time $a$ and time $b$.\nIt is the signed area under the velocity curve.\nIf positive, the particle ends up to the right of where it started; if negative, to the left.\nIt does NOT tell you the total distance travelled.",
+          diagram: null
+        },
+        {
+          qid: "C_KN_49",
+          q: "Why does $\\int_a^b v(t) \\, dt$ give change in displacement but $\\int_a^b |v(t)| \\, dt$ give distance travelled?",
+          answer: "When $v(t) < 0$ the particle moves backward.\nThe integral $\\int v(t) \\, dt$ counts backward movement as negative, so it cancels forward movement — giving net displacement.\nBut $\\int |v(t)| \\, dt$ makes all contributions positive — backward movement is counted as positive distance, so nothing cancels.",
+          diagram: null
+        },
+        {
+          qid: "C_KN_50",
+          q: "How can you find distance travelled from $t = a$ to $t = b$ when you are given the $v(t)$ equation, without using $\\int_a^b |v(t)| \\, dt$ on ClassPad?",
+          answer: "Find when $v(t)$ intersects the $t$-axis (zeros of $v$) and split at those times.\nCalculate the signed area on each sub-interval using definite integrals, take absolute values, and add them.\ne.g. $\, \left|\int_a^{c_1} v(t)\,dt\right| + \left|\int_{c_1}^{c_2} v(t)\,dt\right| + \left|\int_{c_2}^{c_3} v(t)\,dt\right| + \left|\int_{c_3}^{b} v(t)\,dt\right|$.",
+          diagram: null
+        },
+        {
+          qid: "C_KN_51",
+          q: "If you are given $a(t)$ and asked to find $v(t)$, explain the full process. Why is the initial condition essential?",
+          answer: "Step 1: Integrate $a(t)$ to get $v(t) = \\int a(t) \\, dt + C$.\nStep 2: Use the initial condition (e.g. $v(0) = 5$) to find $C$.\nWithout the $+C$, you have infinitely many possible velocity functions.\nThe acceleration tells you how velocity changes, but not what it started at.\nThe same applies when integrating velocity to get displacement.",
+          diagram: null
+        },
+        {
+          qid: "C_KN_52",
+          q: "If you are given $a(t)$ and asked to find the change in velocity between times $t = a$ and $t = b$, explain the full process. Why is the initial condition NOT essential here?",
+          answer: "Use the total change formula: Change in velocity $= v(b) - v(a) = \\int_a^b a(t) \\, dt$.\nThe initial condition is not needed because you are finding the CHANGE in velocity, not the velocity function itself. The definite integral directly gives the net change without needing to know the starting value.",
+          diagram: null
+        }
+      ]
+    },
+
+    // ════════════════════════════════════════════════════════════
+    // SECTION 8: Average Velocity and Average Speed
+    // Platform section: Kinematics: Integration
+    // ════════════════════════════════════════════════════════════
+    {
+      section: "Average Velocity and Average Speed",
+      subtopic: "Kinematics: Integration",
+      swap_after: true,
+      questions: [
+        {
+          qid: "C_KN_53",
+          q: "How would you calculate average velocity between times $a$ and $b$?",
+          answer: "Average velocity $= \\frac{x(b) - x(a)}{b - a}$ (total displacement divided by total time).\nUsing the velocity function: $\\frac{\\int_a^b v(t) \\, dt}{b - a}$.\nGeometrically, it is the slope of the secant line on the displacement-time graph between the two points.",
+          diagram: null
+        },
+        {
+          qid: "C_KN_54",
+          q: "How would you calculate average speed between times $a$ and $b$? Why is this different?",
+          answer: "Average speed $= \\frac{\\text{total distance}}{b - a} = \\frac{\\int_a^b |v(t)| \\, dt}{b - a}$.\nThis requires splitting the integral at points where $v(t) = 0$ and taking absolute values.\nIt differs because distance $\\geq$ displacement — if the particle changes direction, the distance is greater, making average speed $\\geq$ average velocity.\nThey are only equal when the particle moves in one direction the entire time.",
+          diagram: null
+        }
+      ]
+    },
+
+    // ════════════════════════════════════════════════════════════
+    // SECTION 9: Why Initial Conditions Matter in Rectilinear Motion
+    // Platform section: Kinematics: Integration
+    // ════════════════════════════════════════════════════════════
+    {
+      section: "Why Initial Conditions Matter in Rectilinear Motion",
+      subtopic: "Kinematics: Integration",
+      swap_after: false,
+      questions: [
+        {
+          qid: "C_KN_55",
+          q: "Two particles have the same velocity $v(t) = 3t^2 - 2t$.\nOne starts at $x = 0$, the other at $x = 5$. How does their motion differ?",
+          answer: "Both particles have identical velocity at every moment — they speed up, slow down, and change direction at exactly the same times.\nThe only difference is position: the second particle is always 5 units ahead.\nTheir displacement functions are $x_1(t) = t^3 - t^2$ and $x_2(t) = t^3 - t^2 + 5$.\nIn this case $+C$ from integration represents this positional offset.",
+          diagram: null
+        }
+      ]
+    }
+  ],
+
+  // ════════════════════════════════════════════════════════════
+  // DIAGRAM REGISTRY — all diagrams needed for this concepts file
+  // ════════════════════════════════════════════════════════════
+  diagrams: [
+    {
+      filename: "C_KN_36_velocity_signed_total_area.png",
+      description: "A velocity-time graph showing v(t) as a smooth curve that starts positive, dips below the $t$-axis, then returns positive. The region from t=a to where v(t) crosses zero is shaded lightly (positive area = forward displacement). The region below the $t$-axis is shaded with crosshatch (negative area = backward displacement). Below the graph: two annotations — 'Signed area = change in displacement' and 'Total area (all positive) = distance travelled'. Points a and b marked on $t$-axis. The curve label v(t) on the right.",
+      type: "function_graph",
+      forQuestion: "C_KN_36"
     }
   ]
 };
