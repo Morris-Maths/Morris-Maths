@@ -160,9 +160,8 @@ var StudyUI = {
         });
         var avgMarks = totalMarks / keys.length;
 
-        // ~1.5 minutes per mark (includes reading, working, checking)
-        var minutesPerMark = 1.5;
-        var estimated = Math.round(minutes / (avgMarks * minutesPerMark));
+        // ~1 minute per mark
+        var estimated = Math.round(minutes / avgMarks);
         // Clamp to at least 1 and at most available questions
         return Math.max(1, Math.min(estimated, keys.length));
     },
@@ -323,6 +322,7 @@ var StudyUI = {
                 '<span class="remediation-text">Chosen based on questions you have struggled with before</span>' +
                 '</div>';
         }
+        html += '<div class="question-stem-sticky">';
         html += '<div class="question-header">';
         // Build rich question reference: e.g. "WACE 2016 CA \u2014 Question 9"
         var refParts = [];
@@ -348,7 +348,7 @@ var StudyUI = {
         // Question stimulus
         if (q.questionStimulus) {
             html += '<div class="question-stimulus">' +
-                StudyUI._escapeHtml(q.questionStimulus) + '</div>';
+                StudyUI._renderSolutionText(q.questionStimulus, q._pool) + '</div>';
         }
 
         // Diagrams (question-level: stem diagrams only from diagramPlaceholders)
@@ -363,10 +363,12 @@ var StudyUI = {
             stemDiagrams.forEach(function(diagFile) {
                 var imgPath = StudyUI._getDiagramPath(diagFile, q._pool);
                 html += '<img src="' + StudyUI._escapeHtml(imgPath) +
-                    '" class="question-diagram" alt="Diagram">';
+                    '" class="question-diagram" alt="Diagram" ' +
+                    'onerror="this.style.display=\'none\'">';
             });
             html += '</div>';
         }
+        html += '</div>'; // close .question-stem-sticky
 
         // Parts
         if (q.parts) {
@@ -379,7 +381,7 @@ var StudyUI = {
                     (part.partMarks !== 1 ? 's' : '') + ']</span>';
                 html += '</div>';
                 html += '<div class="part-text">' +
-                    StudyUI._escapeHtml(part.questionText) + '</div>';
+                    StudyUI._renderSolutionText(part.questionText, q._pool) + '</div>';
 
                 // Part-level diagrams (from diagramPlaceholders + diagramsNeeded)
                 var partLabel = part.partLabel;
@@ -416,7 +418,8 @@ var StudyUI = {
                     diagramsToShow.forEach(function(diagFile) {
                         var dPath = StudyUI._getDiagramPath(diagFile, q._pool);
                         html += '<img src="' + StudyUI._escapeHtml(dPath) +
-                            '" class="question-diagram" alt="Diagram">';
+                            '" class="question-diagram" alt="Diagram" ' +
+                            'onerror="this.style.display=\'none\'">';
                     });
                     html += '</div>';
                 }
@@ -428,6 +431,10 @@ var StudyUI = {
                         : null;
                     html += WrittenMode.renderCanvasRow(part.partLabel, part.partMarks, bgUrl);
                 }
+
+                // Inline solution placeholder (filled by showSolution)
+                html += '<div class="part-solution-inline" id="part-sol-' + idx +
+                    '" style="display:none;"></div>';
 
                 html += '</div>';
             });
@@ -663,66 +670,91 @@ var StudyUI = {
         var showArea = document.querySelector(".show-solution-area");
         if (showArea) showArea.style.display = "none";
 
+        // ---- Header area: quick-assess + examiner comment ----
         var solArea = document.getElementById("solution-area");
-        if (!solArea) return;
+        if (solArea) {
+            var headerHtml = '<div class="solution-container">';
 
-        var html = '<div class="solution-container">';
-        html += '<h3 class="solution-title">Worked Solution</h3>';
+            // Question-level quick assessment buttons
+            if (q.parts && q.parts.length > 0) {
+                var totalMarks = 0;
+                q.parts.forEach(function(p) { totalMarks += (p.partMarks || 0); });
+                headerHtml += '<div class="quick-assess" id="quick-assess">';
+                headerHtml += '<span class="quick-assess-label">Quick mark:</span>';
+                headerHtml += '<button class="btn btn-correct btn-quick" ' +
+                    'onclick="StudyUI.assessAllParts(\'correct\')">' +
+                    SYMBOLS.CHECK + ' All Correct (' + totalMarks + '/' +
+                    totalMarks + ')</button>';
+                headerHtml += '<button class="btn btn-error btn-quick" ' +
+                    'onclick="StudyUI.assessAllParts(\'wrong\')">' +
+                    SYMBOLS.CROSS + ' All Wrong (0/' + totalMarks + ')</button>';
+                headerHtml += '</div>';
+            }
 
-        // Question-level quick assessment buttons
-        if (q.parts && q.parts.length > 0) {
-            var totalMarks = 0;
-            q.parts.forEach(function(p) { totalMarks += (p.partMarks || 0); });
-            html += '<div class="quick-assess" id="quick-assess">';
-            html += '<span class="quick-assess-label">Quick mark:</span>';
-            html += '<button class="btn btn-correct btn-quick" ' +
-                'onclick="StudyUI.assessAllParts(\'correct\')">' +
-                SYMBOLS.CHECK + ' All Correct (' + totalMarks + '/' +
-                totalMarks + ')</button>';
-            html += '<button class="btn btn-error btn-quick" ' +
-                'onclick="StudyUI.assessAllParts(\'wrong\')">' +
-                SYMBOLS.CROSS + ' All Wrong (0/' + totalMarks + ')</button>';
-            html += '</div>';
-        }
+            // Examiner comment and clarification
+            if (q.examinerComment) {
+                headerHtml += '<div class="examiner-comment">';
+                headerHtml += '<div class="examiner-label">' + SYMBOLS.GRADUATION +
+                    ' Examiner Comment</div>';
+                headerHtml += '<p>' + StudyUI._escapeHtml(q.examinerComment) + '</p>';
+                headerHtml += '</div>';
 
-        // Examiner comment and clarification (always visible, before worked solutions)
-        if (q.examinerComment) {
-            html += '<div class="examiner-comment">';
-            html += '<div class="examiner-label">' + SYMBOLS.GRADUATION +
-                ' Examiner Comment</div>';
-            html += '<p>' + StudyUI._escapeHtml(q.examinerComment) + '</p>';
-            html += '</div>';
-
-            // Extract clarification from guided solutions
-            var clarification = "";
-            for (var ci = q.parts.length - 1; ci >= 0; ci--) {
-                if (q.parts[ci].guidedSolution) {
-                    var extracted = StudyUI._extractExaminerContent(q.parts[ci].guidedSolution);
-                    if (extracted.clarification) {
-                        clarification = extracted.clarification;
-                        break;
+                var clarification = "";
+                for (var ci = q.parts.length - 1; ci >= 0; ci--) {
+                    if (q.parts[ci].guidedSolution) {
+                        var extracted = StudyUI._extractExaminerContent(q.parts[ci].guidedSolution);
+                        if (extracted.clarification) {
+                            clarification = extracted.clarification;
+                            break;
+                        }
                     }
                 }
+                if (clarification) {
+                    headerHtml += '<div class="examiner-clarification">';
+                    headerHtml += '<div class="examiner-clarification-label">' +
+                        SYMBOLS.BOOK + ' This comment clarified</div>';
+                    headerHtml += '<p>' + StudyUI._escapeHtml(clarification) + '</p>';
+                    headerHtml += '</div>';
+                }
             }
-            if (clarification) {
-                html += '<div class="examiner-clarification">';
-                html += '<div class="examiner-clarification-label">' +
-                    SYMBOLS.BOOK + ' This comment clarified</div>';
-                html += '<p>' + StudyUI._escapeHtml(clarification) + '</p>';
-                html += '</div>';
-            }
+
+            // Next question / end session (hidden until all parts assessed)
+            headerHtml += '<div id="next-question-area" style="display:none;">';
+            headerHtml += '<div id="question-feedback"></div>';
+            headerHtml += '<div class="next-actions">';
+            headerHtml += '<button class="btn btn-primary btn-large" id="next-question-btn">' +
+                'Next Question ' + SYMBOLS.ARROW_RIGHT + '</button>';
+            headerHtml += '<button class="btn btn-retry btn-large" id="another-like-this-btn">' +
+                SYMBOLS.LIGHTNING + ' Another like this</button>';
+            headerHtml += '</div>';
+            headerHtml += '<button class="btn btn-secondary" id="end-session-btn-2">' +
+                'End Session</button>';
+            headerHtml += '</div>';
+
+            headerHtml += '</div>'; // .solution-container
+            solArea.innerHTML = headerHtml;
+            solArea.style.display = "block";
         }
 
+        // ---- Per-part inline solutions ----
         q.parts.forEach(function(part, partIdx) {
-            html += '<div class="solution-part" data-part-idx="' + partIdx + '">';
+            var container = document.getElementById("part-sol-" + partIdx);
+            if (!container) return;
 
-            // Main content (left side when guided is shown)
+            var html = '<div class="part-sol-layout">';
+
+            // ---- LEFT: worked solution + marking + assessment ----
             html += '<div class="solution-part-main" id="sol-main-' + partIdx + '">';
 
-            html += '<h4 class="solution-part-header">Part (' +
-                StudyUI._escapeHtml(part.partLabel) + ') ' +
+            html += '<h4 class="solution-part-header">' +
+                '<span class="part-sol-toggle-btn" onclick="StudyUI.togglePartSol(' +
+                partIdx + ')">' + SYMBOLS.ARROW_RIGHT + '</span> ' +
+                'Part (' + StudyUI._escapeHtml(part.partLabel) + ') ' +
                 SYMBOLS.BULLET + ' ' + part.partMarks + ' mark' +
-                (part.partMarks !== 1 ? 's' : '') + '</h4>';
+                (part.partMarks !== 1 ? 's' : '') + ' ' +
+                SYMBOLS.EM_DASH + ' Worked Solution</h4>';
+
+            html += '<div class="part-sol-collapsible" id="part-sol-body-' + partIdx + '">';
 
             // Numbered solution lines
             if (part.originalSolution && part.originalSolution.length > 0) {
@@ -752,7 +784,7 @@ var StudyUI = {
                 html += '</div>';
             }
 
-            // Self-assessment buttons (Layer 2)
+            // Self-assessment buttons
             html += '<div class="self-assess" id="assess-' + partIdx + '">';
             html += '<div class="assess-prompt">How did you go on this part?</div>';
             html += '<div class="assess-buttons">';
@@ -803,36 +835,22 @@ var StudyUI = {
                 html += '</div>';
             }
 
+            html += '</div>'; // .part-sol-collapsible
             html += '</div>'; // .solution-part-main
 
-            // Guided solution panel (hidden, right side)
+            // ---- RIGHT: guided walkthrough panel (hidden until toggled) ----
             if (part.guidedSolution) {
                 html += '<div class="solution-part-guided" id="sol-guided-' + partIdx +
                     '" style="display:none;"></div>';
             }
 
-            html += '</div>'; // .solution-part
+            html += '</div>'; // .part-sol-layout
+
+            container.innerHTML = html;
+            container.style.display = "block";
         });
 
-        // Next question / end session (hidden until all parts assessed)
-        html += '<div id="next-question-area" style="display:none;">';
-        html += '<div id="question-feedback"></div>';
-        html += '<div class="next-actions">';
-        html += '<button class="btn btn-primary btn-large" id="next-question-btn">' +
-            'Next Question ' + SYMBOLS.ARROW_RIGHT + '</button>';
-        html += '<button class="btn btn-retry btn-large" id="another-like-this-btn">' +
-            SYMBOLS.LIGHTNING + ' Another like this</button>';
-        html += '</div>';
-        html += '<button class="btn btn-secondary" id="end-session-btn-2">' +
-            'End Session</button>';
-        html += '</div>';
-
-        html += '</div>'; // .solution-container
-
-        solArea.innerHTML = html;
-        solArea.style.display = "block";
-
-        // Bind next question button
+        // ---- Bind event listeners ----
         var nextBtn = document.getElementById("next-question-btn");
         if (nextBtn) {
             nextBtn.addEventListener("click", function() {
@@ -841,7 +859,6 @@ var StudyUI = {
             });
         }
 
-        // Bind "another like this" button
         var anotherBtn = document.getElementById("another-like-this-btn");
         if (anotherBtn) {
             anotherBtn.addEventListener("click", function() {
@@ -860,11 +877,18 @@ var StudyUI = {
         var controls = document.getElementById("session-controls");
         if (controls) controls.style.display = "flex";
 
-        // Render math in solution
-        UI.renderMath(solArea);
+        // Render math in all inline solutions
+        q.parts.forEach(function(part, partIdx) {
+            var container = document.getElementById("part-sol-" + partIdx);
+            if (container) UI.renderMath(container);
+        });
+        if (solArea) UI.renderMath(solArea);
 
-        // Scroll to solution
-        solArea.scrollIntoView({ behavior: "smooth" });
+        // Scroll to the first part's solution
+        var firstSol = document.getElementById("part-sol-0");
+        if (firstSol) {
+            firstSol.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        }
     },
 
     /**
@@ -1440,6 +1464,22 @@ var StudyUI = {
     },
 
     /**
+     * Toggle collapse/expand of a part's inline solution body.
+     */
+    togglePartSol: function(partIdx) {
+        var body = document.getElementById("part-sol-body-" + partIdx);
+        var toggle = document.querySelector('#part-sol-' + partIdx + ' .part-sol-toggle-btn');
+        if (!body) return;
+        if (body.style.display === "none") {
+            body.style.display = "block";
+            if (toggle) toggle.textContent = SYMBOLS.ARROW_RIGHT;
+        } else {
+            body.style.display = "none";
+            if (toggle) toggle.textContent = SYMBOLS.ARROW_RIGHT;
+        }
+    },
+
+    /**
      * Show the guided solution (Layer 3).
      */
     /**
@@ -1452,14 +1492,14 @@ var StudyUI = {
         var part = q.parts[partIdx];
         var guidedPanel = document.getElementById("sol-guided-" + partIdx);
         var trigger = document.getElementById("guided-trigger-" + partIdx);
-        var solPart = guidedPanel ? guidedPanel.closest(".solution-part") : null;
+        var solLayout = guidedPanel ? guidedPanel.closest(".part-sol-layout") : null;
 
         if (!guidedPanel || !part.guidedSolution) return;
 
         // Toggle: if already showing, hide it
         if (guidedPanel.style.display !== "none") {
             guidedPanel.style.display = "none";
-            if (solPart) solPart.classList.remove("solution-part-expanded");
+            if (solLayout) solLayout.classList.remove("part-sol-expanded");
             if (trigger) {
                 trigger.querySelector("button").textContent =
                     SYMBOLS.BOOK + " Show walkthrough";
@@ -1503,7 +1543,7 @@ var StudyUI = {
         guidedPanel.innerHTML = html;
         guidedPanel.style.display = "block";
 
-        if (solPart) solPart.classList.add("solution-part-expanded");
+        if (solLayout) solLayout.classList.add("part-sol-expanded");
         if (trigger) {
             trigger.querySelector("button").textContent =
                 SYMBOLS.BOOK + " Hide walkthrough";
@@ -1675,17 +1715,6 @@ var StudyUI = {
             }
             StudyUI._activeAreaId = "question-area"; // reset
             ReviseUI.refresh();
-        } else if (StudyUI._activeAreaId === "targeted-question-area") {
-            // Returning from a targeted Skills/Exam session
-            if (typeof ConceptsUI !== "undefined") {
-                ConceptsUI.backToTopicsFromSession();
-            } else {
-                var tHome = document.getElementById("targeted-home");
-                var tArea = document.getElementById("targeted-question-area");
-                if (tHome) tHome.style.display = "block";
-                if (tArea) { tArea.style.display = "none"; tArea.innerHTML = ""; }
-                StudyUI._activeAreaId = "question-area";
-            }
         } else {
             // Normal study session -- go back to study start screen
             var startScreen = document.querySelector(".study-start-screen");

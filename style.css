@@ -5691,3 +5691,138 @@ body.dark-theme input[type="range"] {
         text-align: center;
     }
 }
+
+/* ============================================================================
+   STICKY QUESTION STEM
+   ============================================================================ */
+.question-stem-sticky {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--bg-primary);
+    padding-bottom: var(--space-md);
+    border-bottom: 2px solid var(--accent-primary);
+    margin-bottom: var(--space-md);
+    /* Slight shadow to separate from scrolling content */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+/* Compact the stem on small screens to save space */
+.question-stem-sticky .question-header {
+    margin-bottom: var(--space-sm);
+}
+.question-stem-sticky .question-stimulus {
+    max-height: 200px;
+    overflow-y: auto;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+.question-stem-sticky .question-diagrams {
+    max-height: 250px;
+    overflow-y: auto;
+}
+.question-stem-sticky .question-diagram {
+    max-height: 220px;
+    object-fit: contain;
+}
+/* On mobile, don't sticky (takes too much space) */
+@media (max-width: 600px) {
+    .question-stem-sticky {
+        position: static;
+        box-shadow: none;
+        border-bottom: 1px solid var(--border-color);
+    }
+    .question-stem-sticky .question-stimulus {
+        max-height: none;
+    }
+    .question-stem-sticky .question-diagrams {
+        max-height: none;
+    }
+}
+
+/* ============================================================================
+   INLINE PER-PART SOLUTIONS
+   ============================================================================ */
+.part-solution-inline {
+    margin-top: var(--space-md);
+    border-top: 2px solid var(--accent-primary);
+    padding-top: var(--space-md);
+    animation: sp-fade-in 0.3s ease;
+}
+
+/* Flex layout: worked solution (left) + guided walkthrough (right) */
+.part-sol-layout {
+    display: flex;
+    gap: var(--space-lg);
+    align-items: flex-start;
+}
+.part-sol-layout > .solution-part-main {
+    flex: 1 1 0;
+    min-width: 0;
+}
+.part-sol-layout > .solution-part-guided {
+    flex: 0 0 340px;
+    max-width: 400px;
+    max-height: 80vh;
+    overflow-y: auto;
+    position: sticky;
+    top: 320px; /* below the sticky stem */
+    background: var(--color-info-light);
+    border: 1px solid var(--color-info);
+    border-radius: var(--border-radius-lg);
+    padding: var(--space-md);
+}
+
+/* When guided is expanded, highlight the layout */
+.part-sol-layout.part-sol-expanded {
+    /* no special treatment needed — flex handles it */
+}
+
+/* Collapse guided to below on narrow screens */
+@media (max-width: 900px) {
+    .part-sol-layout {
+        flex-direction: column;
+    }
+    .part-sol-layout > .solution-part-guided {
+        flex: none;
+        width: 100%;
+        max-width: none;
+        position: static;
+        max-height: none;
+    }
+}
+
+/* Toggle button in solution part header */
+.part-sol-toggle-btn {
+    cursor: pointer;
+    display: inline-block;
+    transition: transform 0.2s;
+    user-select: none;
+    font-size: 0.85em;
+}
+.part-sol-collapsible {
+    /* shown by default */
+}
+
+/* Solution part header with toggle */
+.part-solution-inline .solution-part-header {
+    color: var(--accent-primary);
+    margin-bottom: var(--space-md);
+    font-size: 1rem;
+    font-family: 'Crimson Pro', serif;
+    font-weight: 600;
+    cursor: default;
+}
+
+/* Ensure question parts have space between them for inline solutions */
+.question-part {
+    padding-bottom: var(--space-md);
+    margin-bottom: var(--space-sm);
+}
+.question-part:last-child {
+    margin-bottom: 0;
+}
+
+/* Hide diagram placeholder text (onerror fallback) */
+.question-diagram[src=""] {
+    display: none;
+}
