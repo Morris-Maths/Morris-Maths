@@ -56,8 +56,9 @@ var SkillsPractice = {
         // Filter PTs by topic and optionally subtopic
         var pts = [];
         if (subtopic) {
-            // Try bySubtopic index first, fallback to linear scan
-            pts = (ATOMISED_DATA.getForSubtopic ? ATOMISED_DATA.getForSubtopic(subtopic) : null) || [];
+            // Try getForSubtopic method, then bySubtopic index, then linear scan
+            pts = (ATOMISED_DATA.getForSubtopic ? ATOMISED_DATA.getForSubtopic(subtopic) : null) ||
+                  (ATOMISED_DATA.bySubtopic ? ATOMISED_DATA.bySubtopic[subtopic] : null) || [];
             if (pts.length === 0) {
                 ATOMISED_DATA.questions.forEach(function(pt) {
                     if (pt.subtopic === subtopic) pts.push(pt);
@@ -65,7 +66,14 @@ var SkillsPractice = {
             }
             self._topicLabel = subtopic;
         } else {
-            pts = ATOMISED_DATA.getForTopic(resolvedTopic) || [];
+            // Try getForTopic method, then byTopic index, then linear scan
+            pts = (ATOMISED_DATA.getForTopic ? ATOMISED_DATA.getForTopic(resolvedTopic) : null) ||
+                  (ATOMISED_DATA.byTopic ? ATOMISED_DATA.byTopic[resolvedTopic] : null) || [];
+            if (pts.length === 0) {
+                ATOMISED_DATA.questions.forEach(function(pt) {
+                    if (pt.topic === resolvedTopic) pts.push(pt);
+                });
+            }
             self._topicLabel = topic;
         }
 
