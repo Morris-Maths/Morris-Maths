@@ -376,6 +376,9 @@ var StudyUI = {
         }
         html += '</div>'; // close .question-stem-sticky
 
+        // Scrollable area for parts + solutions (stem stays fixed above)
+        html += '<div class="question-parts-scroll" id="question-parts-scroll">';
+
         // Parts
         if (q.parts) {
             q.parts.forEach(function(part, idx) {
@@ -492,17 +495,22 @@ var StudyUI = {
             html += '</div>';
         }
 
-        html += '</div>'; // .question-card
-
-        // Solution area (hidden initially)
+        // Solution area (hidden initially) - inside scroll container
         html += '<div id="solution-area" style="display:none;"></div>';
 
-        // Session control
+        // Session control - inside scroll container
         html += '<div class="session-controls" id="session-controls" style="display:none;">';
         html += '<button class="btn btn-secondary" id="end-session-btn">End Session</button>';
         html += '</div>';
 
+        html += '</div>'; // .question-parts-scroll
+        html += '</div>'; // .question-card
+
         area.innerHTML = html;
+
+        // Dynamically size the question card to fill the viewport,
+        // so the stem stays fixed and only the parts area scrolls.
+        StudyUI._sizeQuestionCard();
 
         // EXAM MODE: bind exam buttons + init canvases if stylus
         if (ExamMode.active) {
@@ -1524,6 +1532,41 @@ var StudyUI = {
             '<div class="summary-value">' + value + '</div>' +
             '<div class="summary-label">' + label + '</div>' +
             '</div>';
+    },
+
+    /**
+     * Dynamically size the question card so the stem stays fixed and
+     * only the parts area scrolls. Called after render and on resize.
+     * @private
+     */
+    _sizeQuestionCard: function() {
+        var card = document.querySelector('.question-card');
+        if (!card) return;
+        var rect = card.getBoundingClientRect();
+        // Fill from card top to viewport bottom, with a small margin
+        var available = window.innerHeight - rect.top - 12;
+        card.style.height = Math.max(available, 300) + 'px';
+
+        // Watch for stem images loading (they change stem height, shifting the split)
+        var stemImgs = card.querySelectorAll('.question-stem-sticky img');
+        stemImgs.forEach(function(img) {
+            if (!img.complete) {
+                img.addEventListener('load', function() {
+                    // No re-calc needed; flex layout adjusts automatically
+                    // But ensure scroll area is visible
+                    var scroll = card.querySelector('.question-parts-scroll');
+                    if (scroll) scroll.scrollTop = 0;
+                }, { once: true });
+            }
+        });
+
+        // Bind resize listener once
+        if (!StudyUI._cardResizeBound) {
+            StudyUI._cardResizeBound = true;
+            window.addEventListener('resize', function() {
+                StudyUI._sizeQuestionCard();
+            });
+        }
     },
 
     /**
