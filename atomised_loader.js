@@ -1,3 +1,9 @@
+// ======================================================================
+// ATOMISED DATA LOADER v2.0
+// Merges all 9 topic files into a single ATOMISED_DATA object.
+// Include AFTER the topic-specific JS files in your HTML.
+// ======================================================================
+
 // Global reason library for the misconception picker
 var ATOMISED_REASONS = [
   // General
@@ -20,24 +26,19 @@ var ATOMISED_REASONS = [
 ];
 
 
-// ======================================================================
-// ATOMISED DATA LOADER
-// Merges split topic files into a single ATOMISED_DATA object.
-// Include AFTER the topic-specific JS files in your HTML.
-// ======================================================================
-
 var ATOMISED_DATA = (function() {
   // Each topic file exposes a global with a .questions array.
   // To add a new topic: create the file, add its global name here.
   var _sources = [
-    typeof ATOMISED_FURTHER_DIFFERENTIATION !== 'undefined' ? ATOMISED_FURTHER_DIFFERENTIATION : null,
-    typeof ATOMISED_LOGARITHMIC             !== 'undefined' ? ATOMISED_LOGARITHMIC             : null,
-    typeof ATOMISED_UNCATEGORISED           !== 'undefined' ? ATOMISED_UNCATEGORISED           : null,
-    typeof ATOMISED_INTEGRALS               !== 'undefined' ? ATOMISED_INTEGRALS               : null,
-    typeof ATOMISED_KINEMATICS              !== 'undefined' ? ATOMISED_KINEMATICS              : null,
-    typeof ATOMISED_CRV_NORMAL              !== 'undefined' ? ATOMISED_CRV_NORMAL              : null,
-    typeof ATOMISED_DRV                     !== 'undefined' ? ATOMISED_DRV                     : null,
-    typeof ATOMISED_INTERVAL_ESTIMATES      !== 'undefined' ? ATOMISED_INTERVAL_ESTIMATES      : null
+    typeof ATOMISED_FURTHER_DIFFERENTIATION    !== 'undefined' ? ATOMISED_FURTHER_DIFFERENTIATION    : null,
+    typeof ATOMISED_E_GROWTH_AND_DECAY         !== 'undefined' ? ATOMISED_E_GROWTH_AND_DECAY         : null,
+    typeof ATOMISED_INTEGRALS                  !== 'undefined' ? ATOMISED_INTEGRALS                  : null,
+    typeof ATOMISED_RECTILINEAR_MOTION         !== 'undefined' ? ATOMISED_RECTILINEAR_MOTION         : null,
+    typeof ATOMISED_DISCRETE_RANDOM_VARIABLES  !== 'undefined' ? ATOMISED_DISCRETE_RANDOM_VARIABLES  : null,
+    typeof ATOMISED_LOGARITHMS                 !== 'undefined' ? ATOMISED_LOGARITHMS                 : null,
+    typeof ATOMISED_CONTINUOUS_RANDOM_VARIABLES !== 'undefined' ? ATOMISED_CONTINUOUS_RANDOM_VARIABLES : null,
+    typeof ATOMISED_SAMPLING                   !== 'undefined' ? ATOMISED_SAMPLING                   : null,
+    typeof ATOMISED_CONFIDENCE_INTERVALS       !== 'undefined' ? ATOMISED_CONFIDENCE_INTERVALS       : null,
   ];
 
   var all = [];
@@ -49,10 +50,12 @@ var ATOMISED_DATA = (function() {
   var byTopic = {};
   all.forEach(function(pt) {
     byPtId[pt.pt_id] = pt;
-    if (!byConcept[pt.concept]) byConcept[pt.concept] = [];
-    byConcept[pt.concept].push(pt);
-    if (!byTopic[pt.topic]) byTopic[pt.topic] = [];
-    byTopic[pt.topic].push(pt);
+    var c = pt.concept || 'General';
+    if (!byConcept[c]) byConcept[c] = [];
+    byConcept[c].push(pt);
+    var t = pt.topic || 'Uncategorised';
+    if (!byTopic[t]) byTopic[t] = [];
+    byTopic[t].push(pt);
   });
 
   return {
@@ -60,18 +63,7 @@ var ATOMISED_DATA = (function() {
     byPtId: byPtId,
     byConcept: byConcept,
     byTopic: byTopic,
-
-    // Convenience methods
-    getPT: function(ptId) { return byPtId[ptId] || null; },
-    getForConcept: function(concept) { return byConcept[concept] || []; },
-    getForTopic: function(topic) { return byTopic[topic] || []; },
-    totalPTs: function() { return all.length; },
-    totalQuestions: function() {
-      var n = 0;
-      all.forEach(function(pt) {
-        n += pt.easy.length + pt.medium.length + pt.hard.length;
-      });
-      return n;
-    }
+    count: all.length,
+    topics: Object.keys(byTopic),
   };
 })();
