@@ -1,17 +1,17 @@
 // ============================================================================
-// MODE TOGGLES BAR + HEADER NAV BUTTONS
+// MODE TOGGLES + HEADER NAV WIRING
 // ============================================================================
 function _initModeToggles() {
     // --- Header nav buttons (Print, Dashboard) ---
-    var headerNavBtns = document.querySelectorAll(".header-nav-btn");
-    headerNavBtns.forEach(function(btn) {
+    var hdrNavBtns = document.querySelectorAll(".hdr-nav-btn");
+    hdrNavBtns.forEach(function(btn) {
         btn.addEventListener("click", function() {
             var tab = btn.getAttribute("data-tab");
-            // Deactivate all header nav buttons
-            headerNavBtns.forEach(function(b) { b.classList.remove("active"); });
-            // Deactivate Focus toggles (not on Print/Dashboard)
-            var focusToggles = document.querySelectorAll("#mt-targeted, #mt-mix");
-            focusToggles.forEach(function(t) { t.classList.remove("active"); });
+            // Deactivate all header nav
+            hdrNavBtns.forEach(function(b) { b.classList.remove("active"); });
+            // Deactivate Focus pills
+            document.getElementById("mt-targeted").classList.remove("active");
+            document.getElementById("mt-mix").classList.remove("active");
             btn.classList.add("active");
             UI.showTab(tab);
         });
@@ -21,10 +21,8 @@ function _initModeToggles() {
     var mtTargeted = document.getElementById("mt-targeted");
     var mtMix = document.getElementById("mt-mix");
 
-    function activateFocusToggle(activeBtn, tab) {
-        // Clear header nav active states
-        headerNavBtns.forEach(function(b) { b.classList.remove("active"); });
-        // Set focus toggle
+    function activateFocus(activeBtn, tab) {
+        hdrNavBtns.forEach(function(b) { b.classList.remove("active"); });
         mtTargeted.classList.toggle("active", activeBtn === mtTargeted);
         mtMix.classList.toggle("active", activeBtn === mtMix);
         UI.showTab(tab);
@@ -32,75 +30,75 @@ function _initModeToggles() {
 
     if (mtTargeted) {
         mtTargeted.addEventListener("click", function() {
-            activateFocusToggle(mtTargeted, "targeted");
+            activateFocus(mtTargeted, "targeted");
         });
     }
     if (mtMix) {
         mtMix.addEventListener("click", function() {
-            activateFocusToggle(mtMix, "study");
+            activateFocus(mtMix, "study");
         });
     }
 
     // --- Answer method toggles: Paper vs Stylus ---
     var mtPaper = document.getElementById("mt-paper");
     var mtStylus = document.getElementById("mt-stylus");
-    function setAnswerToggle(btn, value) {
-        mtPaper.classList.toggle("active", value === "paper");
-        mtStylus.classList.toggle("active", value === "stylus");
-        // Sync with the study tab config toggles
-        var answerGroup = document.getElementById("study-answer-group");
-        if (answerGroup) {
-            answerGroup.querySelectorAll(".config-toggle").forEach(function(t) {
-                var isMatch = t.getAttribute("data-value") === value;
-                t.setAttribute("aria-pressed", isMatch ? "true" : "false");
-                t.classList.toggle("active", isMatch);
+    function setAnswer(value) {
+        if (mtPaper) mtPaper.classList.toggle("active", value === "paper");
+        if (mtStylus) mtStylus.classList.toggle("active", value === "stylus");
+        // Sync with study tab config toggles
+        var grp = document.getElementById("study-answer-group");
+        if (grp) {
+            grp.querySelectorAll(".config-toggle").forEach(function(t) {
+                var match = t.getAttribute("data-value") === value;
+                t.setAttribute("aria-pressed", match ? "true" : "false");
+                t.classList.toggle("active", match);
             });
         }
     }
-    if (mtPaper) mtPaper.addEventListener("click", function() { setAnswerToggle(mtPaper, "paper"); });
-    if (mtStylus) mtStylus.addEventListener("click", function() { setAnswerToggle(mtStylus, "stylus"); });
+    if (mtPaper) mtPaper.addEventListener("click", function() { setAnswer("paper"); });
+    if (mtStylus) mtStylus.addEventListener("click", function() { setAnswer("stylus"); });
 
     // --- Marking mode toggles: Instant vs Exam ---
     var mtInstant = document.getElementById("mt-instant");
     var mtExam = document.getElementById("mt-exam");
-    function setMarkingToggle(btn, value) {
-        mtInstant.classList.toggle("active", value === "instant");
-        mtExam.classList.toggle("active", value === "exam");
-        // Sync with the study tab config toggles
-        var markingGroup = document.getElementById("study-marking-mode-group");
-        if (markingGroup) {
-            markingGroup.querySelectorAll(".config-toggle").forEach(function(t) {
-                var isMatch = t.getAttribute("data-value") === value;
-                t.setAttribute("aria-pressed", isMatch ? "true" : "false");
-                t.classList.toggle("active", isMatch);
+    function setMarking(value) {
+        if (mtInstant) mtInstant.classList.toggle("active", value === "instant");
+        if (mtExam) mtExam.classList.toggle("active", value === "exam");
+        // Sync with study tab config toggles
+        var grp = document.getElementById("study-marking-mode-group");
+        if (grp) {
+            grp.querySelectorAll(".config-toggle").forEach(function(t) {
+                var match = t.getAttribute("data-value") === value;
+                t.setAttribute("aria-pressed", match ? "true" : "false");
+                t.classList.toggle("active", match);
             });
         }
-        // Show/hide exam config row
+        // Show/hide exam config
         var examRow = document.getElementById("exam-config-row");
         var timeRow = document.getElementById("study-time-row");
         if (examRow) examRow.style.display = (value === "exam") ? "flex" : "none";
         if (timeRow) timeRow.style.display = (value === "exam") ? "none" : "flex";
     }
-    if (mtInstant) mtInstant.addEventListener("click", function() { setMarkingToggle(mtInstant, "instant"); });
-    if (mtExam) mtExam.addEventListener("click", function() { setMarkingToggle(mtExam, "exam"); });
+    if (mtInstant) mtInstant.addEventListener("click", function() { setMarking("instant"); });
+    if (mtExam) mtExam.addEventListener("click", function() { setMarking("exam"); });
 
-    // --- Sync config toggles back to mode bar (when changed in study panel) ---
-    var studyAnswerGroup = document.getElementById("study-answer-group");
-    if (studyAnswerGroup) {
-        studyAnswerGroup.addEventListener("click", function(e) {
+    // --- Sync: if user changes toggles in the study config panel, update header ---
+    var studyAnswerGrp = document.getElementById("study-answer-group");
+    if (studyAnswerGrp) {
+        studyAnswerGrp.addEventListener("click", function(e) {
             var t = e.target.closest(".config-toggle");
-            if (t) setAnswerToggle(null, t.getAttribute("data-value"));
+            if (t) setAnswer(t.getAttribute("data-value"));
         });
     }
-    var studyMarkingGroup = document.getElementById("study-marking-mode-group");
-    if (studyMarkingGroup) {
-        studyMarkingGroup.addEventListener("click", function(e) {
+    var studyMarkingGrp = document.getElementById("study-marking-mode-group");
+    if (studyMarkingGrp) {
+        studyMarkingGrp.addEventListener("click", function(e) {
             var t = e.target.closest(".config-toggle");
-            if (t) setMarkingToggle(null, t.getAttribute("data-value"));
+            if (t) setMarking(t.getAttribute("data-value"));
         });
     }
 
-    console.log("Mode toggles bar initialised");
+    console.log("Header toggles initialised");
 }
 
 // ============================================================================
