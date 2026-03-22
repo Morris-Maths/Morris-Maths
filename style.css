@@ -1112,8 +1112,8 @@ body.dark-theme #welcome-screen {
 }
 
 .question-diagram {
-    max-width: min(100%, 400px);
-    max-height: clamp(180px, 30vh, 400px);
+    max-width: min(100%, 520px);
+    max-height: clamp(220px, 35vh, 480px);
     width: auto;
     height: auto;
     border-radius: var(--border-radius);
@@ -5919,7 +5919,7 @@ body.dark-theme input[type="range"] {
     margin-bottom: var(--space-sm);
     box-shadow: 0 4px 12px rgba(0,0,0,0.06);
     /* Cap height so solutions always have room below */
-    max-height: clamp(160px, 40vh, 450px);
+    max-height: clamp(200px, 48vh, 550px);
     overflow-y: auto;
     overflow-x: hidden;
     /* Smooth scrolling inside the stem */
@@ -5956,7 +5956,7 @@ body.dark-theme input[type="range"] {
     margin: 4px 0 2px;
 }
 .question-stem-sticky .question-diagram {
-    max-height: clamp(120px, 22vh, 280px);
+    max-height: clamp(160px, 30vh, 380px);
     object-fit: contain;
 }
 /* On mobile, don't sticky (takes too much space) */
@@ -5975,7 +5975,7 @@ body.dark-theme input[type="range"] {
 /* On short viewports (e.g. laptop screens), be more aggressive */
 @media (max-height: 750px) {
     .question-stem-sticky {
-        max-height: 35vh;
+        max-height: 40vh;
     }
     .question-stem-sticky .question-stimulus {
         font-size: 0.85rem;
@@ -5985,13 +5985,13 @@ body.dark-theme input[type="range"] {
         font-size: 0.85em !important;
     }
     .question-stem-sticky .question-diagram {
-        max-height: clamp(100px, 18vh, 220px);
+        max-height: clamp(130px, 22vh, 280px);
     }
 }
 /* On very short viewports, shrink further */
 @media (max-height: 600px) {
     .question-stem-sticky {
-        max-height: 30vh;
+        max-height: 33vh;
     }
     .question-stem-sticky .question-stimulus {
         font-size: 0.8rem;
