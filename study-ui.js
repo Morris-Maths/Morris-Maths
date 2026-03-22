@@ -599,6 +599,9 @@ var StudyUI = {
         // Render math
         UI.renderMath(area);
 
+        // After MathJax renders, check if stem needs scroll indicator
+        StudyUI._checkStemScrollable();
+
         // Check session duration for break reminder
         StudyUI._checkDurationReminder();
     },
@@ -1671,6 +1674,34 @@ var StudyUI = {
             refs.push(match[1].trim());
         }
         return refs;
+    },
+
+    /**
+     * Check if the sticky stem is overflowing and add a scroll-hint class.
+     * Called after renderMath with a delay so MathJax has time to layout.
+     * @private
+     */
+    _checkStemScrollable: function() {
+        // Use a short delay to let MathJax finish typesetting
+        setTimeout(function() {
+            var stem = document.querySelector('.question-stem-sticky');
+            if (!stem) return;
+            if (stem.scrollHeight > stem.clientHeight + 4) {
+                stem.classList.add('stem-scrollable');
+            } else {
+                stem.classList.remove('stem-scrollable');
+            }
+        }, 400);
+        // Re-check after MathJax may have reflowed (longer expressions)
+        setTimeout(function() {
+            var stem = document.querySelector('.question-stem-sticky');
+            if (!stem) return;
+            if (stem.scrollHeight > stem.clientHeight + 4) {
+                stem.classList.add('stem-scrollable');
+            } else {
+                stem.classList.remove('stem-scrollable');
+            }
+        }, 1200);
     },
 
     /**
