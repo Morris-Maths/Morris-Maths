@@ -5456,6 +5456,31 @@ body.dark-theme input[type="range"] {
     border-top: 2px dashed var(--border-color);
     margin-top: 8px;
 }
+
+/* ---- Type badges for mixed sessions ---- */
+.cs-flashcard-type-badge {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-bottom: 6px;
+}
+.cs-badge-concept {
+    background: var(--accent-primary);
+    color: #fff;
+}
+.cs-badge-skill {
+    background: var(--color-info, #3b82f6);
+    color: #fff;
+}
+.cs-flashcard-skill-name {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+}
 .cs-flashcard-answer.cs-shown {
     display: block;
 }

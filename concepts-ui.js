@@ -457,7 +457,17 @@ var ConceptsUI = {
         if (counter) counter.textContent = (ConceptsUI._reviewIndex + 1) + " / " + total;
 
         var html = '<div class="cs-flashcard">';
+        // Show type badge in mixed sessions
+        var isSkill = card._itemType === "skill";
+        if (ConceptsUI._currentTopicKey === "__mixed__") {
+            html += '<div class="cs-flashcard-type-badge ' +
+                (isSkill ? 'cs-badge-skill' : 'cs-badge-concept') + '">' +
+                (isSkill ? 'Skill' : 'Concept') + '</div>';
+        }
         html += '<div class="cs-flashcard-section">' + ConceptsUI._escHTML(card.section) + '</div>';
+        if (isSkill && card._skill_name) {
+            html += '<div class="cs-flashcard-skill-name">' + ConceptsUI._escHTML(card._skill_name) + '</div>';
+        }
         html += '<div class="cs-flashcard-question">' + card.q + '</div>';
 
         // Diagram placeholder (if present)
@@ -510,14 +520,24 @@ var ConceptsUI = {
 
     rateCard: function(nailed) {
         var card = ConceptsUI._reviewQueue[ConceptsUI._reviewIndex];
+        var isSkill = card._itemType === "skill";
 
-        // Update progress
-        if (!ConceptsUI._progressData[card.qid]) {
-            ConceptsUI._progressData[card.qid] = { nailed: false, attempts: 0 };
+        if (isSkill) {
+            // Record attempt via SkillsPractice mastery system
+            if (typeof SkillsPractice !== "undefined" && SkillsPractice._recordAttempt) {
+                SkillsPractice._recordAttempt(
+                    card._pt_id, card.qid, nailed, null, 0
+                ).catch(function() {});
+            }
+        } else {
+            // Update concept progress
+            if (!ConceptsUI._progressData[card.qid]) {
+                ConceptsUI._progressData[card.qid] = { nailed: false, attempts: 0 };
+            }
+            ConceptsUI._progressData[card.qid].attempts++;
+            ConceptsUI._progressData[card.qid].nailed = nailed;
+            ConceptsUI._progressData[card.qid].lastSeen = Date.now();
         }
-        ConceptsUI._progressData[card.qid].attempts++;
-        ConceptsUI._progressData[card.qid].nailed = nailed;
-        ConceptsUI._progressData[card.qid].lastSeen = Date.now();
 
         if (nailed) {
             ConceptsUI._sessionNailed++;
@@ -541,8 +561,9 @@ var ConceptsUI = {
             ConceptsUI._insertCounter = 0;
             var revisitQid = ConceptsUI._reviewToRevisit[0];
             var revisitCard = null;
-            // For combined mode, search the full queue; otherwise use topic lookup
-            if (ConceptsUI._currentTopicKey === "__combined__") {
+            // For combined/mixed mode, search the full queue; otherwise use topic lookup
+            if (ConceptsUI._currentTopicKey === "__combined__" ||
+                ConceptsUI._currentTopicKey === "__mixed__") {
                 // Find the card from already-served portion of queue
                 for (var i = 0; i < ConceptsUI._reviewIndex; i++) {
                     if (ConceptsUI._reviewQueue[i] && ConceptsUI._reviewQueue[i].qid === revisitQid) {
@@ -571,8 +592,9 @@ var ConceptsUI = {
     _showReviewComplete: function() {
         var total = ConceptsUI._sessionNailed + ConceptsUI._sessionRevise;
         var pct = total > 0 ? Math.round((ConceptsUI._sessionNailed / total) * 100) : 0;
-        var label = ConceptsUI._currentTopicKey === "__combined__"
-            ? "Combined Review" : (ConceptsUI._currentSubtopicFilter || ConceptsUI._currentTopicKey);
+        var label = (ConceptsUI._currentTopicKey === "__combined__" ||
+            ConceptsUI._currentTopicKey === "__mixed__")
+            ? "Mixed Review" : (ConceptsUI._currentSubtopicFilter || ConceptsUI._currentTopicKey);
 
         // Check if there are pending skills/exam selections to launch next
         var pending = ConceptsUI._pendingAfterConcepts || { skills: [], exam: [] };
@@ -872,14 +894,98 @@ var ConceptsUI = {
             ConceptsUI._launchCombinedExam(examSels);
             return;
         }
-        // Mixed: concepts first (if any), then skills/exam
-        if (conceptSels.length > 0) {
-            ConceptsUI._launchCombinedConcepts(conceptSels);
-            // After concepts finish, _showReviewSummary will check _pendingAfterConcepts
-        } else {
-            // No concepts, just skills + exam mixed
-            ConceptsUI._launchBlendedSkillsExam(skillSels, examSels);
+        // Mixed: interleave concepts + skills in flashcard UI
+        // If exam selections are also present, they run after via _pendingAfterConcepts
+        ConceptsUI._pendingAfterConcepts = {
+            skills: [],  // skills are now mixed in, not pending
+            exam: examSels
+        };
+        ConceptsUI._launchMixedSession(conceptSels, skillSels);
+    },
+
+    /**
+     * Launch a mixed session interleaving concepts and skills as flashcards.
+     * Exam selections (if any) are stored in _pendingAfterConcepts.exam
+     * and run after the mixed session completes.
+     */
+    _launchMixedSession: function(conceptSels, skillSels) {
+        var queue = [];
+
+        // Gather concept cards
+        (conceptSels || []).forEach(function(s) {
+            var concepts = s.subtopic ?
+                ConceptsUI._getConceptsForSubtopic(s.topic, s.subtopic) :
+                ConceptsUI._getConceptsForTopic(s.topic);
+            concepts.forEach(function(c) {
+                c._itemType = "concept";
+                c._sourceTopic = s.subtopic || s.topic;
+                queue.push(c);
+            });
+        });
+
+        // Gather skill questions from ATOMISED_DATA
+        if ((skillSels || []).length > 0 &&
+            typeof ATOMISED_DATA !== "undefined" && ATOMISED_DATA.questions) {
+            var seen = {};
+            var skillPTs = [];
+            skillSels.forEach(function(s) {
+                var resolvedTopic = (typeof SkillsPractice !== "undefined" &&
+                    SkillsPractice._topicAliases) ?
+                    (SkillsPractice._topicAliases[s.topic] || s.topic) : s.topic;
+                ATOMISED_DATA.questions.forEach(function(pt) {
+                    var match = s.subtopic ?
+                        (pt.subtopic === s.subtopic) :
+                        (pt.topic === resolvedTopic);
+                    if (match && !seen[pt.pt_id]) {
+                        seen[pt.pt_id] = true;
+                        skillPTs.push(pt);
+                    }
+                });
+            });
+
+            // Pick one question per PT and add as flashcard item
+            skillPTs.forEach(function(pt) {
+                var pool = (pt.medium && pt.medium.length) ? pt.medium :
+                           (pt.easy && pt.easy.length) ? pt.easy :
+                           (pt.hard && pt.hard.length) ? pt.hard : null;
+                if (!pool) return;
+                var q = pool[Math.floor(Math.random() * pool.length)];
+                queue.push({
+                    _itemType: "skill",
+                    qid: q.qid,
+                    q: q.q,
+                    answer: q.a,
+                    section: pt.concept || pt.subtopic || "",
+                    subtopic: pt.subtopic || "",
+                    diagram: null,
+                    _pt_id: pt.pt_id,
+                    _skill_name: pt.pt || ""
+                });
+            });
         }
+
+        if (queue.length === 0) {
+            alert("No questions available for the selected topics.");
+            return;
+        }
+
+        // Shuffle everything together
+        ConceptsUI._shuffle(queue);
+
+        // Set up review state
+        ConceptsUI._currentTopicKey = "__mixed__";
+        ConceptsUI._currentSubtopicFilter = "";
+        ConceptsUI._reviewQueue = queue;
+        ConceptsUI._reviewIndex = 0;
+        ConceptsUI._reviewToRevisit = [];
+        ConceptsUI._insertCounter = 0;
+        ConceptsUI._sessionNailed = 0;
+        ConceptsUI._sessionRevise = 0;
+
+        // Show review screen
+        document.getElementById("targeted-home").style.display = "none";
+        document.getElementById("concepts-review-view").style.display = "block";
+        ConceptsUI._showCurrentCard();
     },
 
     /**
