@@ -98,6 +98,32 @@ function _initModeToggles() {
         });
     }
 
+    // --- Home button: return to topic tree ---
+    var homeBtn = document.getElementById("hdr-home-btn");
+    if (homeBtn) {
+        homeBtn.addEventListener("click", function() {
+            // If a session is running, end it and return
+            if (typeof StudyUI !== "undefined" && StudyUI.currentQuestion) {
+                StudyUI.returnToHome();
+            }
+            // Reset targeted revision to show topic tree
+            var targetedHome = document.getElementById("targeted-home");
+            var targetedQArea = document.getElementById("targeted-question-area");
+            var conceptsView = document.getElementById("concepts-review-view");
+            if (targetedHome) targetedHome.style.display = "block";
+            if (targetedQArea) { targetedQArea.style.display = "none"; targetedQArea.innerHTML = ""; }
+            if (conceptsView) conceptsView.style.display = "none";
+            // Rebuild topic tree if available
+            if (typeof ConceptsUI !== "undefined") ConceptsUI.buildTree();
+            // Switch to targeted tab and reset focus toggles
+            hdrNavBtns.forEach(function(b) { b.classList.remove("active"); });
+            if (mtTargeted) mtTargeted.classList.add("active");
+            if (mtMix) mtMix.classList.remove("active");
+            UI.showTab("targeted");
+            window.scrollTo(0, 0);
+        });
+    }
+
     console.log("Header toggles initialised");
 }
 

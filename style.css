@@ -469,6 +469,23 @@ body.dark-theme #welcome-screen {
     color: var(--paper);
 }
 
+.hdr-home-btn {
+    margin-left: 8px;
+    padding: 2px 8px;
+    background: rgba(250, 249, 246, 0.1);
+    color: rgba(250, 249, 246, 0.75);
+    border: 1px solid rgba(250, 249, 246, 0.25);
+    border-radius: 4px;
+    font-size: 1.05rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+.hdr-home-btn:hover {
+    background: rgba(250, 249, 246, 0.2);
+    color: var(--paper);
+}
+
 .top-bar-right {
     display: flex;
     align-items: center;
