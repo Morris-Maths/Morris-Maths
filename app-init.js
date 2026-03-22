@@ -9,35 +9,10 @@ function _initModeToggles() {
             var tab = btn.getAttribute("data-tab");
             // Deactivate all header nav
             hdrNavBtns.forEach(function(b) { b.classList.remove("active"); });
-            // Deactivate Focus pills
-            document.getElementById("mt-targeted").classList.remove("active");
-            document.getElementById("mt-mix").classList.remove("active");
             btn.classList.add("active");
             UI.showTab(tab);
         });
     });
-
-    // --- Focus toggles: Targeted vs Mix ---
-    var mtTargeted = document.getElementById("mt-targeted");
-    var mtMix = document.getElementById("mt-mix");
-
-    function activateFocus(activeBtn, tab) {
-        hdrNavBtns.forEach(function(b) { b.classList.remove("active"); });
-        mtTargeted.classList.toggle("active", activeBtn === mtTargeted);
-        mtMix.classList.toggle("active", activeBtn === mtMix);
-        UI.showTab(tab);
-    }
-
-    if (mtTargeted) {
-        mtTargeted.addEventListener("click", function() {
-            activateFocus(mtTargeted, "targeted");
-        });
-    }
-    if (mtMix) {
-        mtMix.addEventListener("click", function() {
-            activateFocus(mtMix, "study");
-        });
-    }
 
     // --- Answer method toggles: Paper vs Stylus ---
     var mtPaper = document.getElementById("mt-paper");
@@ -113,12 +88,14 @@ function _initModeToggles() {
             if (targetedHome) targetedHome.style.display = "block";
             if (targetedQArea) { targetedQArea.style.display = "none"; targetedQArea.innerHTML = ""; }
             if (conceptsView) conceptsView.style.display = "none";
-            // Rebuild topic tree if available
-            if (typeof ConceptsUI !== "undefined") ConceptsUI.buildTree();
-            // Switch to targeted tab and reset focus toggles
+            // Clear selections
+            if (typeof ConceptsUI !== "undefined") {
+                ConceptsUI._selections = [];
+                ConceptsUI._pendingAfterConcepts = { skills: [], exam: [] };
+                ConceptsUI.buildTree();
+            }
+            // Switch to targeted tab and reset nav
             hdrNavBtns.forEach(function(b) { b.classList.remove("active"); });
-            if (mtTargeted) mtTargeted.classList.add("active");
-            if (mtMix) mtMix.classList.remove("active");
             UI.showTab("targeted");
             window.scrollTo(0, 0);
         });

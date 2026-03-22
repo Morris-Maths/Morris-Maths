@@ -50,7 +50,6 @@ var SessionEngine = {
         SessionEngine.wrongListOnly = !!opts.wrongListOnly;
         SessionEngine.answerMethod = opts.answerMethod || "paper";
         SessionEngine.markingMode = opts.markingMode || "instant";
-        SessionEngine.poolFilter = opts.poolFilter || "mix";
         SessionEngine.startTime = new Date();
         SessionEngine.freshCount = 0;
         SessionEngine.totalCount = 0;
@@ -61,7 +60,6 @@ var SessionEngine = {
 
         // Set section filter on QuestionSelector
         QuestionSelector.sectionFilter = SessionEngine.sectionFilter;
-        QuestionSelector.poolFilter = SessionEngine.poolFilter;
         QuestionSelector.resetSession();
 
         SessionEngine.sessionData = {
@@ -493,6 +491,60 @@ var SessionEngine = {
                     part.conceptCategory === topicFilter ||
                     part.problemType === topicFilter) {
                     matched = true;
+                }
+                if (matched) {
+                    var partPTs = QuestionEngine.getPartProblemTypes(part);
+                    partPTs.forEach(function(pt) {
+                        matchingPTs[pt] = true;
+                    });
+                }
+            });
+        });
+
+        var lists = ["wrongList", "confidenceList", "freshList", "improvingList", "reviewList"];
+        lists.forEach(function(listName) {
+            SessionEngine[listName] = SessionEngine[listName].filter(function(item) {
+                return matchingPTs[item.problemType];
+            });
+        });
+    },
+
+    /**
+     * Filter session lists to keep only problem types matching ANY of the
+     * given topic/subtopic filters. Used by multi-select launch.
+     * @param {string[]} filters - array of topic or subtopic names
+     */
+    _applyMultiTopicFilter: function(filters) {
+        if (!filters || filters.length === 0) return;
+
+        var matchingPTs = {};
+        var keys = Object.keys(QuestionEngine.allQuestions);
+        keys.forEach(function(k) {
+            var q = QuestionEngine.allQuestions[k];
+            if (!q.parts) return;
+            q.parts.forEach(function(part) {
+                var classifications = QuestionEngine.getPartClassifications(part);
+                var matched = false;
+                classifications.forEach(function(cls) {
+                    for (var i = 0; i < filters.length; i++) {
+                        var f = filters[i];
+                        if (cls.topic === f || cls.subtopic === f ||
+                            cls.conceptCategory === f || cls.problemType === f) {
+                            matched = true;
+                            break;
+                        }
+                    }
+                });
+                // Also check legacy fields
+                if (!matched) {
+                    for (var i = 0; i < filters.length; i++) {
+                        var f = filters[i];
+                        if (part.topic === f || part.subtopic === f ||
+                            part.conceptCategory === f || part.problemType === f) {
+                            matched = true;
+                            break;
+                        }
+                    }
                 }
                 if (matched) {
                     var partPTs = QuestionEngine.getPartProblemTypes(part);

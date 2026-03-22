@@ -108,13 +108,6 @@
             </div>
             <div class="top-bar-toggles">
                 <div class="hdr-toggle-group">
-                    <span class="hdr-toggle-label">Focus</span>
-                    <div class="hdr-toggle-pills">
-                        <button class="hdr-pill active" id="mt-targeted" data-tab="targeted">Targeted</button>
-                        <button class="hdr-pill" id="mt-mix" data-tab="study">Mix</button>
-                    </div>
-                </div>
-                <div class="hdr-toggle-group">
                     <span class="hdr-toggle-label">Answer</span>
                     <div class="hdr-toggle-pills">
                         <button class="hdr-pill active" id="mt-paper" data-mode="paper">Paper</button>
@@ -274,7 +267,7 @@
                 <div id="targeted-home">
                     <div class="revise-header">
                         <h2>Targeted Revision</h2>
-                        <p class="revise-subtitle">Pick a topic or subtopic, then choose Concepts, Skills, or Exam Questions.</p>
+                        <p class="revise-subtitle">Select any combination of Concepts, Skills, or Exam Questions across topics, then hit Go.</p>
                     </div>
                     <div class="targeted-config">
                         <div class="targeted-mode-hints">
@@ -284,6 +277,20 @@
                         </div>
                     </div>
                     <div id="targeted-topic-tree"></div>
+
+                    <!-- Floating selection bar (appears when items selected) -->
+                    <div id="selection-bar" class="selection-bar" style="display:none;">
+                        <div class="selection-bar-inner">
+                            <span class="selection-bar-count" id="selection-bar-count">0 selected</span>
+                            <div class="selection-bar-actions">
+                                <button class="btn btn-secondary selection-bar-clear"
+                                        onclick="ConceptsUI.clearSelections()">Clear</button>
+                                <button class="btn btn-primary selection-bar-go"
+                                        id="selection-bar-go"
+                                        onclick="ConceptsUI.launchSelected()">Go</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- CONCEPTS FLASHCARD REVIEW (overlays the tree) -->
