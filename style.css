@@ -558,7 +558,7 @@ body.dark-theme #welcome-screen {
 #tab-content {
     max-width: var(--max-width);
     margin: 0 auto;
-    padding: var(--space-lg);
+    padding: var(--space-sm) var(--space-lg);
     overflow: visible;
 }
 
@@ -938,9 +938,9 @@ body.dark-theme #welcome-screen {
     background: var(--bg-secondary);
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius-lg);
-    padding: var(--space-lg);
+    padding: var(--space-sm) var(--space-md);
     box-shadow: var(--shadow-sm);
-    margin-bottom: var(--space-lg);
+    margin-bottom: var(--space-md);
     max-width: 100%;
     overflow-x: hidden;
 }
@@ -981,8 +981,8 @@ body.dark-theme #welcome-screen {
     align-items: center;
     justify-content: space-between;
     gap: var(--space-xs);
-    margin-bottom: var(--space-sm);
-    padding-bottom: var(--space-xs);
+    margin-bottom: 4px;
+    padding-bottom: 4px;
     border-bottom: 1px solid var(--border-color);
 }
 
@@ -5844,21 +5844,21 @@ body.dark-theme input[type="range"] {
    ============================================================================ */
 .question-stem-sticky {
     position: sticky;
-    top: 0; /* directly below header */
+    top: 0;
     z-index: 10;
     background: var(--bg-secondary);
-    padding-bottom: var(--space-sm);
+    padding-bottom: 4px;
     border-bottom: 2px solid var(--accent-primary);
-    margin-bottom: var(--space-md);
+    margin-bottom: var(--space-sm);
     box-shadow: 0 4px 12px rgba(0,0,0,0.06);
 }
 /* Compact the stem on small screens to save space */
 .question-stem-sticky .question-header {
-    margin-bottom: var(--space-sm);
+    margin-bottom: 4px;
 }
 .question-stem-sticky .question-stimulus {
-    font-size: 0.95rem;
-    line-height: 1.5;
+    font-size: 0.93rem;
+    line-height: 1.4;
 }
 .question-stem-sticky .question-diagram {
     max-height: 280px;
