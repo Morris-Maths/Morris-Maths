@@ -105,6 +105,10 @@
             <div class="top-bar-left">
                 <h1 class="app-title">Morris Maths</h1>
             </div>
+            <div class="top-bar-center">
+                <button class="header-nav-btn" data-tab="print" title="Print worksheets">Print</button>
+                <button class="header-nav-btn" data-tab="dashboard" title="Dashboard">Dashboard</button>
+            </div>
             <div class="top-bar-right">
                 <span id="student-name-display" class="student-name"></span>
                 <button id="theme-toggle-btn" class="btn btn-icon" title="Toggle dark mode"
@@ -119,8 +123,27 @@
             </div>
         </header>
 
-        <!-- Tab Navigation -->
-        <nav id="tab-nav">
+        <!-- Compact mode toggles (replaces old white tab bar) -->
+        <div id="mode-toggles-bar">
+            <div class="mode-toggle-group">
+                <label class="mode-toggle-label">Focus:</label>
+                <button class="mode-toggle active" id="mt-targeted" data-tab="targeted">Targeted</button>
+                <button class="mode-toggle" id="mt-mix" data-tab="study">Mix Topics</button>
+            </div>
+            <div class="mode-toggle-group">
+                <label class="mode-toggle-label">Answer:</label>
+                <button class="mode-toggle active" id="mt-paper" data-mode="paper">Paper</button>
+                <button class="mode-toggle" id="mt-stylus" data-mode="stylus">Stylus</button>
+            </div>
+            <div class="mode-toggle-group">
+                <label class="mode-toggle-label">Marking:</label>
+                <button class="mode-toggle active" id="mt-instant" data-mode="instant">Instant</button>
+                <button class="mode-toggle" id="mt-exam" data-mode="exam">Exam</button>
+            </div>
+        </div>
+
+        <!-- Hidden tab buttons for backward compat (data-tab routing still works) -->
+        <nav id="tab-nav" style="display:none;">
             <button class="tab-btn" data-tab="targeted">Targeted Revision</button>
             <button class="tab-btn active" data-tab="study">Questions Mix</button>
             <button class="tab-btn" data-tab="print">Print</button>

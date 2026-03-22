@@ -362,7 +362,7 @@ body.dark-theme #welcome-screen {
     align-items: center;
     justify-content: space-between;
     height: var(--header-height);
-    padding: 0 var(--space-lg);
+    padding: 0 var(--space-md);
     background: var(--ink);
     border-bottom: 3px solid var(--accent);
     box-shadow: var(--shadow-sm);
@@ -374,6 +374,37 @@ body.dark-theme #welcome-screen {
 .top-bar-left {
     display: flex;
     align-items: center;
+    flex: 0 0 auto;
+}
+
+.top-bar-center {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.header-nav-btn {
+    padding: 4px 12px;
+    background: rgba(250, 249, 246, 0.1);
+    color: rgba(250, 249, 246, 0.75);
+    border: 1px solid rgba(250, 249, 246, 0.2);
+    border-radius: 4px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+}
+.header-nav-btn:hover {
+    background: rgba(250, 249, 246, 0.2);
+    color: var(--paper);
+}
+.header-nav-btn.active {
+    background: var(--accent);
+    color: var(--ink);
+    border-color: var(--accent);
+    font-weight: 600;
 }
 
 .app-title {
@@ -417,7 +448,78 @@ body.dark-theme #welcome-screen {
 }
 
 
-/* ---- TAB NAVIGATION ---- */
+/* ---- MODE TOGGLES BAR (replaces white tab nav) ---- */
+#mode-toggles-bar {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: 5px var(--space-md);
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: var(--header-height);
+    z-index: 99;
+    overflow-x: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+#mode-toggles-bar::-webkit-scrollbar { display: none; }
+
+.mode-toggle-group {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    flex-shrink: 0;
+}
+.mode-toggle-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-right: 3px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+}
+.mode-toggle {
+    padding: 3px 10px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-primary);
+    color: var(--text-muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+}
+.mode-toggle:first-of-type {
+    border-radius: 4px 0 0 4px;
+}
+.mode-toggle:last-of-type {
+    border-radius: 0 4px 4px 0;
+}
+.mode-toggle.active {
+    background: var(--accent-primary);
+    color: #fff;
+    border-color: var(--accent-primary);
+    font-weight: 600;
+}
+.mode-toggle:hover:not(.active) {
+    background: var(--bg-tertiary);
+}
+
+/* Dark theme */
+.dark-theme .mode-toggle {
+    background: var(--bg-tertiary);
+    border-color: var(--border-color);
+}
+.dark-theme .mode-toggle.active {
+    background: var(--accent-primary);
+    color: #fff;
+}
+
+
+/* ---- TAB NAVIGATION (hidden, kept for backward compat) ---- */
 #tab-nav {
     display: flex;
     background: var(--bg-secondary);
@@ -856,9 +958,8 @@ body.dark-theme #welcome-screen {
     padding: var(--space-lg);
     box-shadow: var(--shadow-sm);
     margin-bottom: var(--space-lg);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
+    max-width: 100%;
+    overflow-x: hidden;
 }
 
 /* Remediation question (from wrong/struggling list) */
@@ -896,16 +997,62 @@ body.dark-theme #welcome-screen {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    flex-wrap: wrap;
-    gap: var(--space-sm);
-    margin-bottom: var(--space-md);
-    padding-bottom: var(--space-md);
+    gap: var(--space-xs);
+    margin-bottom: var(--space-sm);
+    padding-bottom: var(--space-xs);
     border-bottom: 1px solid var(--border-color);
+}
+
+.question-header-left {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    flex-wrap: wrap;
+    min-width: 0;
+}
+
+.question-header-right {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+.q-counter-text {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    white-space: nowrap;
+    padding: 2px 8px;
+    background: var(--bg-tertiary);
+    border-radius: 10px;
+}
+
+.q-nav-btn {
+    width: 26px;
+    height: 26px;
+    padding: 0;
+    font-size: 1.1rem;
+    line-height: 1;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    transition: background 0.15s;
+}
+.q-nav-btn:hover {
+    background: var(--accent-primary);
+    color: #fff;
+    border-color: var(--accent-primary);
 }
 
 .question-ref {
     font-family: 'Crimson Pro', Georgia, serif;
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: 600;
     color: var(--text-primary);
 }
@@ -5713,14 +5860,14 @@ body.dark-theme input[type="range"] {
    STICKY QUESTION STEM
    ============================================================================ */
 .question-stem-sticky {
-    flex-shrink: 0;
+    position: sticky;
+    top: calc(var(--header-height) + 35px); /* header + mode toggles bar */
     z-index: 10;
     background: var(--bg-secondary);
-    padding-bottom: var(--space-md);
+    padding-bottom: var(--space-sm);
     border-bottom: 2px solid var(--accent-primary);
     margin-bottom: var(--space-md);
     box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-    overflow-y: auto;
 }
 /* Compact the stem on small screens to save space */
 .question-stem-sticky .question-header {
@@ -5734,28 +5881,12 @@ body.dark-theme input[type="range"] {
     max-height: 280px;
     object-fit: contain;
 }
-
-/* Scrollable parts area below the fixed stem */
-.question-parts-scroll {
-    flex: 1 1 0;
-    overflow-y: auto;
-    min-height: 0;
-    padding-top: var(--space-sm);
-}
-
-/* On mobile, revert to normal scrolling (card too small for split) */
+/* On mobile, don't sticky (takes too much space) */
 @media (max-width: 600px) {
-    .question-card {
-        height: auto !important;
-        display: block;
-        overflow: visible;
-    }
     .question-stem-sticky {
+        position: static;
         box-shadow: none;
         border-bottom: 1px solid var(--border-color);
-    }
-    .question-parts-scroll {
-        overflow-y: visible;
     }
 }
 
@@ -5767,38 +5898,39 @@ body.dark-theme input[type="range"] {
     border-top: 2px solid var(--accent-primary);
     padding-top: var(--space-md);
     animation: sp-fade-in 0.3s ease;
+    max-width: 100%;
+    overflow-x: hidden;
 }
 
 /* Flex layout: worked solution (left) + guided walkthrough (right) */
 .part-sol-layout {
     display: flex;
-    gap: var(--space-lg);
+    gap: var(--space-md);
     align-items: flex-start;
+    max-width: 100%;
+    overflow-x: hidden;
 }
 .part-sol-layout > .solution-part-main {
-    flex: 1 1 0;
+    flex: 0 1 auto;
     min-width: 0;
+    max-width: 40%;
 }
 .part-sol-layout > .solution-part-guided {
-    flex: 0 0 380px;
-    max-width: 480px;
+    flex: 1 1 0;
+    min-width: 0;
     max-height: 80vh;
     overflow-y: auto;
     position: sticky;
-    top: var(--space-md); /* relative to scroll container now */
+    top: 200px; /* below the sticky stem */
     background: var(--color-info-light);
     border: 1px solid var(--color-info);
     border-radius: var(--border-radius-lg);
     padding: var(--space-md);
 }
 
-/* When guided is expanded, break out of max-width to use more space */
+/* When guided is expanded, use full width within the card */
 .part-sol-layout.part-sol-expanded {
-    width: calc(100vw - 2 * var(--space-lg));
-    max-width: 1400px;
-    position: relative;
-    left: 50%;
-    transform: translateX(-50%);
+    width: 100%;
 }
 
 /* Collapse guided to below on narrow screens */

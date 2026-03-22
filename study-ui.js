@@ -283,37 +283,7 @@ var StudyUI = {
         var q = questionInfo.questionData;
         var html = "";
 
-        // Progress bar
-        html += '<div class="session-progress">';
-        if (ExamMode.active) {
-            // Exam mode: show marks accumulated and question number
-            var qNum = ExamMode.currentExamIndex + 1;
-            html += '<div class="progress-text">Question ' + qNum +
-                ' \u2014 ' + ExamMode.accumulatedMarks + ' / ' +
-                ExamMode.targetMarks + ' marks queued</div>';
-            var markPct = Math.round((ExamMode.accumulatedMarks / ExamMode.targetMarks) * 100);
-            markPct = Math.min(markPct, 100);
-            html += '<div class="progress-bar"><div class="progress-fill" style="width:' +
-                markPct + '%"></div></div>';
-        } else if (questionInfo.isBonus) {
-            html += '<div class="progress-text">' + SYMBOLS.LIGHTNING +
-                ' Bonus: Another like this</div>';
-        } else {
-            var plannedNum = questionInfo.questionNumber - (SessionEngine.bonusCount || 0);
-            html += '<div class="progress-text">Question ' +
-                plannedNum + ' of ' +
-                questionInfo.sessionGoal + '</div>';
-        }
-        if (!ExamMode.active) {
-            var plannedDone = (questionInfo.questionNumber - (SessionEngine.bonusCount || 0));
-            var pct = Math.round((plannedDone / questionInfo.sessionGoal) * 100);
-            pct = Math.min(pct, 100);
-            html += '<div class="progress-bar"><div class="progress-fill" style="width:' +
-                pct + '%"></div></div>';
-        }
-        html += '</div>';
-
-        // Question header
+        // Question header (no separate progress bar — counter is inline in header)
         var isRemediation = questionInfo.sourceList === "wrong";
         html += '<div class="question-card' + (isRemediation ? ' question-card-remediation' : '') + '">';
         if (isRemediation) {
@@ -324,7 +294,9 @@ var StudyUI = {
         }
         html += '<div class="question-stem-sticky">';
         html += '<div class="question-header">';
-        // Build rich question reference: e.g. "WACE 2016 CA \u2014 Question 9"
+
+        // LEFT side: question ref + badges all inline
+        html += '<div class="question-header-left">';
         var refParts = [];
         if (q.sourceName) refParts.push(q.sourceName);
         if (q.year) refParts.push(q.year);
@@ -333,9 +305,11 @@ var StudyUI = {
         var refText = refPrefix + (q.questionReference || questionInfo.filename || 'Question');
         html += '<h3 class="question-ref">' +
             StudyUI._escapeHtml(refText) + '</h3>';
-        html += '<div class="question-badges">';
-        html += '<span class="badge badge-section">' +
-            StudyUI._escapeHtml(q.sectionName || "") + '</span>';
+        // Badges inline right after ref
+        if (q.sectionName) {
+            html += '<span class="badge badge-section">' +
+                StudyUI._escapeHtml(q.sectionName) + '</span>';
+        }
         html += '<span class="badge badge-marks">' + (q.totalMarks || 0) + ' marks</span>';
         if (q.difficultyRating) {
             var diffClass = "badge-diff-" + (q.difficultyRating || "average").toLowerCase()
@@ -343,7 +317,27 @@ var StudyUI = {
             html += '<span class="badge ' + diffClass + '">' +
                 StudyUI._escapeHtml(q.difficultyRating) + '</span>';
         }
-        html += '</div></div>';
+        html += '</div>'; // .question-header-left
+
+        // RIGHT side: question counter + prev/next nav (always shown)
+        html += '<div class="question-header-right">';
+        if (ExamMode.active) {
+            html += '<span class="q-counter-text" id="exam-q-counter">Q ' +
+                (ExamMode.currentExamIndex + 1) + '</span>';
+            html += '<button class="btn btn-icon q-nav-btn" id="exam-prev-btn" title="Previous question">' +
+                '\u2039</button>';
+            html += '<button class="btn btn-icon q-nav-btn" id="exam-next-btn" title="Next question">' +
+                '\u203A</button>';
+        } else {
+            var plannedNum = questionInfo.questionNumber - (SessionEngine.bonusCount || 0);
+            var counterLabel = questionInfo.isBonus ?
+                (SYMBOLS.LIGHTNING + ' Bonus') :
+                ('Q ' + plannedNum + '/' + questionInfo.sessionGoal);
+            html += '<span class="q-counter-text">' + counterLabel + '</span>';
+        }
+        html += '</div>'; // .question-header-right
+
+        html += '</div>'; // .question-header
 
         // Question stimulus
         // Track images rendered inline via [IMAGE:] to avoid duplicating with diagramPlaceholders
@@ -375,9 +369,6 @@ var StudyUI = {
             html += '</div>';
         }
         html += '</div>'; // close .question-stem-sticky
-
-        // Scrollable area for parts + solutions (stem stays fixed above)
-        html += '<div class="question-parts-scroll" id="question-parts-scroll">';
 
         // Parts
         if (q.parts) {
@@ -495,22 +486,17 @@ var StudyUI = {
             html += '</div>';
         }
 
-        // Solution area (hidden initially) - inside scroll container
+        html += '</div>'; // .question-card
+
+        // Solution area (hidden initially)
         html += '<div id="solution-area" style="display:none;"></div>';
 
-        // Session control - inside scroll container
+        // Session control
         html += '<div class="session-controls" id="session-controls" style="display:none;">';
         html += '<button class="btn btn-secondary" id="end-session-btn">End Session</button>';
         html += '</div>';
 
-        html += '</div>'; // .question-parts-scroll
-        html += '</div>'; // .question-card
-
         area.innerHTML = html;
-
-        // Dynamically size the question card to fill the viewport,
-        // so the stem stays fixed and only the parts area scrolls.
-        StudyUI._sizeQuestionCard();
 
         // EXAM MODE: bind exam buttons + init canvases if stylus
         if (ExamMode.active) {
@@ -1532,41 +1518,6 @@ var StudyUI = {
             '<div class="summary-value">' + value + '</div>' +
             '<div class="summary-label">' + label + '</div>' +
             '</div>';
-    },
-
-    /**
-     * Dynamically size the question card so the stem stays fixed and
-     * only the parts area scrolls. Called after render and on resize.
-     * @private
-     */
-    _sizeQuestionCard: function() {
-        var card = document.querySelector('.question-card');
-        if (!card) return;
-        var rect = card.getBoundingClientRect();
-        // Fill from card top to viewport bottom, with a small margin
-        var available = window.innerHeight - rect.top - 12;
-        card.style.height = Math.max(available, 300) + 'px';
-
-        // Watch for stem images loading (they change stem height, shifting the split)
-        var stemImgs = card.querySelectorAll('.question-stem-sticky img');
-        stemImgs.forEach(function(img) {
-            if (!img.complete) {
-                img.addEventListener('load', function() {
-                    // No re-calc needed; flex layout adjusts automatically
-                    // But ensure scroll area is visible
-                    var scroll = card.querySelector('.question-parts-scroll');
-                    if (scroll) scroll.scrollTop = 0;
-                }, { once: true });
-            }
-        });
-
-        // Bind resize listener once
-        if (!StudyUI._cardResizeBound) {
-            StudyUI._cardResizeBound = true;
-            window.addEventListener('resize', function() {
-                StudyUI._sizeQuestionCard();
-            });
-        }
     },
 
     /**
