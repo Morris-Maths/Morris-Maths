@@ -105,11 +105,32 @@
             <div class="top-bar-left">
                 <h1 class="app-title">Morris Maths</h1>
             </div>
-            <div class="top-bar-center">
-                <button class="header-nav-btn" data-tab="print" title="Print worksheets">Print</button>
-                <button class="header-nav-btn" data-tab="dashboard" title="Dashboard">Dashboard</button>
+            <div class="top-bar-toggles">
+                <div class="hdr-toggle-group">
+                    <span class="hdr-toggle-label">Focus</span>
+                    <div class="hdr-toggle-pills">
+                        <button class="hdr-pill active" id="mt-targeted" data-tab="targeted">Targeted</button>
+                        <button class="hdr-pill" id="mt-mix" data-tab="study">Mix</button>
+                    </div>
+                </div>
+                <div class="hdr-toggle-group">
+                    <span class="hdr-toggle-label">Answer</span>
+                    <div class="hdr-toggle-pills">
+                        <button class="hdr-pill active" id="mt-paper" data-mode="paper">Paper</button>
+                        <button class="hdr-pill" id="mt-stylus" data-mode="stylus">Stylus</button>
+                    </div>
+                </div>
+                <div class="hdr-toggle-group">
+                    <span class="hdr-toggle-label">Marking</span>
+                    <div class="hdr-toggle-pills">
+                        <button class="hdr-pill active" id="mt-instant" data-mode="instant">Instant</button>
+                        <button class="hdr-pill" id="mt-exam" data-mode="exam">Exam</button>
+                    </div>
+                </div>
             </div>
             <div class="top-bar-right">
+                <button class="hdr-nav-btn" data-tab="print">Print</button>
+                <button class="hdr-nav-btn" data-tab="dashboard">Dashboard</button>
                 <span id="student-name-display" class="student-name"></span>
                 <button id="theme-toggle-btn" class="btn btn-icon" title="Toggle dark mode"
                         aria-label="Toggle dark mode">
@@ -117,35 +138,15 @@
                 </button>
                 <button id="settings-btn" class="btn btn-icon" title="Settings"
                         aria-label="Settings">
-                    <!-- Gear icon via CSS -->
                     <span class="icon-gear"></span>
                 </button>
             </div>
         </header>
 
-        <!-- Compact mode toggles (replaces old white tab bar) -->
-        <div id="mode-toggles-bar">
-            <div class="mode-toggle-group">
-                <label class="mode-toggle-label">Focus:</label>
-                <button class="mode-toggle active" id="mt-targeted" data-tab="targeted">Targeted</button>
-                <button class="mode-toggle" id="mt-mix" data-tab="study">Mix Topics</button>
-            </div>
-            <div class="mode-toggle-group">
-                <label class="mode-toggle-label">Answer:</label>
-                <button class="mode-toggle active" id="mt-paper" data-mode="paper">Paper</button>
-                <button class="mode-toggle" id="mt-stylus" data-mode="stylus">Stylus</button>
-            </div>
-            <div class="mode-toggle-group">
-                <label class="mode-toggle-label">Marking:</label>
-                <button class="mode-toggle active" id="mt-instant" data-mode="instant">Instant</button>
-                <button class="mode-toggle" id="mt-exam" data-mode="exam">Exam</button>
-            </div>
-        </div>
-
-        <!-- Hidden tab buttons for backward compat (data-tab routing still works) -->
+        <!-- Hidden tab buttons for backward compat (showTab routing) -->
         <nav id="tab-nav" style="display:none;">
-            <button class="tab-btn" data-tab="targeted">Targeted Revision</button>
-            <button class="tab-btn active" data-tab="study">Questions Mix</button>
+            <button class="tab-btn active" data-tab="targeted">Targeted Revision</button>
+            <button class="tab-btn" data-tab="study">Questions Mix</button>
             <button class="tab-btn" data-tab="print">Print</button>
             <button class="tab-btn" data-tab="dashboard">Dashboard</button>
         </nav>
@@ -153,7 +154,7 @@
         <!-- Tab Content Panels -->
         <main id="tab-content">
             <!-- STUDY TAB -->
-            <section id="tab-study" class="tab-panel active">
+            <section id="tab-study" class="tab-panel">
                 <div class="study-start-screen">
                     <h2>Questions Mix</h2>
                     <div class="readiness-ring-container" id="readiness-container">
@@ -278,7 +279,7 @@
             </section>
 
             <!-- TARGETED REVISION TAB -->
-            <section id="tab-targeted" class="tab-panel">
+            <section id="tab-targeted" class="tab-panel active">
                 <!-- TOPIC TREE VIEW -->
                 <div id="targeted-home">
                     <div class="revise-header">

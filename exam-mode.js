@@ -1090,7 +1090,7 @@ var ExamMode = {
     }
 };
 var UI = {
-    currentTab: "study",
+    currentTab: "targeted",
 
     /**
      * Initialise all UI event listeners.
@@ -1437,8 +1437,8 @@ var UI = {
             if (timerCheck) timerCheck.checked = config.showTimerSuggestions !== false;
         }
 
-        // Show study tab by default
-        UI.showTab("study");
+        // Show targeted revision tab by default
+        UI.showTab("targeted");
     },
 
     /**
