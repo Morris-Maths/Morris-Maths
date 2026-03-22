@@ -1893,12 +1893,35 @@ body.dark-theme #welcome-screen {
 .feedback-review {
     padding: var(--space-md);
     background: var(--color-danger-light);
-    color: var(--color-danger);
     border-radius: var(--border-radius);
-    font-weight: 600;
-    font-size: 0.95rem;
     text-align: center;
     margin-bottom: var(--space-lg);
+}
+
+.feedback-review-heading {
+    color: var(--color-danger);
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: var(--space-sm);
+}
+
+.feedback-review-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: center;
+}
+
+.feedback-review-pill {
+    display: inline-block;
+    background: rgba(255,255,255,0.7);
+    color: var(--color-text);
+    font-size: 0.85rem;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 100px;
+    border: 1px solid var(--color-danger);
+    line-height: 1.4;
 }
 
 

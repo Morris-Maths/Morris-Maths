@@ -1160,12 +1160,17 @@ var StudyUI = {
                 feedbackEl.innerHTML = '<div class="feedback-correct">' +
                     SYMBOLS.CHECK + ' All correct! Great work!</div>';
             } else {
-                var ptList = wrongPTs.map(function(pt) {
-                    return StudyUI._escapeHtml(pt);
-                }).join(", ");
+                var ptPills = wrongPTs.map(function(pt) {
+                    return '<span class="feedback-review-pill">' +
+                        StudyUI._escapeHtml(pt) + '</span>';
+                }).join('');
                 feedbackEl.innerHTML = '<div class="feedback-review">' +
-                    SYMBOLS.CROSS + ' Review needed: ' + ptList + '</div>';
+                    '<div class="feedback-review-heading">' +
+                    SYMBOLS.CROSS + ' Review needed</div>' +
+                    '<div class="feedback-review-pills">' + ptPills + '</div>' +
+                    '</div>';
             }
+            UI.renderMath(feedbackEl);
         }
 
         // Check if this was the last question in the goal (bonuses don't count)
