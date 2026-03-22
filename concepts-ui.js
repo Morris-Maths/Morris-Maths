@@ -933,7 +933,7 @@ var ConceptsUI = {
         // Switch UI
         document.getElementById("targeted-home").style.display = "none";
         document.getElementById("concepts-review-view").style.display = "block";
-        ConceptsUI._showFlashcard();
+        ConceptsUI._showCurrentCard();
     },
 
     /**
