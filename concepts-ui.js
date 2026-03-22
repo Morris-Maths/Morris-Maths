@@ -18,12 +18,6 @@ var ConceptsUI = {
     _currentSubtopicFilter: "",
     _loaded: false,
 
-    // ---- Multi-select state ----
-    // Each entry: { topic, subtopic, pool }
-    //   pool = "concepts", "practice" (skills), or "original" (exam qs)
-    _selections: [],
-    _pendingAfterConcepts: { skills: [], exam: [] },
-
     // ---- Canonical taxonomy (topics -> subtopics) ----
     // This is the display taxonomy for the Targeted Revision tree.
     // It maps topic names to arrays of subtopic names.
@@ -106,16 +100,11 @@ var ConceptsUI = {
     // DATA REGISTRATION
     // ================================================================
     _registerConceptsData: function() {
-        // Look for global CONCEPTS_* variables and register them
-        var globals = [
-            { varName: "CONCEPTS_INTEGRALS",           topic: "Integrals" },
-            { varName: "CONCEPTS_DIFFERENTIATION",     topic: "Further Differentiation and Applications" },
-            { varName: "CONCEPTS_LOGARITHMIC",         topic: "The Logarithmic Function" },
-            { varName: "CONCEPTS_DRV",                 topic: "Discrete Random Variables" },
-            { varName: "CONCEPTS_CRV_NORMAL",          topic: "Continuous Random Variables and the Normal Distribution" },
-            { varName: "CONCEPTS_INTERVAL_ESTIMATES",   topic: "Interval Estimates for Proportions" },
-            { varName: "CONCEPTS_KINEMATICS",          topic: "Kinematics" }
-        ];
+        // Use CourseLoader's registration list (from course-config.js) if available,
+        // so global variable names and topic labels stay in sync with the course config.
+        var globals = (typeof CourseLoader !== "undefined" && CourseLoader.getConceptsRegistration)
+            ? CourseLoader.getConceptsRegistration()
+            : [];
 
         globals.forEach(function(entry) {
             if (typeof window[entry.varName] !== "undefined") {
@@ -194,17 +183,21 @@ var ConceptsUI = {
         var container = document.getElementById("targeted-topic-tree");
         if (!container) return;
 
+        // Use CourseLoader taxonomy if available, fall back to hardcoded TAXONOMY
+        var taxonomy = (typeof CourseLoader !== "undefined" && CourseLoader.getTaxonomy)
+            ? CourseLoader.getTaxonomy()
+            : ConceptsUI.TAXONOMY;
+
         var html = "";
-        var topics = Object.keys(ConceptsUI.TAXONOMY);
+        var topics = Object.keys(taxonomy);
 
         topics.forEach(function(topic) {
             var hasConcepts = !!ConceptsUI._conceptsBank[topic];
             var topicQids = ConceptsUI._getQidsForTopic(topic);
             var topicRate = ConceptsUI._calcSuccessRate(topicQids);
             var reviewCount = ConceptsUI._countNeedReview(topicQids);
-            var tAttr = ConceptsUI._escAttr(topic);
 
-            html += '<div class="cs-topic-block" data-topic="' + tAttr + '">';
+            html += '<div class="cs-topic-block" data-topic="' + ConceptsUI._escAttr(topic) + '">';
 
             // Topic header row
             html += '<div class="cs-topic-header" onclick="ConceptsUI.toggleTopic(this)">';
@@ -217,31 +210,24 @@ var ConceptsUI = {
             html += '</div>';
             html += '<div class="cs-topic-actions">';
             html += ConceptsUI._pillHTML(topicRate);
-            html += '<button class="cs-btn cs-btn-concepts' +
-                ConceptsUI._selClass(topic, '', 'concepts') + '" ' +
-                (hasConcepts ?
-                'onclick="event.stopPropagation(); ConceptsUI.toggleSelection(\'' +
-                tAttr + '\', \'\', \'concepts\', this)"' :
+            html += '<button class="cs-btn cs-btn-concepts" ' +
+                (hasConcepts ? 'onclick="event.stopPropagation(); ConceptsUI.startConceptReview(\'' +
+                ConceptsUI._escAttr(topic) + '\', \'\')"' :
                 'disabled title="Coming soon"') + '>Concepts</button>';
-            html += '<button class="cs-btn cs-btn-skills' +
-                ConceptsUI._selClass(topic, '', 'practice') + '" ' +
-                'onclick="event.stopPropagation(); ConceptsUI.toggleSelection(\'' +
-                tAttr + '\', \'\', \'practice\', this)">Skills</button>';
-            html += '<button class="cs-btn cs-btn-exam' +
-                ConceptsUI._selClass(topic, '', 'original') + '" ' +
-                'onclick="event.stopPropagation(); ConceptsUI.toggleSelection(\'' +
-                tAttr + '\', \'\', \'original\', this)">Exam Qs</button>';
+            html += '<button class="cs-btn cs-btn-skills" onclick="event.stopPropagation(); ConceptsUI.startTargetedSession(\'' +
+                ConceptsUI._escAttr(topic) + '\', \'\', \'practice\')">Skills</button>';
+            html += '<button class="cs-btn cs-btn-exam" onclick="event.stopPropagation(); ConceptsUI.startTargetedSession(\'' +
+                ConceptsUI._escAttr(topic) + '\', \'\', \'original\')">Exam Qs</button>';
             html += '</div>';
             html += '</div>';
 
             // Subtopics (collapsed)
             html += '<div class="cs-subtopic-list">';
-            ConceptsUI.TAXONOMY[topic].forEach(function(sub) {
+            taxonomy[topic].forEach(function(sub) {
                 var subQids = ConceptsUI._getQidsForSubtopic(topic, sub);
                 var subRate = ConceptsUI._calcSuccessRate(subQids);
                 var hasSubConcepts = subQids.length > 0;
                 var subReviewCount = ConceptsUI._countNeedReview(subQids);
-                var sAttr = ConceptsUI._escAttr(sub);
 
                 html += '<div class="cs-subtopic-row">';
                 html += '<span class="cs-subtopic-name">' + ConceptsUI._escHTML(sub);
@@ -251,20 +237,17 @@ var ConceptsUI = {
                 html += '</span>';
                 html += '<div class="cs-topic-actions">';
                 html += ConceptsUI._pillHTML(subRate);
-                html += '<button class="cs-btn cs-btn-concepts' +
-                    ConceptsUI._selClass(topic, sub, 'concepts') + '" ' +
-                    (hasSubConcepts ?
-                    'onclick="ConceptsUI.toggleSelection(\'' +
-                    tAttr + '\', \'' + sAttr + '\', \'concepts\', this)"' :
+                html += '<button class="cs-btn cs-btn-concepts" ' +
+                    (hasSubConcepts ? 'onclick="ConceptsUI.startConceptReview(\'' +
+                    ConceptsUI._escAttr(topic) + '\', \'' +
+                    ConceptsUI._escAttr(sub) + '\')"' :
                     'disabled title="No concepts yet"') + '>Concepts</button>';
-                html += '<button class="cs-btn cs-btn-skills' +
-                    ConceptsUI._selClass(topic, sub, 'practice') + '" ' +
-                    'onclick="ConceptsUI.toggleSelection(\'' +
-                    tAttr + '\', \'' + sAttr + '\', \'practice\', this)">Skills</button>';
-                html += '<button class="cs-btn cs-btn-exam' +
-                    ConceptsUI._selClass(topic, sub, 'original') + '" ' +
-                    'onclick="ConceptsUI.toggleSelection(\'' +
-                    tAttr + '\', \'' + sAttr + '\', \'original\', this)">Exam Qs</button>';
+                html += '<button class="cs-btn cs-btn-skills" onclick="ConceptsUI.startTargetedSession(\'' +
+                    ConceptsUI._escAttr(topic) + '\', \'' +
+                    ConceptsUI._escAttr(sub) + '\', \'practice\')">Skills</button>';
+                html += '<button class="cs-btn cs-btn-exam" onclick="ConceptsUI.startTargetedSession(\'' +
+                    ConceptsUI._escAttr(topic) + '\', \'' +
+                    ConceptsUI._escAttr(sub) + '\', \'original\')">Exam Qs</button>';
                 html += '</div>';
                 html += '</div>';
             });
@@ -274,8 +257,6 @@ var ConceptsUI = {
         });
 
         container.innerHTML = html;
-        // Restore selection-bar padding class
-        ConceptsUI._updateSelectionBar();
     },
 
     toggleTopic: function(headerEl) {
@@ -537,23 +518,13 @@ var ConceptsUI = {
         if (ConceptsUI._insertCounter >= 5 && ConceptsUI._reviewToRevisit.length > 0) {
             ConceptsUI._insertCounter = 0;
             var revisitQid = ConceptsUI._reviewToRevisit[0];
+            var allConcepts = ConceptsUI._currentSubtopicFilter ?
+                ConceptsUI._getConceptsForSubtopic(
+                    ConceptsUI._currentTopicKey, ConceptsUI._currentSubtopicFilter) :
+                ConceptsUI._getConceptsForTopic(ConceptsUI._currentTopicKey);
             var revisitCard = null;
-            // For combined mode, search the full queue; otherwise use topic lookup
-            if (ConceptsUI._currentTopicKey === "__combined__") {
-                // Find the card from already-served portion of queue
-                for (var i = 0; i < ConceptsUI._reviewIndex; i++) {
-                    if (ConceptsUI._reviewQueue[i] && ConceptsUI._reviewQueue[i].qid === revisitQid) {
-                        revisitCard = ConceptsUI._reviewQueue[i]; break;
-                    }
-                }
-            } else {
-                var allConcepts = ConceptsUI._currentSubtopicFilter ?
-                    ConceptsUI._getConceptsForSubtopic(
-                        ConceptsUI._currentTopicKey, ConceptsUI._currentSubtopicFilter) :
-                    ConceptsUI._getConceptsForTopic(ConceptsUI._currentTopicKey);
-                for (var i = 0; i < allConcepts.length; i++) {
-                    if (allConcepts[i].qid === revisitQid) { revisitCard = allConcepts[i]; break; }
-                }
+            for (var i = 0; i < allConcepts.length; i++) {
+                if (allConcepts[i].qid === revisitQid) { revisitCard = allConcepts[i]; break; }
             }
             if (revisitCard) {
                 ConceptsUI._reviewQueue.splice(ConceptsUI._reviewIndex + 1, 0, revisitCard);
@@ -568,12 +539,7 @@ var ConceptsUI = {
     _showReviewComplete: function() {
         var total = ConceptsUI._sessionNailed + ConceptsUI._sessionRevise;
         var pct = total > 0 ? Math.round((ConceptsUI._sessionNailed / total) * 100) : 0;
-        var label = ConceptsUI._currentTopicKey === "__combined__"
-            ? "Combined Review" : (ConceptsUI._currentSubtopicFilter || ConceptsUI._currentTopicKey);
-
-        // Check if there are pending skills/exam selections to launch next
-        var pending = ConceptsUI._pendingAfterConcepts || { skills: [], exam: [] };
-        var hasMore = pending.skills.length > 0 || pending.exam.length > 0;
+        var label = ConceptsUI._currentSubtopicFilter || ConceptsUI._currentTopicKey;
 
         var html = '<div class="cs-review-complete">';
         html += '<h2>Review Complete!</h2>';
@@ -593,16 +559,8 @@ var ConceptsUI = {
             pct + '%</span>' +
             '<span class="cs-review-stat-label">Success rate</span></div>';
         html += '</div>';
-
-        if (hasMore) {
-            html += '<button class="btn btn-primary btn-large" ' +
-                'onclick="ConceptsUI._launchPendingAfterConcepts()">Continue to Practice</button>';
-            html += '<button class="btn btn-secondary" style="margin-top:8px;" ' +
-                'onclick="ConceptsUI.backToTopics()">Back to Topics</button>';
-        } else {
-            html += '<button class="btn btn-primary btn-large" ' +
-                'onclick="ConceptsUI.backToTopics()">Back to Topics</button>';
-        }
+        html += '<button class="btn btn-primary btn-large" ' +
+            'onclick="ConceptsUI.backToTopics()">Back to Topics</button>';
         html += '</div>';
 
         document.getElementById("concepts-flashcard-area").innerHTML = html;
@@ -617,36 +575,8 @@ var ConceptsUI = {
         document.getElementById("concepts-review-view").style.display = "none";
         document.getElementById("targeted-home").style.display = "block";
         document.getElementById("concepts-flashcard-area").innerHTML = "";
-        // Clear selections and pending state
-        ConceptsUI._selections = [];
-        ConceptsUI._pendingAfterConcepts = { skills: [], exam: [] };
         // Rebuild tree to update progress pills
         ConceptsUI.buildTree();
-    },
-
-    /**
-     * After a concepts review completes, launch remaining skills/exam selections.
-     */
-    _launchPendingAfterConcepts: function() {
-        var pending = ConceptsUI._pendingAfterConcepts || { skills: [], exam: [] };
-        ConceptsUI._pendingAfterConcepts = { skills: [], exam: [] };
-
-        // Hide concepts review, show targeted question area
-        document.getElementById("concepts-review-view").style.display = "none";
-        document.getElementById("concepts-flashcard-area").innerHTML = "";
-
-        if (pending.skills.length > 0 && pending.exam.length === 0) {
-            document.getElementById("targeted-home").style.display = "none";
-            document.getElementById("targeted-question-area").style.display = "block";
-            ConceptsUI._launchCombinedSkills(pending.skills);
-        } else if (pending.exam.length > 0 && pending.skills.length === 0) {
-            ConceptsUI._launchCombinedExam(pending.exam);
-        } else {
-            // Both -- launch blended
-            document.getElementById("targeted-home").style.display = "none";
-            document.getElementById("targeted-question-area").style.display = "block";
-            ConceptsUI._launchBlendedSkillsExam(pending.skills, pending.exam);
-        }
     },
 
     // ================================================================
@@ -699,400 +629,6 @@ var ConceptsUI = {
     },
 
     // ================================================================
-    // MULTI-SELECT: toggle, track, floating bar
-    // ================================================================
-
-    /**
-     * Check if a selection already exists.
-     * @returns {number} index in _selections, or -1
-     */
-    _findSelection: function(topic, subtopic, pool) {
-        for (var i = 0; i < ConceptsUI._selections.length; i++) {
-            var s = ConceptsUI._selections[i];
-            if (s.topic === topic && s.subtopic === subtopic && s.pool === pool) return i;
-        }
-        return -1;
-    },
-
-    /**
-     * Return " cs-selected" if this item is in the selection list, else "".
-     * Used during buildTree to preserve highlights across rebuilds.
-     */
-    _selClass: function(topic, subtopic, pool) {
-        return ConceptsUI._findSelection(topic, subtopic || "", pool) >= 0
-            ? " cs-selected" : "";
-    },
-
-    /**
-     * Toggle a Concepts/Skills/Exam Qs button on or off.
-     */
-    toggleSelection: function(topic, subtopic, pool, btnEl) {
-        var idx = ConceptsUI._findSelection(topic, subtopic, pool);
-        if (idx >= 0) {
-            // Deselect
-            ConceptsUI._selections.splice(idx, 1);
-            if (btnEl) btnEl.classList.remove("cs-selected");
-        } else {
-            // Select -- but check for topic/subtopic overlap:
-            // If selecting a topic-level button, remove any subtopic-level
-            // selections under the same topic+pool (and vice-versa)
-            if (!subtopic) {
-                // Selecting whole topic: remove subtopic selections for same pool
-                ConceptsUI._selections = ConceptsUI._selections.filter(function(s) {
-                    return !(s.topic === topic && s.subtopic && s.pool === pool);
-                });
-            } else {
-                // Selecting subtopic: remove whole-topic selection for same pool
-                ConceptsUI._selections = ConceptsUI._selections.filter(function(s) {
-                    return !(s.topic === topic && !s.subtopic && s.pool === pool);
-                });
-            }
-            ConceptsUI._selections.push({ topic: topic, subtopic: subtopic || "", pool: pool });
-            if (btnEl) btnEl.classList.add("cs-selected");
-        }
-        // Re-sync all button highlights (handles overlap removal)
-        ConceptsUI._syncButtonHighlights();
-        ConceptsUI._updateSelectionBar();
-    },
-
-    /**
-     * Sync cs-selected class on all buttons to match _selections state.
-     */
-    _syncButtonHighlights: function() {
-        var container = document.getElementById("targeted-topic-tree");
-        if (!container) return;
-        var allBtns = container.querySelectorAll(".cs-btn");
-        allBtns.forEach(function(btn) {
-            // Determine which selection this button represents by its parent context
-            var row = btn.closest(".cs-subtopic-row");
-            var block = btn.closest(".cs-topic-block");
-            if (!block) return;
-            var topic = block.getAttribute("data-topic") || "";
-            var subtopic = "";
-            if (row) {
-                // It's a subtopic button -- extract subtopic name from the row text
-                var nameEl = row.querySelector(".cs-subtopic-name");
-                if (nameEl) {
-                    // Get text content minus any badge text
-                    subtopic = nameEl.childNodes[0].textContent.trim();
-                }
-            }
-            var pool = "";
-            if (btn.classList.contains("cs-btn-concepts")) pool = "concepts";
-            else if (btn.classList.contains("cs-btn-skills")) pool = "practice";
-            else if (btn.classList.contains("cs-btn-exam")) pool = "original";
-            if (!pool) return;
-
-            var isSelected = ConceptsUI._findSelection(topic, subtopic, pool) >= 0;
-            btn.classList.toggle("cs-selected", isSelected);
-        });
-    },
-
-    /**
-     * Update the floating selection bar visibility and count.
-     */
-    _updateSelectionBar: function() {
-        var bar = document.getElementById("selection-bar");
-        var countEl = document.getElementById("selection-bar-count");
-        var tree = document.getElementById("targeted-topic-tree");
-        var n = ConceptsUI._selections.length;
-
-        if (n > 0) {
-            if (bar) bar.style.display = "block";
-            if (countEl) {
-                // Build a summary like "2 topics \u00b7 Skills, Exam Qs"
-                var poolLabels = { concepts: "Concepts", practice: "Skills", original: "Exam Qs" };
-                var pools = {};
-                ConceptsUI._selections.forEach(function(s) { pools[s.pool] = true; });
-                var poolList = Object.keys(pools).map(function(k) { return poolLabels[k]; }).join(", ");
-                countEl.textContent = n + " selected \u00b7 " + poolList;
-            }
-            if (tree) tree.classList.add("has-selection-bar");
-        } else {
-            if (bar) bar.style.display = "none";
-            if (tree) tree.classList.remove("has-selection-bar");
-        }
-    },
-
-    /**
-     * Clear all selections.
-     */
-    clearSelections: function() {
-        ConceptsUI._selections = [];
-        ConceptsUI._syncButtonHighlights();
-        ConceptsUI._updateSelectionBar();
-    },
-
-    /**
-     * Launch a session from all current selections.
-     * Groups by pool type:
-     *  - concepts only  -> combined flashcard review
-     *  - skills only    -> combined skills practice
-     *  - exam qs only   -> combined exam session via SessionEngine
-     *  - mixed          -> sequential: concepts first, then skills/exam blended
-     */
-    launchSelected: function() {
-        if (ConceptsUI._selections.length === 0) return;
-
-        // Hide the floating bar during sessions
-        var bar = document.getElementById("selection-bar");
-        if (bar) bar.style.display = "none";
-
-        var conceptSels = [];
-        var skillSels = [];
-        var examSels = [];
-
-        ConceptsUI._selections.forEach(function(s) {
-            if (s.pool === "concepts") conceptSels.push(s);
-            else if (s.pool === "practice") skillSels.push(s);
-            else if (s.pool === "original") examSels.push(s);
-        });
-
-        // Store what comes after concepts (for sequential flow)
-        ConceptsUI._pendingAfterConcepts = {
-            skills: skillSels,
-            exam: examSels
-        };
-
-        // Pure concepts
-        if (conceptSels.length > 0 && skillSels.length === 0 && examSels.length === 0) {
-            ConceptsUI._launchCombinedConcepts(conceptSels);
-            return;
-        }
-        // Pure skills
-        if (skillSels.length > 0 && conceptSels.length === 0 && examSels.length === 0) {
-            ConceptsUI._launchCombinedSkills(skillSels);
-            return;
-        }
-        // Pure exam
-        if (examSels.length > 0 && conceptSels.length === 0 && skillSels.length === 0) {
-            ConceptsUI._launchCombinedExam(examSels);
-            return;
-        }
-        // Mixed: concepts first (if any), then skills/exam
-        if (conceptSels.length > 0) {
-            ConceptsUI._launchCombinedConcepts(conceptSels);
-            // After concepts finish, _showReviewSummary will check _pendingAfterConcepts
-        } else {
-            // No concepts, just skills + exam mixed
-            ConceptsUI._launchBlendedSkillsExam(skillSels, examSels);
-        }
-    },
-
-    /**
-     * Launch combined concept flashcard review across multiple selections.
-     */
-    _launchCombinedConcepts: function(sels) {
-        var allConcepts = [];
-        sels.forEach(function(s) {
-            var concepts;
-            if (s.subtopic) {
-                concepts = ConceptsUI._getConceptsForSubtopic(s.topic, s.subtopic);
-            } else {
-                concepts = ConceptsUI._getConceptsForTopic(s.topic);
-            }
-            concepts.forEach(function(c) {
-                // Tag with source topic for display
-                c._sourceTopic = s.subtopic || s.topic;
-                allConcepts.push(c);
-            });
-        });
-
-        if (allConcepts.length === 0) {
-            alert("No concepts available for the selected topics.");
-            return;
-        }
-
-        // Use the existing review engine with the combined pool
-        ConceptsUI._currentTopicKey = sels.length === 1 ? sels[0].topic : "__combined__";
-        ConceptsUI._currentSubtopicFilter = sels.length === 1 ? sels[0].subtopic : "";
-
-        // Categorise by progress (same as startConceptReview)
-        var needsReview = [], nailed = [], fresh = [];
-        allConcepts.forEach(function(c) {
-            var p = ConceptsUI._progressData[c.qid];
-            if (!p) fresh.push(c);
-            else if (!p.nailed) needsReview.push(c);
-            else nailed.push(c);
-        });
-
-        ConceptsUI._shuffle(needsReview);
-        ConceptsUI._shuffle(fresh);
-        ConceptsUI._shuffle(nailed);
-
-        ConceptsUI._reviewQueue = [].concat(needsReview, fresh, nailed);
-        ConceptsUI._reviewIndex = 0;
-        ConceptsUI._reviewToRevisit = [];
-        ConceptsUI._insertCounter = 0;
-        ConceptsUI._sessionNailed = 0;
-        ConceptsUI._sessionRevise = 0;
-
-        // Switch UI
-        document.getElementById("targeted-home").style.display = "none";
-        document.getElementById("concepts-review-view").style.display = "block";
-        ConceptsUI._showFlashcard();
-    },
-
-    /**
-     * Launch combined skills practice across multiple selections.
-     */
-    _launchCombinedSkills: function(sels) {
-        if (typeof SkillsPractice === "undefined") {
-            alert("Skills practice module not loaded.");
-            return;
-        }
-
-        // Switch UI
-        var home = document.getElementById("targeted-home");
-        var qArea = document.getElementById("targeted-question-area");
-        if (home) home.style.display = "none";
-        if (qArea) qArea.style.display = "block";
-
-        // For single selection, use existing path
-        if (sels.length === 1) {
-            SkillsPractice.start(sels[0].topic, sels[0].subtopic || undefined);
-            return;
-        }
-
-        // Multiple selections: collect all PTs from each selection
-        if (typeof ATOMISED_DATA === "undefined" || !ATOMISED_DATA.questions) {
-            qArea.innerHTML = '<div class="session-empty"><p>Skills data not loaded.</p>' +
-                '<button class="btn btn-primary" onclick="ConceptsUI.backToTopicsFromSession()">Back</button></div>';
-            return;
-        }
-
-        var allPTs = [];
-        var seen = {};
-        sels.forEach(function(s) {
-            var resolvedTopic = SkillsPractice._topicAliases ?
-                (SkillsPractice._topicAliases[s.topic] || s.topic) : s.topic;
-            var pts = [];
-            if (s.subtopic) {
-                pts = (ATOMISED_DATA.getForSubtopic ? ATOMISED_DATA.getForSubtopic(s.subtopic) : null) ||
-                      (ATOMISED_DATA.bySubtopic ? ATOMISED_DATA.bySubtopic[s.subtopic] : null) || [];
-                if (pts.length === 0) {
-                    ATOMISED_DATA.questions.forEach(function(pt) {
-                        if (pt.subtopic === s.subtopic) pts.push(pt);
-                    });
-                }
-            } else {
-                pts = (ATOMISED_DATA.getForTopic ? ATOMISED_DATA.getForTopic(resolvedTopic) : null) ||
-                      (ATOMISED_DATA.byTopic ? ATOMISED_DATA.byTopic[resolvedTopic] : null) || [];
-                if (pts.length === 0) {
-                    ATOMISED_DATA.questions.forEach(function(pt) {
-                        if (pt.topic === resolvedTopic) pts.push(pt);
-                    });
-                }
-            }
-            pts.forEach(function(pt) {
-                if (!seen[pt.pt_id]) {
-                    seen[pt.pt_id] = true;
-                    allPTs.push(pt);
-                }
-            });
-        });
-
-        if (allPTs.length === 0) {
-            qArea.innerHTML = '<div class="session-empty"><p>No skills questions found.</p>' +
-                '<button class="btn btn-primary" onclick="ConceptsUI.backToTopicsFromSession()">Back</button></div>';
-            return;
-        }
-
-        // Use SkillsPractice with the combined PT list
-        SkillsPractice._topicLabel = sels.length + " topics (combined)";
-        SkillsPractice._pts = allPTs;
-        SkillsPractice.active = true;
-        SkillsPractice._questionsServed = 0;
-        SkillsPractice._questionsCorrect = 0;
-        SkillsPractice._questionsIncorrect = 0;
-        SkillsPractice._sessionGoal = 10;
-        SkillsPractice._startTime = new Date();
-        SkillsPractice._answerRevealed = false;
-        SkillsPractice._currentItem = null;
-
-        SkillsPractice._loadMasteryForPTs(allPTs).then(function() {
-            SkillsPractice._buildQueue();
-            if (SkillsPractice._queue.length === 0) {
-                qArea.innerHTML = '<div class="session-empty"><p>All skills mastered!</p>' +
-                    '<button class="btn btn-primary" onclick="ConceptsUI.backToTopicsFromSession()">Back</button></div>';
-                return;
-            }
-            SkillsPractice._serveNext();
-        });
-    },
-
-    /**
-     * Launch combined exam question session across multiple selections.
-     */
-    _launchCombinedExam: function(sels) {
-        var home = document.getElementById("targeted-home");
-        var qArea = document.getElementById("targeted-question-area");
-        if (home) home.style.display = "none";
-        if (qArea) qArea.style.display = "block";
-        StudyUI._activeAreaId = "targeted-question-area";
-
-        var answerMethod = "paper";
-        var mtPaper = document.getElementById("mt-paper");
-        if (mtPaper && !mtPaper.classList.contains("active")) answerMethod = "stylus";
-
-        var markingMode = "instant";
-        var mtExam = document.getElementById("mt-exam");
-        if (mtExam && mtExam.classList.contains("active")) markingMode = "exam";
-
-        if (answerMethod === "stylus" && typeof WrittenMode !== "undefined" &&
-            !WrittenMode.hasMarkingAPI()) {
-            alert("Written Mode is not enabled for this class.");
-            if (home) home.style.display = "block";
-            if (qArea) qArea.style.display = "none";
-            return;
-        }
-
-        // Build list of topic/subtopic filters
-        var filters = sels.map(function(s) { return s.subtopic || s.topic; });
-
-        SessionEngine.start("revision", null, {
-            goal: 10,
-            sectionFilter: "mix",
-            wrongListOnly: false,
-            answerMethod: answerMethod,
-            markingMode: markingMode,
-            poolFilter: "original"
-        }).then(function() {
-            // Apply multi-topic filter
-            SessionEngine._applyMultiTopicFilter(filters);
-
-            var totalAvailable = SessionEngine.wrongList.length +
-                SessionEngine.freshList.length +
-                SessionEngine.improvingList.length +
-                SessionEngine.reviewList.length;
-
-            if (totalAvailable === 0) {
-                qArea.innerHTML = '<div class="session-empty">' +
-                    '<p>No Exam Questions available for the selected topics.</p>' +
-                    '<button class="btn btn-primary" onclick="ConceptsUI.backToTopicsFromSession()">Back</button></div>';
-                return;
-            }
-            StudyUI._nextReminderMinutes = 30;
-            StudyUI.loadNextQuestion();
-        });
-    },
-
-    /**
-     * Launch blended skills + exam session (when no concepts selected).
-     */
-    _launchBlendedSkillsExam: function(skillSels, examSels) {
-        // For now, serve exam questions first (they use the session engine);
-        // if only skills, use skills engine.
-        if (examSels.length > 0) {
-            // Combine all sels for exam engine, skills will be noted
-            ConceptsUI._launchCombinedExam(examSels);
-            // TODO: interleave skills in future iteration
-        } else {
-            ConceptsUI._launchCombinedSkills(skillSels);
-        }
-    },
-
-    // ================================================================
     // SKILLS / EXAM Qs SESSION LAUNCH
     // ================================================================
     /**
@@ -1108,15 +644,9 @@ var ConceptsUI = {
         var filter = subtopic || topic;
         var level = subtopic ? "subtopic" : "topic";
 
-        // Read answer method from header pills
-        var answerMethod = "paper";
-        var mtPaper = document.getElementById("mt-paper");
-        if (mtPaper && !mtPaper.classList.contains("active")) answerMethod = "stylus";
-
-        // Read marking mode from header pills
-        var markingMode = "instant";
-        var mtExamPill = document.getElementById("mt-exam");
-        if (mtExamPill && mtExamPill.classList.contains("active")) markingMode = "exam";
+        // Read toggle settings
+        var sectionFilter = ConceptsUI._getToggleValue("targeted-section-group") || "mix";
+        var answerMethod = ConceptsUI._getToggleValue("targeted-answer-group") || "paper";
 
         // Check marking API if stylus mode
         if (answerMethod === "stylus" && typeof WrittenMode !== "undefined" &&
@@ -1138,10 +668,10 @@ var ConceptsUI = {
 
         SessionEngine.start("revision", filter, {
             goal: goal,
-            sectionFilter: "mix",
+            sectionFilter: sectionFilter,
             wrongListOnly: false,
             answerMethod: answerMethod,
-            markingMode: markingMode,
+            markingMode: "instant",
             poolFilter: pool
         }).then(function() {
             var totalAvailable = SessionEngine.wrongList.length +
@@ -1173,9 +703,6 @@ var ConceptsUI = {
         if (home) home.style.display = "block";
         if (qArea) { qArea.style.display = "none"; qArea.innerHTML = ""; }
         StudyUI._activeAreaId = "question-area";
-        // Clear selections
-        ConceptsUI._selections = [];
-        ConceptsUI._pendingAfterConcepts = { skills: [], exam: [] };
         ConceptsUI.buildTree();
     }
 };
