@@ -5476,10 +5476,82 @@ body.dark-theme input[type="range"] {
     background: var(--color-info, #3b82f6);
     color: #fff;
 }
-.cs-flashcard-skill-name {
+
+/* ---- Card header (concept/skill name + counter) ---- */
+.cs-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-color);
+}
+.cs-card-header-label {
     font-size: 0.82rem;
+    font-weight: 600;
     color: var(--text-muted);
+}
+.cs-card-header-counter {
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+/* ---- Sticky question stem ---- */
+.cs-question-sticky {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: var(--bg-secondary);
+    padding-bottom: 10px;
     margin-bottom: 4px;
+}
+.sp-question-sticky {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: var(--bg-secondary);
+    padding-bottom: 10px;
+}
+
+/* ---- Two-column worked solution table ---- */
+.cs-worked-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+.cs-worked-table thead th {
+    text-align: left;
+    font-weight: 700;
+    font-size: 0.82rem;
+    padding: 8px 10px;
+    background: var(--bg-tertiary, var(--bg-primary));
+    border-bottom: 2px solid var(--border-color);
+    color: var(--text-primary);
+}
+.cs-wt-step-col { width: 55%; }
+.cs-wt-why-col { width: 45%; }
+.cs-worked-table tbody tr {
+    border-bottom: 1px solid var(--border-color);
+}
+.cs-worked-table tbody tr:last-child {
+    border-bottom: none;
+}
+.cs-wt-step {
+    padding: 10px;
+    color: var(--text-primary);
+    vertical-align: top;
+}
+.cs-wt-why {
+    padding: 10px;
+    color: var(--text-muted);
+    font-style: italic;
+    font-size: 0.85rem;
+    vertical-align: top;
 }
 .cs-flashcard-answer.cs-shown {
     display: block;
@@ -5630,6 +5702,27 @@ body.dark-theme input[type="range"] {
     .concepts-progress-bar {
         max-width: 100%;
         width: 100%;
+    }
+    /* Worked table: stack on mobile */
+    .cs-worked-table thead { display: none; }
+    .cs-worked-table tbody tr {
+        display: flex;
+        flex-direction: column;
+        padding: 8px 0;
+    }
+    .cs-wt-step, .cs-wt-why {
+        display: block;
+        width: 100%;
+        padding: 4px 0;
+    }
+    .cs-wt-why {
+        border-left: 3px solid var(--accent-primary);
+        padding-left: 10px;
+        margin-top: 2px;
+    }
+    .cs-card-header {
+        flex-direction: column;
+        gap: 2px;
     }
 }
 /* ============================================================================

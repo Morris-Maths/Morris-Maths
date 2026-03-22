@@ -449,6 +449,7 @@ var ConceptsUI = {
 
         var card = ConceptsUI._reviewQueue[ConceptsUI._reviewIndex];
         var total = ConceptsUI._reviewQueue.length;
+        var isSkill = card._itemType === "skill";
 
         // Update progress bar and counter
         var fill = document.getElementById("concepts-progress-fill");
@@ -457,29 +458,36 @@ var ConceptsUI = {
         if (counter) counter.textContent = (ConceptsUI._reviewIndex + 1) + " / " + total;
 
         var html = '<div class="cs-flashcard">';
-        // Show type badge in mixed sessions
-        var isSkill = card._itemType === "skill";
+
+        // ---- Header bar (like exam questions: source + counter) ----
+        html += '<div class="cs-card-header">';
+        html += '<span class="cs-card-header-label">';
+        if (isSkill) {
+            html += ConceptsUI._escHTML(card.section);
+            if (card._skill_name) html += ' \u2014 ' + ConceptsUI._escHTML(card._skill_name);
+        } else {
+            html += ConceptsUI._escHTML(card.section);
+        }
+        html += '</span>';
+        html += '<span class="cs-card-header-counter">Q' +
+            (ConceptsUI._reviewIndex + 1) + ' of ' + total + '</span>';
+        html += '</div>';
+
+        // ---- Type badge for mixed sessions ----
         if (ConceptsUI._currentTopicKey === "__mixed__") {
             html += '<div class="cs-flashcard-type-badge ' +
                 (isSkill ? 'cs-badge-skill' : 'cs-badge-concept') + '">' +
                 (isSkill ? 'Skill' : 'Concept') + '</div>';
         }
-        html += '<div class="cs-flashcard-section">' + ConceptsUI._escHTML(card.section) + '</div>';
-        if (isSkill && card._skill_name) {
-            html += '<div class="cs-flashcard-skill-name">' + ConceptsUI._escHTML(card._skill_name) + '</div>';
-        }
-        html += '<div class="cs-flashcard-question">' + card.q + '</div>';
 
-        // Diagram placeholder (if present)
-        if (card.diagram) {
-            html += '<div class="cs-flashcard-diagram">';
-            // Extract filename from "[IMAGE: filename.png]" format
-            var diagFile = card.diagram.replace(/\[IMAGE:\s*/, "").replace(/\]$/, "");
-            html += '<img src="concepts_diagrams/' + ConceptsUI._escAttr(diagFile) +
-                '" alt="Diagram" onerror="this.style.display=\'none\'" ' +
-                'style="max-width:100%;border-radius:8px;margin-top:8px;">';
-            html += '</div>';
-        }
+        // ---- Question stem (sticky) ----
+        var diagPath = isSkill ?
+            ((typeof PRACTICE_DIAGRAM_PATH !== "undefined") ? PRACTICE_DIAGRAM_PATH : "practice_diagrams/") :
+            ((typeof CONCEPTS_DIAGRAM_PATH !== "undefined") ? CONCEPTS_DIAGRAM_PATH : "concepts_diagrams/");
+        html += '<div class="cs-question-sticky">';
+        html += '<div class="cs-flashcard-question">' +
+            ConceptsUI._renderImages(card.q, diagPath) + '</div>';
+        html += '</div>';
 
         // Reveal button (hidden after click)
         html += '<button class="cs-reveal-btn" id="cs-reveal-btn" ' +
@@ -493,16 +501,68 @@ var ConceptsUI = {
             'onclick="ConceptsUI.rateCard(false)">Revise again</button>';
         html += '</div>';
 
-        // Answer content (revealed by revealAnswer)
+        // ---- Answer content (revealed by revealAnswer) ----
         html += '<div class="cs-flashcard-answer" id="cs-card-answer">';
-        html += '<div class="cs-flashcard-answer-content">' + card.answer + '</div>';
+        html += ConceptsUI._renderAnswerContent(card);
         html += '</div>';
+
         html += '</div>';
 
         document.getElementById("concepts-flashcard-area").innerHTML = html;
 
         // Typeset MathJax
         ConceptsUI._typeset("concepts-flashcard-area");
+    },
+
+    /**
+     * Convert [IMAGE: filename.png] tags in text to <img> elements.
+     * @param {string} text - text containing [IMAGE:] tags
+     * @param {string} basePath - optional path override; defaults to PRACTICE_DIAGRAM_PATH
+     */
+    _renderImages: function(text, basePath) {
+        if (!text) return "";
+        var path = basePath ||
+            ((typeof PRACTICE_DIAGRAM_PATH !== "undefined") ?
+            PRACTICE_DIAGRAM_PATH : "practice_diagrams/");
+        return text.replace(/\[IMAGE:\s*([^\]]+)\]/g, function(match, filename) {
+            return '<div class="cs-flashcard-diagram">' +
+                '<img src="' + path + filename.trim() +
+                '" alt="Diagram" onerror="this.parentElement.style.display=\'none\'" ' +
+                'style="max-width:100%;border-radius:8px;">' +
+                '</div>';
+        });
+    },
+
+    /**
+     * Render the answer section.
+     * If card.a_steps exists, render two-column worked solution table.
+     * Otherwise fall back to plain answer string.
+     */
+    _renderAnswerContent: function(card) {
+        var html = '';
+
+        // New format: a_steps array of { s, w }
+        if (card.a_steps && card.a_steps.length > 0) {
+            html += '<table class="cs-worked-table">';
+            html += '<thead><tr>';
+            html += '<th class="cs-wt-step-col">Worked Solution</th>';
+            html += '<th class="cs-wt-why-col">Why / Explanation</th>';
+            html += '</tr></thead>';
+            html += '<tbody>';
+            card.a_steps.forEach(function(step) {
+                html += '<tr>';
+                html += '<td class="cs-wt-step">' + (step.s || '') + '</td>';
+                html += '<td class="cs-wt-why">' + (step.w || '') + '</td>';
+                html += '</tr>';
+            });
+            html += '</tbody></table>';
+        } else {
+            // Legacy format: single answer string
+            html += '<div class="cs-flashcard-answer-content">' +
+                (card.answer || '') + '</div>';
+        }
+
+        return html;
     },
 
     revealAnswer: function() {
@@ -955,6 +1015,7 @@ var ConceptsUI = {
                     qid: q.qid,
                     q: q.q,
                     answer: q.a,
+                    a_steps: q.a_steps || null,
                     section: pt.concept || pt.subtopic || "",
                     subtopic: pt.subtopic || "",
                     diagram: null,

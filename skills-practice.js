@@ -279,7 +279,8 @@ var SkillsPractice = {
             difficulty: difficulty,
             qid: q.qid,
             q: q.q,
-            a: q.a
+            a: q.a,
+            a_steps: q.a_steps || null
         };
     },
 
@@ -330,7 +331,7 @@ var SkillsPractice = {
             Math.round((self._questionsServed / self._sessionGoal) * 100) + '%"></div>';
         html += '</div>';
 
-        // Header
+        // Header (concept + skill name like exam question source line)
         html += '<div class="sp-header">';
         html += '<div class="sp-header-left">';
         html += '<span class="sp-concept">' + self._esc(item.pt.concept) + '</span>';
@@ -345,15 +346,14 @@ var SkillsPractice = {
         html += '</div>';
         html += '</div>';
 
-        // Question
-        html += '<div class="sp-question-box">';
-        html += '<div class="sp-question">' + item.q + '</div>';
+        // Question (sticky, with image support)
+        html += '<div class="sp-question-box sp-question-sticky">';
+        html += '<div class="sp-question">' + self._renderImages(item.q) + '</div>';
         html += '</div>';
 
         // Answer area (hidden until revealed)
         html += '<div class="sp-answer-section" id="sp-answer-section" style="display:none;">';
-        html += '<div class="sp-answer-label">Answer</div>';
-        html += '<div class="sp-answer">' + item.a + '</div>';
+        html += self._renderAnswerContent(item);
         html += '</div>';
 
         // Buttons
@@ -664,6 +664,48 @@ var SkillsPractice = {
         var d = document.createElement("div");
         d.textContent = s || "";
         return d.innerHTML;
+    },
+
+    /**
+     * Convert [IMAGE: filename.png] in text to <img> elements.
+     */
+    _renderImages: function(text) {
+        if (!text) return "";
+        var path = (typeof PRACTICE_DIAGRAM_PATH !== "undefined") ?
+            PRACTICE_DIAGRAM_PATH : "practice_diagrams/";
+        return text.replace(/\[IMAGE:\s*([^\]]+)\]/g, function(match, filename) {
+            return '<div class="sp-diagram">' +
+                '<img src="' + path + filename.trim() +
+                '" alt="Diagram" onerror="this.parentElement.style.display=\'none\'" ' +
+                'style="max-width:100%;border-radius:8px;">' +
+                '</div>';
+        });
+    },
+
+    /**
+     * Render answer content: two-column table if a_steps exists, else plain.
+     */
+    _renderAnswerContent: function(item) {
+        var html = '';
+        if (item.a_steps && item.a_steps.length > 0) {
+            html += '<table class="cs-worked-table">';
+            html += '<thead><tr>';
+            html += '<th class="cs-wt-step-col">Worked Solution</th>';
+            html += '<th class="cs-wt-why-col">Why / Explanation</th>';
+            html += '</tr></thead>';
+            html += '<tbody>';
+            item.a_steps.forEach(function(step) {
+                html += '<tr>';
+                html += '<td class="cs-wt-step">' + (step.s || '') + '</td>';
+                html += '<td class="cs-wt-why">' + (step.w || '') + '</td>';
+                html += '</tr>';
+            });
+            html += '</tbody></table>';
+        } else {
+            html += '<div class="sp-answer-label">Answer</div>';
+            html += '<div class="sp-answer">' + (item.a || '') + '</div>';
+        }
+        return html;
     },
 
     _statusEmoji: function(status) {
