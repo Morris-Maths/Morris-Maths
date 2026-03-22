@@ -449,7 +449,34 @@ var ATOMISED_INTEGRALS = {
       pt: "Calculating area between curve and line using integration",
       testing: "",
       reason_bank: ["wrong_rule", "missing_chain_factor", "substitution_error", "sign_error", "algebra_slip", "not_sure"],
-      easy: [],
+      easy: [
+        {
+          qid: "IN_007_e02",
+          q: "[IMAGE: IN_007_e02_line_vs_neg_exp.png]\nFind the area of the shaded region between $y = x$ and $y = -e^x$ from $x = 1$ to $x = 2$.",
+          a: "$y = x$ is above $y = -e^x$ on $[1,2]$. Area $= \\int_1^2 (x - (-e^x)) \\, dx = \\int_1^2 (x + e^x) \\, dx = [\\frac{x^2}{2} + e^x]_1^2 = (2 + e^2) - (\\frac{1}{2} + e) = \\frac{3}{2} + e^2 - e$",
+          seedSpec: {
+            version: 2,
+            seedable: false,
+            reason: "Exponential boundary — not cleanly parameterisable. Verified by SymPy: 3/2 + e^2 - e ≈ 6.17."
+          },
+          slug: "in-007-e02",
+          angle_mode: "radians",
+          workedSolution: [
+            {
+              working: "$y = x$ is above $y = -e^x$ on $[1,2]$",
+              explanation: "Determine which curve is on top: at $x=1$, $y=1 > -e \\approx -2.72$"
+            },
+            {
+              working: "Area $= \\int_1^2 (x - (-e^x))\\, dx = \\int_1^2 (x + e^x)\\, dx$",
+              explanation: "Set up integral: top minus bottom (subtracting a negative gives addition)"
+            },
+            {
+              working: "$= [\\frac{x^2}{2} + e^x]_1^2 = (2 + e^2) - (\\frac{1}{2} + e) = \\frac{3}{2} + e^2 - e$",
+              explanation: "Integrate, substitute limits, simplify"
+            }
+          ]
+        }
+      ],
       medium: [
         {
           qid: "IN_007_m01",
@@ -496,6 +523,36 @@ var ATOMISED_INTEGRALS = {
             {
               working: "$= [x^2 - \\frac{x^3}{3}]_0^2 = 4 - \\frac{8}{3} = \\frac{4}{3}$",
               explanation: "Integrate, substitute limits, simplify"
+            }
+          ]
+        },
+        {
+          qid: "IN_007_m02",
+          q: "[IMAGE: IN_007_m02_exp_vs_9minusx2.png]\nFind the area of the shaded region between $y = e^x$ and $y = 9 - x^2$ from $x = -1$ to $x = 1$.",
+          a: "$9 - x^2 > e^x$ on $[-1,1]$. Area $= \\int_{-1}^{1} (9 - x^2 - e^x) \\, dx = [9x - \\frac{x^3}{3} - e^x]_{-1}^{1} = (9 - \\frac{1}{3} - e) - (-9 + \\frac{1}{3} - e^{-1}) = \\frac{52}{3} - e + e^{-1}$",
+          seedSpec: {
+            version: 2,
+            seedable: false,
+            reason: "Mixed exponential and polynomial — not cleanly parameterisable. Verified by SymPy: 52/3 - e + e^{-1} ≈ 14.98."
+          },
+          slug: "in-007-m02",
+          angle_mode: "radians",
+          workedSolution: [
+            {
+              working: "At $x=0$: $9-0=9$ and $e^0=1$, so $9-x^2 > e^x$",
+              explanation: "Determine which curve is on top in the interval"
+            },
+            {
+              working: "Area $= \\int_{-1}^{1} (9 - x^2 - e^x)\\, dx$",
+              explanation: "Set up integral: top curve $(9-x^2)$ minus bottom curve $(e^x)$"
+            },
+            {
+              working: "$= [9x - \\frac{x^3}{3} - e^x]_{-1}^{1}$",
+              explanation: "Integrate each term"
+            },
+            {
+              working: "$= (9 - \\frac{1}{3} - e) - (-9 + \\frac{1}{3} - e^{-1}) = \\frac{52}{3} - e + e^{-1}$",
+              explanation: "Substitute limits and simplify. Note: this equals $\\frac{52}{3} - 2\\sinh(1)$"
             }
           ]
         }
@@ -563,9 +620,100 @@ var ATOMISED_INTEGRALS = {
               explanation: "Integrate, substitute limits, simplify"
             }
           ]
+        },
+        {
+          qid: "IN_008_m02",
+          q: "[IMAGE: IN_008_m02_two_parabolas.png]\nFind the area of the shaded region enclosed between $y = x^2$ and $y = 9 - x^2$.",
+          a: "Intersection: $x^2 = 9 - x^2 \\Rightarrow 2x^2 = 9 \\Rightarrow x = \\pm\\frac{3\\sqrt{2}}{2}$.\n$9 - x^2 \\geq x^2$ between intersections.\nArea $= \\int_{-\\frac{3\\sqrt{2}}{2}}^{\\frac{3\\sqrt{2}}{2}} (9 - x^2 - x^2) \\, dx = \\int_{-\\frac{3\\sqrt{2}}{2}}^{\\frac{3\\sqrt{2}}{2}} (9 - 2x^2) \\, dx$\n$= [9x - \\frac{2x^3}{3}]_{-\\frac{3\\sqrt{2}}{2}}^{\\frac{3\\sqrt{2}}{2}} = 18\\sqrt{2}$",
+          seedSpec: {
+            version: 2,
+            seedable: true,
+            reason: "Two parabolas forming lens. Verified by SymPy: area = 18√2 ≈ 25.46.",
+            parameters: {
+              c: {
+                type: "int",
+                min: 1,
+                max: 16,
+                step: 1,
+                description: "Constant in y = c - x^2"
+              }
+            },
+            constraints: ["c != 9"],
+            derived: {},
+            substitutions: {
+              q: {
+                "9": "str(c)"
+              },
+              a: {
+                "9": "str(c)"
+              }
+            },
+            sourceValues: {
+              c: 9
+            }
+          },
+          slug: "in-008-m02",
+          angle_mode: "radians",
+          workedSolution: [
+            {
+              working: "$x^2 = 9 - x^2 \\Rightarrow 2x^2 = 9 \\Rightarrow x = \\pm\\frac{3\\sqrt{2}}{2}$",
+              explanation: "Find intersection points by setting curves equal"
+            },
+            {
+              working: "$9 - x^2 \\geq x^2$ between the intersections",
+              explanation: "The inverted parabola is on top inside the lens"
+            },
+            {
+              working: "Area $= \\int_{-\\frac{3\\sqrt{2}}{2}}^{\\frac{3\\sqrt{2}}{2}} (9 - 2x^2)\\, dx$",
+              explanation: "Set up integral: top minus bottom"
+            },
+            {
+              working: "$= [9x - \\frac{2x^3}{3}]_{-\\frac{3\\sqrt{2}}{2}}^{\\frac{3\\sqrt{2}}{2}} = 18\\sqrt{2}$",
+              explanation: "Integrate, substitute limits, simplify using symmetry"
+            }
+          ]
         }
       ],
-      hard: []
+      hard: [
+        {
+          qid: "IN_008_h01",
+          q: "[IMAGE: IN_008_h01_three_curve_triangle.png]\nThe curves $y = x$, $y = 2 - x$, and $y = 2x^2 - 4x$ enclose a shaded region. Find its area.",
+          a: "Intersections: $y=x$ and $y=2-x$ at $(1,1)$; $y=2-x$ and $y=2x^2-4x$ at $(2,0)$; $y=x$ and $y=2x^2-4x$ at $(\\frac{5}{2}, \\frac{5}{2})$.\nFor $1 \\leq x \\leq 2$: top $y=x$, bottom $y=2-x$.\nFor $2 \\leq x \\leq \\frac{5}{2}$: top $y=x$, bottom $y=2x^2-4x$.\nArea $= \\int_1^2 (x - (2-x)) \\, dx + \\int_2^{5/2} (x - (2x^2-4x)) \\, dx = \\int_1^2 (2x-2) \\, dx + \\int_2^{5/2} (5x - 2x^2) \\, dx$\n$= [x^2 - 2x]_1^2 + [\\frac{5x^2}{2} - \\frac{2x^3}{3}]_2^{5/2} = 1 + \\frac{13}{24} = \\frac{37}{24}$",
+          seedSpec: {
+            version: 2,
+            seedable: false,
+            reason: "Three-curve region requiring sub-interval splitting. Verified by SymPy: 37/24 ≈ 1.54."
+          },
+          slug: "in-008-h01",
+          angle_mode: "radians",
+          workedSolution: [
+            {
+              working: "Intersections: $y=x \\cap y=2-x$ at $(1,1)$; $y=2-x \\cap y=2x^2-4x$ at $(2,0)$; $y=x \\cap y=2x^2-4x$ at $(\\frac{5}{2}, \\frac{5}{2})$",
+              explanation: "Find all three vertices of the enclosed region"
+            },
+            {
+              working: "For $1 \\leq x \\leq 2$: top $y=x$, bottom $y=2-x$",
+              explanation: "At the line intersection $x=2$, the lower boundary changes"
+            },
+            {
+              working: "For $2 \\leq x \\leq \\frac{5}{2}$: top $y=x$, bottom $y=2x^2-4x$",
+              explanation: "The parabola becomes the lower boundary after $x=2$"
+            },
+            {
+              working: "$\\int_1^2 (2x-2)\\, dx = [x^2 - 2x]_1^2 = 0 - (-1) = 1$",
+              explanation: "Evaluate the first integral"
+            },
+            {
+              working: "$\\int_2^{5/2} (5x - 2x^2)\\, dx = [\\frac{5x^2}{2} - \\frac{2x^3}{3}]_2^{5/2} = \\frac{13}{24}$",
+              explanation: "Evaluate the second integral"
+            },
+            {
+              working: "Total area $= 1 + \\frac{13}{24} = \\frac{37}{24}$",
+              explanation: "Sum the two parts"
+            }
+          ]
+        }
+      ]
     },
     {
       pt_id: "IN_009",
@@ -6882,7 +7030,7 @@ var ATOMISED_INTEGRALS = {
       medium: [
         {
           qid: "IN_044_m01",
-          q: "The region between $y = e^x$ and $y = 9 - x^2$ from $x = -1$ to $x = 1$ is shaded. Write the integral expression for the area.",
+          q: "[IMAGE: IN_007_m02_exp_vs_9minusx2.png]\nThe region between $y = e^x$ and $y = 9 - x^2$ from $x = -1$ to $x = 1$ is shaded. Write the integral expression for the area.",
           a: "$9 - x^2 > e^x$ on $[-1,1]$, so Area $= int_{-1}^{1} (9 - x^2 - e^x) \, d\1$",
           seedSpec: {
             version: 2,
@@ -6977,8 +7125,8 @@ var ATOMISED_INTEGRALS = {
       hard: [
         {
           qid: "IN_044_h01",
-          q: "Three curves $y = x$, $y = 2-x$, and $y = 2x^2 - 4x$ bound a region between $x = 1$ and $x = 2.5$. The top boundary changes at $x = 1$. Write the integral(s) for the shaded area.",
-          a: "Need to identify which curve is on top in each sub-interval. Split at intersections and write separate integrals for each piece.",
+          q: "[IMAGE: IN_008_h01_three_curve_triangle.png]\nThree curves $y = x$, $y = 2-x$, and $y = 2x^2 - 4x$ bound a shaded region. Write the integral(s) for the shaded area.",
+          a: "Vertices: $(1,1)$, $(2,0)$, $(\\frac{5}{2}, \\frac{5}{2})$. Lower boundary changes at $x=2$.\nArea $= \\int_1^2 (x - (2-x)) \\, dx + \\int_2^{5/2} (x - (2x^2 - 4x)) \\, dx$",
           seedSpec: {
             version: 2,
             seedable: false,
@@ -6988,11 +7136,15 @@ var ATOMISED_INTEGRALS = {
           angle_mode: "radians",
           workedSolution: [
             {
-              working: "Need to identify which curve is on top in each sub-interval",
-              explanation: "When multiple curves bound a region, the top boundary may change"
+              working: "Intersections: $y=x \\cap y=2-x$ at $(1,1)$; $y=2-x \\cap y=2x^2-4x$ at $(2,0)$; $y=x \\cap y=2x^2-4x$ at $(\\frac{5}{2}, \\frac{5}{2})$",
+              explanation: "Find the three vertices of the enclosed region"
             },
             {
-              working: "Split at intersections and write separate integrals for each piece",
+              working: "For $1 \\leq x \\leq 2$: top $y=x$, bottom $y=2-x$. For $2 \\leq x \\leq \\frac{5}{2}$: top $y=x$, bottom $y=2x^2-4x$",
+              explanation: "Identify the upper and lower boundary on each sub-interval"
+            },
+            {
+              working: "Area $= \\int_1^2 (x - (2-x))\\, dx + \\int_2^{5/2} (x - (2x^2-4x))\\, dx$",
               explanation: "Set up $\\int (\\text{top} - \\text{bottom})$ on each sub-interval"
             }
           ]
