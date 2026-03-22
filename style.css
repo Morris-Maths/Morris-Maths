@@ -5944,13 +5944,13 @@ body.dark-theme input[type="range"] {
     margin-bottom: 4px;
 }
 .question-stem-sticky .question-stimulus {
-    font-size: 0.93rem;
-    line-height: 1.4;
+    font-size: 1rem;
+    line-height: 1.5;
     margin-bottom: 2px;
 }
 /* Scale down MathJax tables/expressions inside the sticky stem */
 .question-stem-sticky .MathJax {
-    font-size: 0.95em !important;
+    font-size: 1em !important;
 }
 .question-stem-sticky .question-diagrams {
     margin: 4px 0 2px;
@@ -5978,11 +5978,11 @@ body.dark-theme input[type="range"] {
         max-height: 40vh;
     }
     .question-stem-sticky .question-stimulus {
-        font-size: 0.85rem;
-        line-height: 1.3;
+        font-size: 0.93rem;
+        line-height: 1.4;
     }
     .question-stem-sticky .MathJax {
-        font-size: 0.85em !important;
+        font-size: 0.93em !important;
     }
     .question-stem-sticky .question-diagram {
         max-height: clamp(130px, 22vh, 280px);
@@ -5994,8 +5994,8 @@ body.dark-theme input[type="range"] {
         max-height: 33vh;
     }
     .question-stem-sticky .question-stimulus {
-        font-size: 0.8rem;
-        line-height: 1.25;
+        font-size: 0.88rem;
+        line-height: 1.3;
     }
 }
 
