@@ -959,7 +959,6 @@ body.dark-theme #welcome-screen {
     box-shadow: var(--shadow-sm);
     margin-bottom: var(--space-md);
     max-width: 100%;
-    overflow-x: hidden;
 }
 
 /* Remediation question (from wrong/struggling list) */
@@ -1108,13 +1107,13 @@ body.dark-theme #welcome-screen {
 
 .question-diagrams,
 .part-diagrams {
-    margin: var(--space-md) 0;
+    margin: var(--space-sm) 0;
     text-align: center;
 }
 
 .question-diagram {
     max-width: min(100%, 400px);
-    max-height: 300px;
+    max-height: clamp(180px, 30vh, 400px);
     width: auto;
     height: auto;
     border-radius: var(--border-radius);
@@ -5864,21 +5863,24 @@ body.dark-theme input[type="range"] {
     top: 0;
     z-index: 10;
     background: var(--bg-secondary);
-    padding-bottom: 4px;
+    padding-bottom: 2px;
     border-bottom: 2px solid var(--accent-primary);
     margin-bottom: var(--space-sm);
     box-shadow: 0 4px 12px rgba(0,0,0,0.06);
 }
-/* Compact the stem on small screens to save space */
 .question-stem-sticky .question-header {
     margin-bottom: 4px;
 }
 .question-stem-sticky .question-stimulus {
     font-size: 0.93rem;
     line-height: 1.4;
+    margin-bottom: 2px;
+}
+.question-stem-sticky .question-diagrams {
+    margin: 4px 0 2px;
 }
 .question-stem-sticky .question-diagram {
-    max-height: 280px;
+    max-height: clamp(180px, 28vh, 350px);
     object-fit: contain;
 }
 /* On mobile, don't sticky (takes too much space) */
@@ -5899,7 +5901,6 @@ body.dark-theme input[type="range"] {
     padding-top: var(--space-md);
     animation: sp-fade-in 0.3s ease;
     max-width: 100%;
-    overflow-x: hidden;
 }
 
 /* Flex layout: worked solution (left) + guided walkthrough (right) */
