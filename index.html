@@ -106,22 +106,7 @@
                 <h1 class="app-title">Morris Maths</h1>
                 <button class="hdr-home-btn" id="hdr-home-btn" title="Back to topics">&#8962;</button>
             </div>
-            <div class="top-bar-toggles">
-                <div class="hdr-toggle-group">
-                    <span class="hdr-toggle-label">Answer</span>
-                    <div class="hdr-toggle-pills">
-                        <button class="hdr-pill active" id="mt-paper" data-mode="paper">Paper</button>
-                        <button class="hdr-pill" id="mt-stylus" data-mode="stylus">Stylus</button>
-                    </div>
-                </div>
-                <div class="hdr-toggle-group">
-                    <span class="hdr-toggle-label">Marking</span>
-                    <div class="hdr-toggle-pills">
-                        <button class="hdr-pill active" id="mt-instant" data-mode="instant">Instant</button>
-                        <button class="hdr-pill" id="mt-exam" data-mode="exam">Exam</button>
-                    </div>
-                </div>
-            </div>
+            <!-- Toggles moved to targeted home screen -->
             <div class="top-bar-right">
                 <button class="hdr-nav-btn" data-tab="print">Print</button>
                 <button class="hdr-nav-btn" data-tab="dashboard">Dashboard</button>
@@ -274,6 +259,26 @@
                             <span class="mode-hint"><strong>Concepts</strong> &mdash; flashcard review of theory</span>
                             <span class="mode-hint"><strong>Skills</strong> &mdash; atomised practice drills</span>
                             <span class="mode-hint"><strong>Exam Qs</strong> &mdash; past exam-style questions</span>
+                        </div>
+                        <div class="targeted-toggles">
+                            <div class="config-row-compact">
+                                <label>Answer on:</label>
+                                <div class="config-toggle-group" id="targeted-answer-group">
+                                    <button class="config-toggle config-toggle-sm" data-value="paper"
+                                            aria-pressed="true">Paper</button>
+                                    <button class="config-toggle config-toggle-sm" data-value="stylus"
+                                            aria-pressed="false">Stylus</button>
+                                </div>
+                            </div>
+                            <div class="config-row-compact">
+                                <label>Marking:</label>
+                                <div class="config-toggle-group" id="targeted-marking-group">
+                                    <button class="config-toggle config-toggle-sm" data-value="instant"
+                                            aria-pressed="true">Instant</button>
+                                    <button class="config-toggle config-toggle-sm" data-value="exam"
+                                            aria-pressed="false">Exam</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div id="targeted-topic-tree"></div>

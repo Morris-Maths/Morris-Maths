@@ -14,62 +14,41 @@ function _initModeToggles() {
         });
     });
 
-    // --- Answer method toggles: Paper vs Stylus ---
-    var mtPaper = document.getElementById("mt-paper");
-    var mtStylus = document.getElementById("mt-stylus");
-    function setAnswer(value) {
-        if (mtPaper) mtPaper.classList.toggle("active", value === "paper");
-        if (mtStylus) mtStylus.classList.toggle("active", value === "stylus");
-        // Sync with study tab config toggles
-        var grp = document.getElementById("study-answer-group");
-        if (grp) {
-            grp.querySelectorAll(".config-toggle").forEach(function(t) {
-                var match = t.getAttribute("data-value") === value;
-                t.setAttribute("aria-pressed", match ? "true" : "false");
-                t.classList.toggle("active", match);
-            });
-        }
-    }
-    if (mtPaper) mtPaper.addEventListener("click", function() { setAnswer("paper"); });
-    if (mtStylus) mtStylus.addEventListener("click", function() { setAnswer("stylus"); });
+    // --- Answer method toggles: removed from header, now in targeted-config ---
+    // The targeted-answer-group and targeted-marking-group toggles are
+    // wired by ConceptsUI._bindToggleGroup() in concepts-ui.js init().
 
-    // --- Marking mode toggles: Instant vs Exam ---
-    var mtInstant = document.getElementById("mt-instant");
-    var mtExam = document.getElementById("mt-exam");
-    function setMarking(value) {
-        if (mtInstant) mtInstant.classList.toggle("active", value === "instant");
-        if (mtExam) mtExam.classList.toggle("active", value === "exam");
-        // Sync with study tab config toggles
-        var grp = document.getElementById("study-marking-mode-group");
-        if (grp) {
-            grp.querySelectorAll(".config-toggle").forEach(function(t) {
-                var match = t.getAttribute("data-value") === value;
-                t.setAttribute("aria-pressed", match ? "true" : "false");
-                t.classList.toggle("active", match);
-            });
-        }
-        // Show/hide exam config
-        var examRow = document.getElementById("exam-config-row");
-        var timeRow = document.getElementById("study-time-row");
-        if (examRow) examRow.style.display = (value === "exam") ? "flex" : "none";
-        if (timeRow) timeRow.style.display = (value === "exam") ? "none" : "flex";
-    }
-    if (mtInstant) mtInstant.addEventListener("click", function() { setMarking("instant"); });
-    if (mtExam) mtExam.addEventListener("click", function() { setMarking("exam"); });
-
-    // --- Sync: if user changes toggles in the study config panel, update header ---
+    // Sync study tab config toggles bidirectionally
     var studyAnswerGrp = document.getElementById("study-answer-group");
     if (studyAnswerGrp) {
         studyAnswerGrp.addEventListener("click", function(e) {
             var t = e.target.closest(".config-toggle");
-            if (t) setAnswer(t.getAttribute("data-value"));
+            if (!t) return;
+            studyAnswerGrp.querySelectorAll(".config-toggle").forEach(function(b) {
+                b.setAttribute("aria-pressed", "false");
+                b.classList.remove("active");
+            });
+            t.setAttribute("aria-pressed", "true");
+            t.classList.add("active");
         });
     }
     var studyMarkingGrp = document.getElementById("study-marking-mode-group");
     if (studyMarkingGrp) {
         studyMarkingGrp.addEventListener("click", function(e) {
             var t = e.target.closest(".config-toggle");
-            if (t) setMarking(t.getAttribute("data-value"));
+            if (!t) return;
+            var value = t.getAttribute("data-value");
+            studyMarkingGrp.querySelectorAll(".config-toggle").forEach(function(b) {
+                b.setAttribute("aria-pressed", "false");
+                b.classList.remove("active");
+            });
+            t.setAttribute("aria-pressed", "true");
+            t.classList.add("active");
+            // Show/hide exam config
+            var examRow = document.getElementById("exam-config-row");
+            var timeRow = document.getElementById("study-time-row");
+            if (examRow) examRow.style.display = (value === "exam") ? "flex" : "none";
+            if (timeRow) timeRow.style.display = (value === "exam") ? "none" : "flex";
         });
     }
 

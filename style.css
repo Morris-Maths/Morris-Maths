@@ -5490,10 +5490,11 @@ body.dark-theme input[type="range"] {
 /* ---- Rating buttons ---- */
 .cs-rating-buttons {
     display: none;
-    gap: 12px;
+    gap: 10px;
 }
 .cs-rating-buttons.cs-shown {
     display: flex;
+    margin-bottom: 12px;
 }
 
 .cs-rating-btn {
@@ -5506,6 +5507,10 @@ body.dark-theme input[type="range"] {
     border-radius: var(--border-radius);
     cursor: pointer;
     transition: transform 0.1s, box-shadow 0.15s;
+}
+.cs-rating-btn-sm {
+    padding: 8px 14px;
+    font-size: 0.82rem;
 }
 .cs-rating-btn:hover {
     transform: translateY(-2px);
@@ -5592,7 +5597,7 @@ body.dark-theme input[type="range"] {
     }
     .cs-flashcard { padding: 20px; }
     .cs-flashcard-question { font-size: 1.05rem; }
-    .cs-rating-buttons.cs-shown { flex-direction: column; }
+    .cs-rating-buttons.cs-shown { flex-direction: row; }
     .concepts-review-header {
         flex-direction: column;
         align-items: flex-start;
@@ -5998,23 +6003,14 @@ body.dark-theme input[type="range"] {
 /* On short viewports (e.g. laptop screens), be more aggressive */
 @media (max-height: 750px) {
     .question-stem-sticky {
-        max-height: 50vh;
-        padding-bottom: 1px;
-    }
-    .question-stem-sticky .question-header {
-        margin-bottom: 2px;
-        padding-bottom: 2px;
+        max-height: 46vh;
     }
     .question-stem-sticky .question-stimulus {
         font-size: 0.93rem;
-        line-height: 1.35;
-        margin-bottom: 0;
+        line-height: 1.4;
     }
     .question-stem-sticky .MathJax {
         font-size: 0.93em !important;
-    }
-    .question-stem-sticky .question-diagrams {
-        margin: 2px 0 0;
     }
     .question-stem-sticky .question-diagram {
         max-height: clamp(160px, 28vh, 340px);

@@ -91,6 +91,7 @@ var ConceptsUI = {
         // Wire up targeted-revision toggle buttons
         ConceptsUI._bindToggleGroup("targeted-section-group");
         ConceptsUI._bindToggleGroup("targeted-answer-group");
+        ConceptsUI._bindToggleGroup("targeted-marking-group");
 
         console.log("ConceptsUI: initialised, " +
             Object.keys(ConceptsUI._conceptsBank).length + " topic(s) with concepts data");
@@ -452,19 +453,19 @@ var ConceptsUI = {
             html += '</div>';
         }
 
-        html += '<div class="cs-flashcard-answer" id="cs-card-answer">';
-        html += '<div class="cs-flashcard-answer-content">' + card.answer + '</div>';
-        html += '</div>';
-        html += '</div>';
-
         html += '<button class="cs-reveal-btn" id="cs-reveal-btn" ' +
             'onclick="ConceptsUI.revealAnswer()">Reveal Answer</button>';
 
         html += '<div class="cs-rating-buttons" id="cs-rating-buttons">';
-        html += '<button class="cs-rating-btn cs-btn-nailed" ' +
+        html += '<button class="cs-rating-btn cs-rating-btn-sm cs-btn-nailed" ' +
             'onclick="ConceptsUI.rateCard(true)">Nailed it!</button>';
-        html += '<button class="cs-rating-btn cs-btn-revise-again" ' +
-            'onclick="ConceptsUI.rateCard(false)">Need to revise again later</button>';
+        html += '<button class="cs-rating-btn cs-rating-btn-sm cs-btn-revise-again" ' +
+            'onclick="ConceptsUI.rateCard(false)">Revise again</button>';
+        html += '</div>';
+
+        html += '<div class="cs-flashcard-answer" id="cs-card-answer">';
+        html += '<div class="cs-flashcard-answer-content">' + card.answer + '</div>';
+        html += '</div>';
         html += '</div>';
 
         document.getElementById("concepts-flashcard-area").innerHTML = html;
@@ -647,6 +648,7 @@ var ConceptsUI = {
         // Read toggle settings
         var sectionFilter = ConceptsUI._getToggleValue("targeted-section-group") || "mix";
         var answerMethod = ConceptsUI._getToggleValue("targeted-answer-group") || "paper";
+        var markingMode = ConceptsUI._getToggleValue("targeted-marking-group") || "instant";
 
         // Check marking API if stylus mode
         if (answerMethod === "stylus" && typeof WrittenMode !== "undefined" &&
@@ -664,14 +666,14 @@ var ConceptsUI = {
         // Point StudyUI at the targeted question area
         StudyUI._activeAreaId = "targeted-question-area";
 
-        var goal = 10;
+        var goal = markingMode === "exam" ? 50 : 10;
 
         SessionEngine.start("revision", filter, {
             goal: goal,
             sectionFilter: sectionFilter,
             wrongListOnly: false,
             answerMethod: answerMethod,
-            markingMode: "instant",
+            markingMode: markingMode,
             poolFilter: pool
         }).then(function() {
             var totalAvailable = SessionEngine.wrongList.length +
