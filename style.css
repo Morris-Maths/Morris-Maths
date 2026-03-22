@@ -1112,8 +1112,8 @@ body.dark-theme #welcome-screen {
 }
 
 .question-diagram {
-    max-width: min(100%, 520px);
-    max-height: clamp(220px, 35vh, 480px);
+    max-width: min(100%, 600px);
+    max-height: clamp(260px, 40vh, 540px);
     width: auto;
     height: auto;
     border-radius: var(--border-radius);
@@ -5942,7 +5942,7 @@ body.dark-theme input[type="range"] {
     margin-bottom: var(--space-sm);
     box-shadow: 0 4px 12px rgba(0,0,0,0.06);
     /* Cap height so solutions always have room below */
-    max-height: clamp(200px, 48vh, 550px);
+    max-height: clamp(240px, 55vh, 650px);
     overflow-y: auto;
     overflow-x: hidden;
     /* Smooth scrolling inside the stem */
@@ -5967,8 +5967,8 @@ body.dark-theme input[type="range"] {
     margin-bottom: 4px;
 }
 .question-stem-sticky .question-stimulus {
-    font-size: 1rem;
-    line-height: 1.5;
+    font-size: 1.02rem;
+    line-height: 1.55;
     margin-bottom: 2px;
 }
 /* Scale down MathJax tables/expressions inside the sticky stem */
@@ -5979,7 +5979,7 @@ body.dark-theme input[type="range"] {
     margin: 4px 0 2px;
 }
 .question-stem-sticky .question-diagram {
-    max-height: clamp(160px, 30vh, 380px);
+    max-height: clamp(200px, 38vh, 480px);
     object-fit: contain;
 }
 /* On mobile, don't sticky (takes too much space) */
@@ -5998,7 +5998,7 @@ body.dark-theme input[type="range"] {
 /* On short viewports (e.g. laptop screens), be more aggressive */
 @media (max-height: 750px) {
     .question-stem-sticky {
-        max-height: 40vh;
+        max-height: 46vh;
     }
     .question-stem-sticky .question-stimulus {
         font-size: 0.93rem;
@@ -6008,13 +6008,13 @@ body.dark-theme input[type="range"] {
         font-size: 0.93em !important;
     }
     .question-stem-sticky .question-diagram {
-        max-height: clamp(130px, 22vh, 280px);
+        max-height: clamp(160px, 28vh, 340px);
     }
 }
 /* On very short viewports, shrink further */
 @media (max-height: 600px) {
     .question-stem-sticky {
-        max-height: 33vh;
+        max-height: 38vh;
     }
     .question-stem-sticky .question-stimulus {
         font-size: 0.88rem;
